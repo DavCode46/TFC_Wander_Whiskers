@@ -7,8 +7,9 @@ import CustomShareButton from "@components/Utilities/CustomShareButton";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/context/userContext";
 import axios from "axios";
-import { CircularProgress } from "@nextui-org/react";
+
 import DeletePost from "./DeletePost";
+import { CircularProgress } from "@chakra-ui/react";
 
 const PostDetail = () => {
   const { id } = useParams();
