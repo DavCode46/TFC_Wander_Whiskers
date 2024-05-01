@@ -245,3 +245,48 @@ const updatePost = async (req, res, next) => {
     delete: api/posts/:id
     PROTECTED ROUTE
 */
+
+
+const deletePost = async (req, res, next) => {
+    try {
+      console.log(req.params.id)
+      console.log(req.user.id)
+      console.log('author', req.user)
+      console.log('role', req.user.role)
+      const postId = req.params.id;
+      if (!postId) return next(new ErrorModel("Post no encontrado", 404));
+      const post = await Post.findById(postId);
+      const imageName = post?.image;
+     
+      console.log(req.user.id, post.author, post.author == req.user.id)
+      if (req.user.id !== post.author || req.user.username !== "admin") return next(new ErrorModel("No tienes permisos para eliminar este post", 403));
+        fs.unlink(
+          path.join(__dirname, "..", "uploads", imageName),
+          async (err) => {
+            if (err) {
+              return next(new ErrorModel(err));
+            } else {
+              await Post.findByIdAndDelete(postId);
+            }
+          }
+        );
+      
+      res.status(200).json({ msg: "Post eliminado" });
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
+  
+  
+  export {
+    createPost,
+    getAllPosts,
+    getPost,
+    getPostsByLocation,
+    getPostsBySpecie,
+    getPostsbyCondition,
+    getAuthorPosts,
+    updatePost,
+    deletePost,
+  }
+  
