@@ -16,7 +16,52 @@ const __dirname = dirname(__filename);
     Post: api/posts
     PROTECTED ROUTE
 */
-
+const createPost = async (req, res, next) => {
+    try {
+      let { title, content, specie, location, condition } = req.body;
+      if (!title || !content || !specie || !location || !condition || !req.files) {
+        return next(
+          new ErrorModel("Todos los campos son obligatorios", 422)
+        );
+      }
+      const { image } = req.files;
+      /* Check the file size */
+      if (image.size > 2000000) {
+        return next(new ErrorModel("La imagen debe tener un máximo de 2MB", 422));
+      }
+      let fileName = image.name;
+      let splittedFilename = fileName.split(".");
+      let newFilename =
+        splittedFilename[0] +
+        uuid() +
+        "." +
+        splittedFilename[splittedFilename.length - 1];
+      image.mv(
+        path.join(__dirname, "..", "/uploads", newFilename),
+        async (err) => {
+          if (err) {
+            return next(new ErrorModel(err));
+          } else {
+            const newPost = await Post.create({
+              title,
+              content,
+              specie,
+              location,  
+              condition,        
+              image: newFilename,
+              author: req.user.id,
+            });
+            if (!newPost) {
+              return next(new ErrorModel("Error al crear la publicación", 422));
+            }
+            res.status(201).json(newPost);
+          }
+        }
+      );
+    } catch (error) {
+      return next(new ErrorModel(error));
+    }
+  };
 
 
 /* 
