@@ -86,7 +86,34 @@ const register = async (req, res, next) => {
     UNPROTECTED ROUTE
 */
 
-
+const login = async (req, res, next) => {
+    try {
+      const { email, password } = req.body;
+  
+      if (!email || !password)
+        return next(new ErrorModel("Por favor, rellene todos los campos", 400));
+  
+      const lowerEmail = email.toLowerCase();
+  
+      const user = await User.findOne({ email: lowerEmail });
+      if (!user) return next(new ErrorModel("Credenciales incorrectas", 400));
+  
+      const comparePassword = await bcrypt.compare(password, user.password);
+      if (!comparePassword)
+        return next(new ErrorModel("Credenciales inválidas", 400));
+  
+      const { _id: id, username } = user;
+  
+      const token = jwt.sign({ id, username }, process.env.SECRET_TOKEN, {
+        expiresIn: "1d",
+      });
+  
+      res.status(200).json({ token, id, username, role: user.role });
+    } catch (err) {
+      return next(new ErrorModel("Inicio de sesión fallido", 422));
+    }
+  };
+  
 /* 
     ROUTE FOR THE USER PROFILE
     get --> api/users/:id
