@@ -181,7 +181,64 @@ const getAuthorPosts = async (req, res, next) => {
     PROTECTED ROUTE
 */
 
-
+const updatePost = async (req, res, next) => {
+    try {
+      let imageName;
+      let newImageName;
+      let updatedPost;
+  
+      const postId = req.params.id;
+      let { title, content, specie, condition, location } = req.body;
+      if (!title || !content || !specie || !condition || !location)
+        return next(new ErrorModel("Todos los campos son obligatorios", 422));
+      if (!req.files) {
+        updatedPost = await Post.findByIdAndUpdate(
+          postId,
+          { title, content, specie, location, condition },
+          { new: true }
+        );
+      } else {
+        const post = await Post.findById(postId);
+        if (req.user.id == post.author) {
+          fs.unlink(
+            path.join(__dirname, "..", "uploads", post.image),
+            async (err) => {
+              if (err) return next(new ErrorModel(err));
+            }
+          );
+  
+          const { image } = req.files;
+          if (image.size > 2000000)
+            return next(new ErrorModel("La imagen debe pesar menos de 2MB", 422));
+          imageName = image.name;
+          let splittedImageName = imageName.split(".");
+          newImageName =
+            splittedImageName[0] +
+            uuid() +
+            "." +
+            splittedImageName[splittedImageName.length - 1];
+          image.mv(
+            path.join(__dirname, "..", "uploads", newImageName),
+            async (err) => {
+              if (err) return next(new ErrorModel(err));
+              updatedPost = await Post.findByIdAndUpdate(
+                postId,
+                { title, content, specie, location, condition, image: newImageName },
+                { new: true }
+              );
+  
+              if (!updatedPost)
+                return next(new ErrorModel("Error al actualizar el post", 422));
+              res.status(200).json(updatedPost);
+            }
+          );
+        }
+      }
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
+  
 
 /* 
     Delete a post
