@@ -115,12 +115,28 @@ const getPostsByLocation = async (req, res, next) => {
   };
 
 /* 
-    Get posts by pet type
+    Get posts by specie
     get: api/posts/specie/:specie
     unprotected route
 */
 
-
+const getPostsBySpecie = async (req, res, next) => {
+    try {
+      const { specie } = req.params;
+      console.log(specie)
+      const petPosts = await Post.find({ specie }).sort({ updatedAt: -1 });
+      if (!petPosts)
+        return next(
+          new ErrorModel(
+            "No se han encontrado posts de este tipo de mascota",
+            404
+          )
+        );
+      res.status(200).json(petPosts);
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
 /* 
     Get posts by condition
     get: api/posts/condition/:condition
