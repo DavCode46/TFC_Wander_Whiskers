@@ -280,3 +280,75 @@ const editUser = async (req, res, next) => {
     delete: api/users/:id
     PROTECTED ROUTE
 */
+
+
+const deleteUser = async (req, res, next) => {
+    try {
+      console.log("req.user.id", req.user.id);
+      const userId = req.params.id;
+      const posts = await Post.find({ author: userId });
+      posts.forEach(async (post) => {
+        if (post.image) {
+          const imagePath = path.join(__dirname, "..", "uploads", post.image);
+          fs.unlink(imagePath, (err) => {
+            if (err) {
+              return next(new ErrorModel(err));
+            }
+          });
+        }
+      });
+      await Post.deleteMany({ author: userId });
+      const userToDelete = await User.findById(userId);
+      console.log("usertodelete", userToDelete);
+      const user = await User.findById(req.user.id);
+      if (!userToDelete) {
+        return next(new ErrorModel("Usuario no encontrado", 404));
+      }
+      console.log(req.user.id, userToDelete.id, user.role, req.user.username);
+  
+      // Verificar permisos: el usuario actual debe ser el propietario del usuario a eliminar o un administrador
+      if (req.user.id !== userToDelete.id && req.user.username !== "admin") {
+        return next(
+          new ErrorModel("No tienes permisos para eliminar este usuario", 403)
+        );
+      }
+  
+      // Eliminar la imagen de perfil asociada si existe
+      if (userToDelete.profileImage) {
+        const profileImageName = userToDelete.profileImage;
+        fs.unlink(
+          path.join(__dirname, "..", "uploads", profileImageName),
+          async (err) => {
+            if (err) {
+              return next(new ErrorModel(err));
+            } else {
+              try {
+                // Eliminar el usuario de la base de datos
+                await User.findByIdAndDelete(req.params.id);
+                res.status(200).json({ msg: "Usuario eliminado" });
+              } catch (error) {
+                return next(new ErrorModel(error));
+              }
+            }
+          }
+        );
+      } else {
+        // Si el usuario no tiene imagen de perfil, solo elimina el usuario de la base de datos
+        await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({ msg: "Usuario eliminado" });
+      }
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
+  
+  export {
+    register,
+    login,
+    getUser,
+    getUsers,
+    changeImage,
+    editUser,
+    deleteUser,
+  };
+  
