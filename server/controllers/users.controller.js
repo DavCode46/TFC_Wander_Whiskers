@@ -157,7 +157,67 @@ const getUsers = async (req, res, next) => {
     PROTECTED ROUTE
 */
 
-
+const changeImage = async (req, res, next) => {
+    try {
+      if (!req.files.profileImage) {
+        return next(new ErrorModel("Por favor selecciona una imagen", 422));
+      }
+  
+      const user = await User.findById(req.user.id);
+  
+      if (user.profileImage) {
+        fs.unlink(
+          path.join(__dirname, "..", "uploads", user.profileImage),
+          (err) => {
+            if (err) {
+              return next(new ErrorModel(err));
+            }
+          }
+        );
+      }
+  
+      const { profileImage } = req.files;
+  
+      if (profileImage.size > 2000000) {
+        return next(
+          new ErrorModel("La imagen de perfil no puede superar los 2Mb")
+        );
+      }
+  
+      let fileName;
+      fileName = profileImage.name;
+      let splittedFilename = fileName.split(".");
+      let newFilename =
+        splittedFilename[0] +
+        uuid() +
+        "." +
+        splittedFilename[splittedFilename.length - 1];
+      profileImage.mv(
+        path.join(__dirname, "..", "uploads", newFilename),
+        async (err) => {
+          if (err) {
+            return next(new ErrorModel(err));
+          }
+  
+          const updatedprofileImage = await User.findByIdAndUpdate(
+            req.user.id,
+            { profileImage: newFilename },
+            { new: true }
+          );
+  
+          if (!updatedprofileImage) {
+            return next(
+              new ErrorModel("Error al cambiar la imagen de perfil", 422)
+            );
+          }
+          res.status(200).json(updatedprofileImage);
+        }
+      );
+    } catch (error) {
+      return next(new ErrorModel(error));
+    }
+  };
+  
 
 /* 
     EDIT USER PROFILE
