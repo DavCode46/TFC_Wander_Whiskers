@@ -121,7 +121,19 @@ const login = async (req, res, next) => {
     PROTECTED ROUTE
 */
 
-
+const getUser = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+  
+      const user = await User.findById(id).select("-password");
+      if (!user) return next(new ErrorModel("Usuario no encontrado", 404));
+  
+      res.status(200).json(user);
+    } catch (err) {
+      return next(new ErrorModel("Error al obtener el perfil del usuario", 422));
+    }
+  };
+  
 
 /* 
     GET USERS
