@@ -16,6 +16,8 @@ const authenticate = (req, res, next) => {
     } else {
         return next(new ErrorModel('No autorizado', 403))
     }
+
+    
 }
 
 export default authenticate;

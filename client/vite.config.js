@@ -13,6 +13,7 @@ export default defineConfig({
       '@components': resolvePath('src/components'),
       '@pages': resolvePath('src/pages'),
       '@images': resolvePath('src/images'),
+      '@context': resolvePath('src/context'),
     }
   },
   plugins: [react()]
