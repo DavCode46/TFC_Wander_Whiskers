@@ -60,8 +60,10 @@ const RegisterDrawer = () => {
   };
 
   const register = async (values) => {
+    console.log(values)
     const { username, email, password, confirmPassword } = values;
-    setError("");
+  
+    console.log(register)
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_URL}/users/register`,
@@ -80,9 +82,7 @@ const RegisterDrawer = () => {
       errorMessage();
     }
   };
-  const handleClickPassword = () => setShowPassword(!showPassword);
-  const handleClickConfirmPassword = () =>
-    setShowConfirmPassword(!showConfirmPassword);
+
 
   const handleSetError = () => {
     setError("");
@@ -108,14 +108,7 @@ const RegisterDrawer = () => {
             paddingBottom: 80,
           },
         }}
-        // extra={
-        //   <Space>
-        //     <Button onClick={onClose}>Cancelar</Button>
-        //     <Button className=" bg-color-btn  text-white">
-        //       Registrarse
-        //     </Button>
-        //   </Space>
-        // }
+        
       >
         <Form layout="vertical" onFinish={register}>
           <Row gutter={16}>
@@ -235,9 +228,9 @@ const RegisterDrawer = () => {
           <Form.Item>
           <Space>
             <Button onClick={onClose}>Cancelar</Button>
-            <Button className=" bg-color-btn  text-white">
+            <button type="submit" className=" bg-color-btn  text-white px-3 py-1 rounded-md">
               Registrarse
-            </Button>
+            </button>
           </Space>
            
           </Form.Item>

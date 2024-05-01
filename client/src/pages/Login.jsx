@@ -178,12 +178,12 @@ const Login = () => {
             </form>
             <small className="block mt-4">
               <span className="text-[.9rem]">¿Aún no tienes una cuenta?</span>{" "}
-              <Link
+              {/* <Link
                 to={"/register"}
                 className=" text-blue-400 hover:text-blue-500 hover:underline text-[.8rem]"
               >
-                {/* Regístrate */}
-              </Link>
+                Regístrate
+              </Link> */}
               <RegisterDrawer />
             </small>
           </div>
