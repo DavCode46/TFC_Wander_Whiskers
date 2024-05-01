@@ -474,7 +474,7 @@ import {
                               placeholder="Email"
                               pr="2rem"
                               borderRadius="none"
-                              borderTopRightRadius="md"
+                              bordertoprightradius="md"
                               value={email}
                               onChange={(e) => {
                                 setEmail(e.target.value);

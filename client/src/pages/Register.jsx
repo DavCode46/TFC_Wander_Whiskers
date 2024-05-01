@@ -137,8 +137,8 @@ const Register = () => {
                     name="email"
                     placeholder="Email"
                     pr="2rem"
-                    borderRadius="none"
-                    borderTopRightRadius="md"
+                    borderradius="none"
+                    bordertoprightradius="md"
                     _focus={{ outline: "none", border: "none" }}
                     fontSize={{ base: "sm", md: "md", lg: "md" }}
                     value={user.email}

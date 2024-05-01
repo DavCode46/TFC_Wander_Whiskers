@@ -107,8 +107,8 @@ const Login = () => {
                     name="email"
                     placeholder="Email"
                     pr="2rem"
-                    borderRadius="none"
-                    borderTopRightRadius="md"
+                    borderradius="none"
+                    bordertoprightradius="md"
                     _focus={{ outline: "none", border: "none" }}
                     fontSize={{ base: "sm", md: "md", lg: "md" }}
                     value={data.email}
@@ -135,8 +135,8 @@ const Login = () => {
                     placeholder="Contraseña"
                     name="password"
                     size="sm"
-                    borderRadius="none"
-                    borderTopRightRadius="md"
+                    borderradius="none"
+                    bordertoprightradius="md"
                     _focus={{ outline: "none", border: "none" }}
                     fontSize={{ base: "sm", md: "md", lg: "md" }}
                     value={data.password}
@@ -152,8 +152,8 @@ const Login = () => {
                       size="sm"
                       variant="unstyled"
                       onClick={handleClick}
-                      borderRadius="none"
-                      borderTopRightRadius="md"
+                      borderradius="none"
+                      bordertoprightradius="md"
                     >
                       {!show ? (
                         <FaRegEye className="icon" />
