@@ -160,7 +160,20 @@ const getPostsbyCondition = async (req, res, next) => {
     unprotected route
 */
 
-
+const getAuthorPosts = async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const author = await Post.find({ author: id }).sort({ updatedAt: -1 });
+      if (!author)
+        return next(
+          new ErrorModel("No se han encontrado posts de este autor", 404)
+        );
+      res.status(200).json(author);
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
+  
 
 /* 
     Update a post
