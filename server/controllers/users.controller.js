@@ -225,7 +225,55 @@ const changeImage = async (req, res, next) => {
     PROTECTED ROUTE
 */
 
-
+const editUser = async (req, res, next) => {
+    try {
+      const {
+        username,
+        email,
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      } = req.body;
+  
+      if (!username || !email || !currentPassword || !newPassword)
+        return next(new ErrorModel("Por favor, rellene todos los campos", 400));
+  
+      const user = await User.findById(req.user.id);
+      if (!user) return next(new ErrorModel("Usuario no encontrado", 404));
+  
+      const emailInUse = await User.findOne({ email });
+      if (emailInUse && emailInUse._id != user.id)
+        return next(new ErrorModel("El correo electrónico ya está en uso", 400));
+  
+      const validatePassword = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
+      if (!validatePassword)
+        return next(new ErrorModel("Contraseña incorrecta", 400));
+  
+      if (newPassword !== confirmNewPassword)
+        return next(new ErrorModel("Las contraseñas no coinciden", 400));
+  
+      const salt = await bcrypt.genSalt(12);
+      const hashedPassword = await bcrypt.hash(newPassword, salt);
+  
+      const newUserInformation = await User.findByIdAndUpdate(
+        req.user.id,
+        {
+          username,
+          email,
+          password: hashedPassword,
+        },
+        { new: true }
+      );
+  
+      return res.status(200).json(newUserInformation);
+    } catch (err) {
+      return next(new ErrorModel("Error al editar el perfil del usuario", 422));
+    }
+  };
+  
 
 /* 
     Delete a user
