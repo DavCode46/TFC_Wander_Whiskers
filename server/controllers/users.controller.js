@@ -20,7 +20,63 @@ import Post from "../models/Post.model.js";
 
     UNPROTECTED ROUTE
 */
-
+const register = async (req, res, next) => {
+    try {
+      const { username, email, password, confirmPassword } = req.body;
+      if (!username || !email || !password)
+        return next(new ErrorModel("Por favor, rellene todos los campos", 400));
+  
+      const lowerEmail = email.toLowerCase();
+  
+      const emailInUse = await User.findOne({ email: lowerEmail });
+  
+      if (emailInUse)
+        return next(new ErrorModel("El correo electrónico ya está en uso", 400));
+  
+      const passwordPattern =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      if (!passwordPattern.test(password.trim()))
+        return next(
+          new ErrorModel(
+            `<ul>
+                  <li>Al menos 8 caracteres de longitud</li>
+                  <li>Al menos una letra mayúscula</li>
+                  <li>Al menos una letra minúscula</li>
+                  <li>Al menos un caracter especial</li>
+            </ul>`,
+            400
+          )
+        );
+      if (password !== confirmPassword)
+        return next(new ErrorModel("Las contraseñas no coinciden", 400));
+  
+      const salt = await bcrypt.genSalt(12);
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const admin = await User.findOne({ role: "admin" });
+  
+      if (!admin && email == process.env.ADMIN_EMAIL) {
+        const user = new User({
+          username,
+          email: lowerEmail,
+          password: hashedPassword,
+          role: "admin",
+        });
+        await user.save();
+        res.status(201).json(`Usuario ${user.email} registrado con éxito`);
+      } else {
+        const user = new User({
+          username,
+          email: lowerEmail,
+          password: hashedPassword,
+        });
+        await user.save();
+        res.status(201).json(`Usuario ${user.email} registrado con éxito`);
+      }
+    } catch (err) {
+      return next(new ErrorModel("Registro fallido", 422));
+    }
+  };
+  
 
 
 /* 
