@@ -140,7 +140,16 @@ const getUser = async (req, res, next) => {
     GET: api/users/creators
     UNPROTECTED ROUTE    
 */
-
+const getUsers = async (req, res, next) => {
+    try {
+      const users = await User.find().select("-password");
+      if (!users) return next(new ErrorModel("No se encontraron usuarios", 404));
+  
+      res.status(200).json(users);
+    } catch (err) {
+      return next(new ErrorModel("Error al obtener los usuarios", 422));
+    }
+  };
 
 /* 
     CHANGE USER PROFILE IMAGE
