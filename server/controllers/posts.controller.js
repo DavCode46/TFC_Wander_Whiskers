@@ -83,7 +83,17 @@ const getAllPosts = async (req, res, next) => {
     get: api/posts/:id
     UNPROTECTED ROUTE
 */
-
+const getPost = async (req, res, next) => {
+    try {
+      const postId = req.params.id;
+      const post = await Post.findById(postId);
+      if (!post) return next(new ErrorModel("Post no encontrado", 404));
+      res.status(200).json(post);
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
+  
 
 /* 
     Get posts by location
