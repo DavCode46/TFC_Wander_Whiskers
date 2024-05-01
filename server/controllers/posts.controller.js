@@ -142,7 +142,17 @@ const getPostsBySpecie = async (req, res, next) => {
     get: api/posts/condition/:condition
     unprotected route
 */
-
+const getPostsbyCondition = async (req, res, next) => {
+    try {
+      const { condition } = req.params
+      const conditionPosts = await Post.find({ condition }).sort({updated: -1})
+      if(!conditionPosts) return next(ErrorModel("No se han encontrado posts ", 404))
+      res.status(200).json(conditionPosts)
+    } catch(err) {
+      next(new ErrorModel(err))
+    }
+  }
+  
 
 /* 
     Get posts by author
