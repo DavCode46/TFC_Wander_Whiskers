@@ -70,7 +70,14 @@ const createPost = async (req, res, next) => {
     UNPROTECTED ROUTE
 */
 
-
+const getAllPosts = async (req, res, next) => {
+    try {
+      const posts = await Post.find().sort({ updatedAt: -1 });
+      res.status(200).json(posts);
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
 /* 
     Get a post
     get: api/posts/:id
