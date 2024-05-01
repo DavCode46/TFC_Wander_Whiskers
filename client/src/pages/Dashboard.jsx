@@ -44,6 +44,15 @@ const Dashboard = () => {
     setFilteredInfo({});
   };
 
+  const truncateText = (text, maxLength) => {
+    if (text.length > maxLength) {
+      return text.substring(0, maxLength) + "...";
+    } else {
+      return text;
+    }
+  };
+  
+
   const columns = [
     {
       title: "Imagen",
@@ -68,11 +77,13 @@ const Dashboard = () => {
       filterSearch: true,
       onFilter: (value, record) => record.title === value,
       width: "20%",
+      render: (text) => truncateText(text, 25),
     },
     {
       title: "Descripción",
       dataIndex: "content",
       width: "20%",
+      render: (text) => truncateText(text, 50),
     },
     {
       title: "Localización",
