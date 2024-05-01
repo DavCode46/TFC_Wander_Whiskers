@@ -100,7 +100,19 @@ const getPost = async (req, res, next) => {
     get: api/posts/location/:location
     unprotected route
 */
-
+const getPostsByLocation = async (req, res, next) => {
+    try {
+      const { location } = req.params;
+      const locationPosts = await Post.find({ location }).sort({ updatedAt: -1 });
+      if (!locationPosts)
+        return next(
+          new ErrorModel("No se han encontrado posts en esta localización", 404)
+        );
+      res.status(200).json(locationPosts);
+    } catch (err) {
+      next(new ErrorModel(err));
+    }
+  };
 
 /* 
     Get posts by pet type
