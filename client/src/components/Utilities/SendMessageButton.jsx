@@ -1,8 +1,8 @@
 import { Button } from "@chakra-ui/react";
 
-import { BiChat } from "react-icons/bi";
+import { MessageOutlined } from "@ant-design/icons";
 
-const SendMessageButton = ({size}) => {
+const SendMessageButton = ({ size }) => {
   const handleSendMessage = () => {
     // Dirección de correo electrónico del destinatario
     const recipientEmail = "destinatario@example.com";
@@ -23,8 +23,14 @@ const SendMessageButton = ({size}) => {
   };
 
   return (
-    <Button flex="1" size={size} variant="ghost" leftIcon={<BiChat />} onClick={handleSendMessage}  _hover={{ bg: "rgba(177, 201, 239, .3)" , transition: "background-color .5s" }}>
-      Contactar
+    <Button
+      flex="1"
+      variant={"default"}
+      size="lg"
+      className="hover:text-gray-500"
+      onClick={handleSendMessage}
+    >
+      <MessageOutlined />
     </Button>
   );
 };

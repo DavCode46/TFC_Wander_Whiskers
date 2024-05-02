@@ -1,6 +1,6 @@
 import { Button } from "@chakra-ui/react";
 
-import { BiShareAlt } from "react-icons/bi";
+import { FaRegPaperPlane } from "react-icons/fa";
 
 const ShareButton = ({
   title,
@@ -33,12 +33,12 @@ const ShareButton = ({
     <Button
       onClick={handleClick}
       flex="1"
-      variant="ghost"
-      size={size}
-      leftIcon={<BiShareAlt />}
-      _hover={[{ bg: "rgba(177, 201, 239, .3)", transition: "background-color .5s"}]}
+      variant={'default'}
+      size='lg'
+      
+      className='hover:text-gray-500'
     >
-      Compartir
+      <FaRegPaperPlane />
     </Button>
   );
 };

@@ -62,45 +62,48 @@ const PostDetail = () => {
         </p>
       )}
       {post && (
-        <>
-         
-          <img
-            src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${
-              post.image
-            }`}
-            alt=""
-            className="w-full h-full mt-20 rounded-md md:w-[35rem]"
-          />
-
-          <div className="flex flex-col justify-around items-baseline">
-            <h1 className=" text-xl m-auto mt-4 mb-4">{post.title}</h1>
-
-            <div className="flex items-center gap-14">
+        <section>
+          <div className="max-w-full mt-[7rem] md:ml-[5rem]">
+            <div className=" px-5 py-3">
               <PostCreator authorId={post.author} createdAt={post.createdAt} />
-              <Link to={`/posts/location/${location}`}>
-                <small className="border py-2 px-3 rounded-md bg-color-btn text-white hover:bg-color-btnHover w-full whitespace-nowrap">
-                  {post.location}
-                </small>
-              </Link>
             </div>
-            <div className="flex justify-center items-center m-auto w-full mb-4 mt-4">
-              <SendMessageButton
-                size={{ base: "xs", md: "sm", lg: "sm", xl: "sm" }}
-              />
-              <CustomShareButton
-                size={{ base: "xs", md: "sm", lg: "sm", xl: "sm" }}
-                title={post.title}
-                url={`/post/${post.postId}/detail`}
-                className="contact-button"
-              />
-            </div>
+            <img
+              src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${
+                post.image
+              }`}
+              alt=""
+              className="w-full h-auto"
+            />
 
-            <p
-              dangerouslySetInnerHTML={{ __html: post.content }}
-              className="mb-5"
-            ></p>
+            <div className="flex items-center justify-between">
+              <div>
+                <SendMessageButton
+                  size={{ base: "xs", md: "sm", lg: "sm", xl: "sm" }}
+                />
+                <CustomShareButton
+                  size={{ base: "xs", md: "sm", lg: "sm", xl: "sm" }}
+                  title={post.title}
+                  url={`/post/${post.postId}/detail`}
+                  className="contact-button"
+                />
+              </div>
+              <div className="px-5">
+                <Link to={`/posts/location/${location}`}>
+                  <small className="border py-2 px-3 rounded-md bg-color-btn text-white hover:bg-color-btnHover w-full whitespace-nowrap">
+                    {post.location}
+                  </small>
+                </Link>
+              </div>
+            </div>
+            <div className="flex flex-col gap-5 px-5 w-full mt-5 mb-5 md:mt-[3rem] md:mb-[4rem]">
+            <h1 className=" font-bold">{post.title}</h1>
+              <p
+                dangerouslySetInnerHTML={{ __html: post.content }}
+                className="mb-5"
+              ></p>
+            </div>
           </div>
-        </>
+        </section>
       )}
     </section>
   );

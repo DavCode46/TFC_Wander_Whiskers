@@ -75,6 +75,7 @@ const Dashboard = () => {
       })),
       filterMode: "tree",
       filterSearch: true,
+      
       onFilter: (value, record) => record.title === value,
       width: "20%",
       render: (text) => truncateText(text, 25),
@@ -135,7 +136,7 @@ const Dashboard = () => {
           marginTop: 90,
         }}
       >
-        <Button onClick={clearFilters}>Eliminar filtros</Button>
+        <Button onClick={() => clearFilters()}>Eliminar filtros</Button>
         <Link to="/dashboard/users">
           <Button>Administrar usuarios</Button>
         </Link>
