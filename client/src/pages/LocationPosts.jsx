@@ -3,10 +3,10 @@ import FilterProvince from "@/components/FilterProvince";
 import Post from "@/components/Post";
 import { locationData } from "@/data/data";
 import { CircularProgress } from "@chakra-ui/react";
-import { Divider, Pagination } from "antd";
+import { Divider, Empty, Pagination } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const LocationPosts = () => {
   const [posts, setPosts] = useState([]);
@@ -136,7 +136,36 @@ const LocationPosts = () => {
           )}
         </div>
       ) : (
-        <h1 className="text-center">No se encontraron publicaciones</h1>
+        <div className="flex items-center justify-center h-screen">
+          <Empty
+            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            imageStyle={{
+              height: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "1rem",
+            }}
+            description={
+              <div>
+                <span className="mt-[3rem]">
+                  No se han encontrado{" "}
+                  <span className="text-color-btn">anuncios</span>
+                </span>
+                <div className="mt-[3rem]">
+                  {" "}
+                  {/* Espaciado entre el texto y el botón */}
+                  <Link
+                    className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                    to="/create-post"
+                  >
+                    Publicar anuncio
+                  </Link>
+                </div>
+              </div>
+            }
+          />
+        </div>
       )}
       <Pagination
         current={currentPage}

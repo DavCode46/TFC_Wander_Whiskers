@@ -158,11 +158,11 @@ const CreatePost = () => {
 
 
   return (
-    <section className="flex justify-center items-center h-screen">
+    <section className="flex justify-center items-center mb-[4rem] md:h-[70vh] lg:h-screen lg:mb-[10rem] ">
       <Box className="w-full md:w-3/5 lg:w-2/4 xl:w-1/3">
         {contextHolder}
-        <section className="create-post__section">
-          <div className="">
+        <section className="form">
+          <div className=" mt-[7rem]">
             <h2>Publicar anuncio</h2>
             {/* {error && (
               <p className=" bg-red-400 rounded-md text-white text-medium py-2 block mb-2 text-center">

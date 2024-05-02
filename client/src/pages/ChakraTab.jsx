@@ -27,7 +27,7 @@ import DeletePost from "./DeletePost";
 import { CheckOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 
 import { UploadOutlined } from "@ant-design/icons";
-import { Avatar, Image, Button, message, Upload } from "antd";
+import { Avatar, Image, Button, message, Upload, Empty } from "antd";
 import DeleteUser from "./DeleteUser";
 
 const ChakraTab = () => {
@@ -87,7 +87,7 @@ const ChakraTab = () => {
       setEmail(email);
       setProfileImage(profileImage);
       console.log(res.data);
-      console.log('id', currentUser.id)
+      console.log("id", currentUser.id);
     };
     fetchUser();
   }, []);
@@ -112,7 +112,7 @@ const ChakraTab = () => {
       if (res.status === 200) {
         success();
         setTimeout(() => {
-          navigate('/logout')
+          navigate("/logout");
         }, 1000);
       }
     } catch (err) {
@@ -262,7 +262,6 @@ const ChakraTab = () => {
     });
   };
 
-
   return (
     <section>
       {contextHolder}
@@ -275,7 +274,10 @@ const ChakraTab = () => {
             }/uploads/${profileImage}`}
           />
           <div className="flex justify-center items-center">
-            <DeleteUser userID={currentUser.id} text='Eliminar perfil de usuario'/>
+            <DeleteUser
+              userID={currentUser.id}
+              text="Eliminar perfil de usuario"
+            />
           </div>
           <div className="flex flex-col">
             <Upload {...props}>
@@ -404,19 +406,43 @@ const ChakraTab = () => {
                   })}
                 </div>
               ) : (
-                <h2
-                  className="text-center mb-[15vh] mt-10"
-                  aria-label="No posts"
-                >
-                  No se ha encontrado ningún post
-                </h2>
+                <div className="flex items-center justify-center md:min-h-[40rem]">
+                  <Empty
+                    image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                    imageStyle={{
+                      height: 100,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginBottom: "1rem",
+                    }}
+                    description={
+                      <div>
+                        <span className="mt-[3rem]">
+                          No se han encontrado{" "}
+                          <span className="text-color-btn">anuncios</span>
+                        </span>
+                        <div className="mt-[3rem]">
+                          {" "}
+                          {/* Espaciado entre el texto y el botón */}
+                          <Link
+                            className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                            to="/create-post"
+                          >
+                            Publicar anuncio
+                          </Link>
+                        </div>
+                      </div>
+                    }
+                  />
+                </div>
               )}
             </section>
 
             {/* <ProfilePosts /> */}
           </TabPanel>
           <TabPanel>
-            <Center h="100vh">
+            <Center className=" h-[35rem] md:h-[50vh] md:mt-[5rem] lg:mt-[8rem]">
               <Box className="w-full md:w-3/5">
                 <section>
                   <div>

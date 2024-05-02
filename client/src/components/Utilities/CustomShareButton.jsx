@@ -34,8 +34,7 @@ const ShareButton = ({
       onClick={handleClick}
       flex="1"
       variant={'default'}
-      size='lg'
-      
+      size='lg'     
       className='hover:text-gray-500'
     >
       <FaRegPaperPlane />

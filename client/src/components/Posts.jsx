@@ -2,11 +2,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "@components/Post";
 import FilterProvince from "@components/FilterProvince";
-import { Pagination } from "antd";
+import { Button, Empty, Pagination } from "antd";
 import { Divider } from "antd";
 import { locationData } from "@/data/data.js";
 import { CircularProgress } from "@chakra-ui/react";
 import CustomSearch from "./CustomSearch";
+import { Link } from "react-router-dom";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -89,7 +90,7 @@ const Posts = () => {
 
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
-       <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+      <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
         <div className="md:order-1">
           <CustomSearch onSearch={handleSearch} />
         </div>
@@ -138,7 +139,36 @@ const Posts = () => {
           )}
         </div>
       ) : (
-        <h1 className="text-center">No se encontraron publicaciones</h1>
+        <div className="flex items-center justify-center h-screen">
+          <Empty
+            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+            imageStyle={{
+              height: 100,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: "1rem",
+            }}
+            description={
+              <div>
+                <span className="mt-[3rem]">
+                  No se han encontrado{" "}
+                  <span className="text-color-btn">anuncios</span>
+                </span>
+                <div className="mt-[3rem]">
+                  {" "}
+                  {/* Espaciado entre el texto y el botón */}
+                  <Link
+                    className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                    to="/create-post"
+                  >
+                    Publicar anuncio
+                  </Link>
+                </div>
+              </div>
+            }
+          />
+        </div>
       )}
       <Pagination
         current={currentPage}

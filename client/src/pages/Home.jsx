@@ -4,7 +4,7 @@ const Home = () => {
   
 
   return (
-    <div>
+    <div className='sm:ml-[3rem]'>
       <Hero />
       <HomeFound />
     </div>
