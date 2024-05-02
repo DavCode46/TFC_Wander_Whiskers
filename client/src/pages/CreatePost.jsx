@@ -185,7 +185,7 @@ const CreatePost = () => {
                     placeholder="Nombre de la mascota"
                     size="sm"
                     _focus={{ outline: "none", border: "none" }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value);
@@ -199,7 +199,7 @@ const CreatePost = () => {
                   <Select
                     size="sm"
                     name="condition"
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     _focus={{ outline: "none", border: "none" }}
                     value={condition}
                     onChange={(e) => {
@@ -217,7 +217,7 @@ const CreatePost = () => {
                   <Select
                     size="sm"
                     name="breed"
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     _focus={{ outline: "none", border: "none" }}
                     value={specie}
                     onChange={(e) => {
@@ -248,7 +248,7 @@ const CreatePost = () => {
                     width="100%"
                     size="sm"
                     _focus={{ outline: "none", border: "none" }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     aria-label="Teléfono de contacto"
                     autoComplete="both"
                   />
@@ -260,7 +260,7 @@ const CreatePost = () => {
                       handleProvinceChange(e);
                       handleSetError()
                     }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     _focus={{ outline: "none", border: "none" }}
                   >
                     <option value="province">Provincia</option>
@@ -287,7 +287,7 @@ const CreatePost = () => {
                     width="100%"
                     size="sm"
                     _focus={{ outline: "none", border: "none" }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     aria-label="Email de contacto"
                     autoComplete="both"
                   />
@@ -301,7 +301,7 @@ const CreatePost = () => {
                     resize="none"
                     rows={6}
                     _focus={{ outline: "none", border: "none" }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
+                    fontSize='sm'
                     value={content}
                     onChange={(e) => {
                       setContent(e.target.value);
@@ -318,7 +318,7 @@ const CreatePost = () => {
                       Haz clic o arrastra archivos a esta área para cargarlos.
                     </p>
                     <p className="ant-upload-hint">
-                      Soporta archivos únicos o múltiples. No se permiten
+                      Solo soporta archivos únicos. No se permiten
                       archivos de más de 2MB.
                     </p>
                   </Dragger>

@@ -38,7 +38,7 @@ const locationData = [
       },
       {
         label: "Almería",
-        value: "alAlmeríameria",
+        value: "Almería",
       },
       {
         label: "Asturias",
