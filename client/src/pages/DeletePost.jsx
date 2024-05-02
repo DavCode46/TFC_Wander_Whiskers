@@ -98,7 +98,7 @@ const DeletePost = ({ postID: id }) => {
         onConfirm={deletePost}
       >
         <Button danger icon={<DeleteOutlined />}>
-          Eliminar
+          <div className="hidden md:inline">Eliminar</div>
         </Button>
       </Popconfirm>
     </>

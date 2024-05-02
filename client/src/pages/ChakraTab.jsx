@@ -360,7 +360,7 @@ const ChakraTab = () => {
 
             <section>
               {posts.length ? (
-                <div className=" w-full md:w-[80%] m-auto grid lg:grid-cols-2 lg:items-center lg:gap-4">
+                <div className=" w-full md:w-[80%] m-auto grid xl:grid-cols-2 lg:items-center lg:gap-4">
                   {posts.map((post, index) => {
                     return (
                       <article
@@ -386,15 +386,15 @@ const ChakraTab = () => {
                                   icon={<EyeOutlined />}
                                   className="text-white"
                                 >
-                                  Ver
+                                  <div className="hidden md:inline">Ver</div>
                                 </Button>
                               </Link>
                               <Link to={`/posts/${post._id}/edit`}>
                                 <Button
-                                  icon={<EditOutlined />}
+                                  icon={<EditOutlined  />}
                                   className="text-white"
                                 >
-                                  Editar
+                                  <div className="hidden md:inline">Editar</div>
                                 </Button>
                               </Link>
                               <DeletePost postID={post._id} />
