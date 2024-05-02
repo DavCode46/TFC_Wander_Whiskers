@@ -93,7 +93,10 @@ const PostsBySpecie = () => {
 
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
-      <div className="flex items-center justify-between">
+       <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+        <div className="md:order-1">
+          <CustomSearch onSearch={handleSearch} />
+        </div>
         <FilterProvince
           options={locationData.map(({ key, label }) => ({
             label,
@@ -103,7 +106,6 @@ const PostsBySpecie = () => {
             handleFilterChange(selectedOptions)
           }
         />
-         <CustomSearch onSearch={handleSearch}/>
       </div>
       <Divider />
       {paginatedPosts.length ? (

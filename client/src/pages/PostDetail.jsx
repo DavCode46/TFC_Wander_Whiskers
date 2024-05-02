@@ -88,7 +88,7 @@ const PostDetail = () => {
                 />
               </div>
               <div className="px-5">
-                <Link to={`/posts/location/${location}`}>
+                <Link to={`/posts/location/${post.location}`}>
                   <small className="border py-2 px-3 rounded-md bg-color-btn text-white hover:bg-color-btnHover w-full whitespace-nowrap">
                     {post.location}
                   </small>

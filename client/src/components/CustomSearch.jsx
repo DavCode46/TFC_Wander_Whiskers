@@ -27,12 +27,12 @@ const CustomSearch = ({ onSearch }) => {
   return (
     <div className="flex items-center border border-gray-300 rounded-md shadow-md overflow-hidden">
       <input
-        className="px-4 py-2 flex-1 text-gray-700 focus:outline-none w-[20rem]"
+        className="px-4 py-2 flex-1 text-gray-700 focus:outline-none"
         type="text"
         value={searchTerm}
         onChange={handleInputChange}
         onKeyDown={handleKeyPress}
-        placeholder="Buscar por ubicación"
+        placeholder="Buscar"
       />
       <button className="px-4 py-2 bg-color-btn text-white hover:bg-color-btnHover focus:outline-none">
         Buscar
