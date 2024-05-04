@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Space, Table } from "antd";
 import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "axios";
-
 import { Link } from "react-router-dom";
-
 import DeletePost from "./DeletePost";
 
 const Dashboard = () => {
@@ -51,7 +49,6 @@ const Dashboard = () => {
       return text;
     }
   };
-  
 
   const columns = [
     {
@@ -114,10 +111,12 @@ const Dashboard = () => {
       render: (text, record) => (
         <Space size="middle">
           <Link to={`/post/${record._id}/detail`}>
-            <Button type='dashed' icon={<EyeOutlined />}>Ver</Button>
+            <Button type="dashed" icon={<EyeOutlined />}>
+              Ver
+            </Button>
           </Link>
           <Link to={`/posts/${record._id}/edit`}>
-            <Button  icon={<EditOutlined />} className="">
+            <Button icon={<EditOutlined />} className="">
               Editar
             </Button>
           </Link>

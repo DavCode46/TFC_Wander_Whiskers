@@ -97,12 +97,12 @@ const CreatePost = () => {
     post.set("specie", specie);
     post.set("condition", condition);
     post.set("image", image);
-    console.log(image);
-    console.log(title);
-    console.log(content);
-    console.log(selectedProvince);
-    console.log(condition);
-    console.log(specie);
+    console.log('image', image);
+    console.log('title', title);
+    console.log('content', content);
+    console.log('province', selectedProvince);
+    console.log('condition', condition);
+    console.log('specie', specie);
 
     try {
       const res = await axios.post(

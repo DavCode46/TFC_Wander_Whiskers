@@ -17,7 +17,8 @@ import { message, Input } from "antd";
 import { UserContext } from "@/context/userContext";
 
 import axios from "axios";
-import RegisterDrawer from "@/components/RegisterDrawer";
+
+import UserDrawer from "@/components/UserDrawer";
 
 const Login = () => {
   const [show, setShow] = useState(true);
@@ -184,7 +185,7 @@ const Login = () => {
               >
                 Regístrate
               </Link> */}
-              <RegisterDrawer />
+              <UserDrawer isRegistering openButton='Registrarse'/>
             </small>
           </div>
         </section>

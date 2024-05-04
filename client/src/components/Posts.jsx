@@ -9,6 +9,8 @@ import { CircularProgress } from "@chakra-ui/react";
 import CustomSearch from "./CustomSearch";
 import { Link } from "react-router-dom";
 
+import CreatePostDrawer from "./CreatePostDrawer";
+
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -103,6 +105,7 @@ const Posts = () => {
             handleFilterChange(selectedOptions)
           }
         />
+        <CreatePostDrawer />
       </div>
 
       <Divider />
