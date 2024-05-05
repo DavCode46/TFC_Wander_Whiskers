@@ -11,6 +11,7 @@ import {
   ProfileOutlined,
   MenuOutlined,
   CloseOutlined,
+  ShoppingCartOutlined
 } from "@ant-design/icons";
 
 import { GiArchiveRegister } from "react-icons/gi";
@@ -20,7 +21,8 @@ import {
   MdOutlineImportContacts,
   MdOutlinePostAdd,
   MdContactSupport,
-  MdDashboard 
+  MdDashboard,
+ 
 } from "react-icons/md";
 import { BsSignpostSplit } from "react-icons/bs";
 
@@ -34,6 +36,7 @@ const { SubMenu } = Menu;
 
 import { UserContext } from "../context/userContext";
 import axios from "axios";
+import { CartContext } from "@/context/CartContext";
 
 const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -43,6 +46,12 @@ const CustomLayout = () => {
   const [role, setRole] = useState('user');
 
   const { currentUser } = useContext(UserContext);
+  const [cart, setCart] = useContext(CartContext)
+
+  const quantity = cart.reduce((acc, current) => {
+    return acc + current.quantity;
+  }, 0);
+  
   const token = currentUser?.token;
 
   // console.log('usuario', currentUser.profileImage)
@@ -161,11 +170,17 @@ const CustomLayout = () => {
           ],
         },
         {
+          key: 'cart',
+          label: <Link to="/cart">Carrito ({quantity})</Link>,
+          icon: <ShoppingCartOutlined />,
+        },
+        {
           key: "dashboard",
           label: <Link to="/dashboard">Dashboard</Link>,
           icon: <MdDashboard />,
           hidden:!isLoggedIn || role !== 'admin',
-        }
+        },
+        
       ],
     },
   ];

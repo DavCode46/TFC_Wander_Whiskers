@@ -26,6 +26,8 @@ import UserProvider from "./context/userContext"; // Importa UserProvider desde 
 import PostCreator from "./components/PostCreator";
 import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
+import { CartProvider } from "./context/CartContext";
+import CartPage from "./pages/CartPage";
 // import ProfilePosts from "./components/ProfilePosts";
 
 const router = createBrowserRouter([
@@ -34,7 +36,9 @@ const router = createBrowserRouter([
     element: (
       <ChakraProvider theme={theme}>
         <UserProvider>
-          <CustomLayout />
+          <CartProvider>
+            <CustomLayout />
+          </CartProvider>
         </UserProvider>
       </ChakraProvider>
     ),
@@ -54,10 +58,11 @@ const router = createBrowserRouter([
       { path: "/logout", element: <Logout /> },
       { path: "/contact", element: <Contact /> },
       { path: "/help", element: <Help /> },
-      { path: "posts/species/:specie", element: <PostsBySpecie />},
+      { path: "posts/species/:specie", element: <PostsBySpecie /> },
       { path: "posts/users/:id", element: <Creator /> },
       { path: "/dashboard", element: <Dashboard /> },
-      { path: "/dashboard/users", element: <UsersManagement />}
+      { path: "/dashboard/users", element: <UsersManagement /> },
+      { path: "/cart", element: <CartPage /> },
       // { path: "posts/users/:id", element: <ProfilePosts /> }
     ],
   },

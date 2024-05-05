@@ -1,6 +1,3 @@
-
-
-
 const locationData = [
   {
     label: "Especie",
@@ -245,7 +242,6 @@ const accordionData = [
     answer:
       "Si encuentras a un animal herido, evita manipularlo directamente si es peligroso o si no tienes experiencia en el manejo de animales salvajes. En su lugar, contacta con un refugio de animales o una organización de rescate para obtener asesoramiento sobre cómo proceder y para que puedan enviar a alguien capacitado para ayudar al animal.",
   },
-  
 ];
 
 const contactOptions = [
@@ -258,12 +254,44 @@ const contactOptions = [
 
 const PET_TYPE = ["Perro", "Gato", "Otro"];
 
-const CONDITION = ["Encontrado", "Perdido", "En adopción"]
+const CONDITION = ["Encontrado", "Perdido", "En adopción"];
 
-export {
-  locationData,
-  accordionData,
-  contactOptions,
-  PET_TYPE,
-  CONDITION
-};
+const servicesData = [
+  {
+    id: 0,
+    title: "Mensual",
+    description: "Suscripción mensual",
+    price: 20.99,
+    features: [
+      "Acceso a la base de datos de animales perdidos y encontrados",
+      "Notificaciones en tiempo real",
+      "Soporte prioritario",
+    ],
+  },
+  {
+    id: 1,
+    title: "Anual",
+    description: "Suscripción anual",
+    price: 251.88,
+    discountPrice: 200,
+    features: [
+      "Acceso a la base de datos de animales perdidos y encontrados",
+      "Notificaciones en tiempo real",
+      "Soporte prioritario",
+      "Descuento del 10% en servicios adicionales",
+    ],
+  },
+  {
+    id: 2,
+    title: "Protectoras",
+    description: "Suscripción especial protectoras",   
+    features: [
+      "Acceso a la base de datos de animales perdidos y encontrados",
+      "Notificaciones en tiempo real",
+      "Soporte prioritario",
+      "Descuento del 30% en servicios adicionales",
+    ],
+  },
+];
+
+export { locationData, accordionData, contactOptions, PET_TYPE, CONDITION, servicesData };
