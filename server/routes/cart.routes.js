@@ -6,10 +6,11 @@ import authenticate from '../middleware/auth.middleware.js';
 
 const router = Router()
 
-router.get('cart', cartCtrl.getProductsCart)
-router.post('cart', authenticate, cartCtrl.addProductCart)
-router.put('cart/:id',authenticate, cartCtrl.updateProductCart)
-router.delete('cart/:id',authenticate, cartCtrl.deleteProductCart)
+router.get('/', cartCtrl.getProductsCart)
+router.post('/:id', cartCtrl.addProductCart)
+router.put('/:id',authenticate, cartCtrl.updateProductCart)
+router.delete('/:id',authenticate, cartCtrl.deleteProductCart)
+router.post('/checkout', cartCtrl.checkout)
 
 export default router;
 
