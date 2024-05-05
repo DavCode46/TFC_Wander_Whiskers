@@ -7,6 +7,8 @@ import upload from "express-fileupload";
 
 import userRoutes from "./routes/user.routes.js";
 import postsRoutes from "./routes/posts.routes.js";
+import cartRoutes from './routes/cart.routes.js'
+import productRoutes from './routes/products.routes.js'
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 
 import { fileURLToPath } from 'url';
@@ -24,6 +26,8 @@ app.use("/uploads", express.static(__dirname + "/uploads"));
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postsRoutes);
+app.use('/api/users/cart', cartRoutes)
+app.use('/api/products', productRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
