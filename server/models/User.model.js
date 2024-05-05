@@ -22,6 +22,10 @@ const userSchema = new Schema({
     profileImage: {
         type: String
     },
+    cart: {
+        type: Schema.Types.ObjectId,
+        ref: "Cart"
+    }
     /* POSTS */
 }, { timestamps: true });
 
