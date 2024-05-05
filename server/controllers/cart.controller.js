@@ -2,33 +2,38 @@ import Cart from "../models/Cart.model.js";
 import User from "../models/User.model.js";
 import ErrorModel from "../models/Error.model.js";
 import Product from "../models/Products.model.js";
+
 import Stripe from "stripe";
-const stripe = new Stripe(import.meta.env.SECRET_STRIPE_KEY);
+
+const stripe = new Stripe(process.env.SECRET_STRIPE_KEY);
 
 const getProductsCart = async (req, res, next) => {
   // Get the products in the cart
   try {
-    const productsCart = await Cart.find();
-    if (productsCart) return res.status(200).json(productsCart);
+    const userId = req.params.id;
+    console.log(userId);
+    const productsCart = await Cart.find({user: userId});
+    console.log('productsCart', productsCart)
+    if (!productsCart)
+      return next(new ErrorModel("No hay productos en el carro"));
+    res.status(200).json(productsCart);
   } catch (err) {
-    return next(ErrorModel(err));
+    return next(new ErrorModel(err));
   }
 };
 
-
-
 const addProductCart = async (req, res, next) => {
   // Extraer el ID del usuario autenticado desde la solicitud
-  console.log('req.user', req.user)
+  console.log("req.user", req.user);
   const userId = req.params.id;
-console.log('userId', userId)
+  console.log("userId", userId);
   // Extraer los detalles del producto del cuerpo de la solicitud
   const { name, image, quantity, price } = req.body;
 
   try {
     // Buscar el usuario por su ID
     const user = await User.findById(userId);
-    console.log(user)
+    console.log(user);
 
     if (!user) {
       return next(new ErrorModel("Usuario no encontrado"));
@@ -40,8 +45,8 @@ console.log('userId', userId)
       image,
       quantity,
       price,
+      user,
     });
-
 
     // Guardar el producto en el carrito del usuario
     user.cart.push(newProduct);
@@ -90,12 +95,10 @@ const updateProductCart = async (req, res, next) => {
     await user.save();
 
     // Responder con el producto actualizado en el carrito
-    res
-      .status(200)
-      .json({
-        message: "Producto actualizado en el carrito",
-        product: user.cart[productIndex],
-      });
+    res.status(200).json({
+      message: "Producto actualizado en el carrito",
+      product: user.cart[productIndex],
+    });
   } catch (error) {
     // Manejar errores
     console.error(error);
@@ -106,7 +109,7 @@ const updateProductCart = async (req, res, next) => {
 const deleteProductCart = async (req, res, next) => {
   // Extraer el ID del usuario autenticado desde la solicitud
   const userId = req.user.id;
- 
+
   // Extraer el ID del producto que se va a eliminar del cuerpo de la solicitud
   const productId = req.params.productId;
 
@@ -136,8 +139,8 @@ const deleteProductCart = async (req, res, next) => {
 };
 
 const checkout = async (req, res, next) => {
-  const  userId  = req.body.userId; // Obtener el ID del usuario desde la solicitud
-  console.log('user id', userId)
+  const userId = req.body.userId; // Obtener el ID del usuario desde la solicitud
+  console.log("user id", userId);
   try {
     // Obtener el carrito del usuario
     const user = await User.findById(userId).populate("cart");
@@ -145,7 +148,7 @@ const checkout = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
-console.log('carrito de usuario', user.cart)
+    console.log("carrito de usuario", user.cart);
     // Crear un array de productos para el pago
     const lineItems = user.cart.map((product) => ({
       price_data: {
@@ -180,15 +183,14 @@ console.log('carrito de usuario', user.cart)
     res.status(200).json({ redirectUrl: session.url });
   } catch (error) {
     console.error(error);
-    return next(new ErrorModel(error))
+    return next(new ErrorModel(error));
   }
 };
-
 
 export {
   getProductsCart,
   addProductCart,
   updateProductCart,
   deleteProductCart,
-  checkout
+  checkout,
 };
