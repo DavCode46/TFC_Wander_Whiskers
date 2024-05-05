@@ -36,3 +36,5 @@ connect(process.env.MONGO_URI)
   )
   .catch((error) => console.error(error));
 
+
+  /*  --env-file .env  */
