@@ -28,6 +28,9 @@ import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/CartPage";
+import OrderPage from "./pages/OrderPage";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancel from "./pages/CheckoutCancel";
 // import ProfilePosts from "./components/ProfilePosts";
 
 const router = createBrowserRouter([
@@ -63,6 +66,9 @@ const router = createBrowserRouter([
       { path: "/dashboard", element: <Dashboard /> },
       { path: "/dashboard/users", element: <UsersManagement /> },
       { path: "/cart", element: <CartPage /> },
+      { path: "/cart/order/:id", element: <OrderPage />},
+      { path: "/checkout/success", element: <CheckoutSuccess />},
+      { path: "/checkout/cancel", element: <CheckoutCancel />},
       // { path: "posts/users/:id", element: <ProfilePosts /> }
     ],
   },

@@ -10,7 +10,7 @@ import postsRoutes from "./routes/posts.routes.js";
 import cartRoutes from './routes/cart.routes.js'
 import productRoutes from './routes/products.routes.js'
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
-
+import Product from './models/Products.model.js'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -40,5 +40,50 @@ connect(process.env.MONGO_URI)
   )
   .catch((error) => console.error(error));
 
+//   const servicesData = [
+//     {
+//       name: "Mensual",
+//       description: "Suscripción mensual",
+//       price: 20.99,
+//       features: [
+//         "Acceso a la base de datos de animales perdidos y encontrados",
+//         "Notificaciones en tiempo real",
+//         "Soporte prioritario",
+//       ],
+//     },
+//     {
+//       name: "Anual",
+//       description: "Suscripción anual",
+//       price: 251.88,
+//       discountPrice: 200,
+//       features: [
+//         "Acceso a la base de datos de animales perdidos y encontrados",
+//         "Notificaciones en tiempo real",
+//         "Soporte prioritario",
+//         "Descuento del 10% en servicios adicionales",
+//       ],
+//     },
+//     {
+//       name: "Protectoras",
+//       description: "Suscripción especial protectoras",   
+//       features: [
+//         "Acceso a la base de datos de animales perdidos y encontrados",
+//         "Notificaciones en tiempo real",
+//         "Soporte prioritario",
+//         "Descuento del 30% en servicios adicionales",
+//       ],
+//     },
+//   ];
 
-  /*  --env-file .env  */
+
+// async function insertProducts(products) {
+//   try {
+//     // Insertar todos los productos en la base de datos de una vez
+//     await Product.insertMany(products);
+//     console.log('Productos insertados correctamente.');
+//   } catch (error) {
+//     console.error('Error al insertar productos:', error);
+//   } 
+// }
+
+// insertProducts(servicesData);

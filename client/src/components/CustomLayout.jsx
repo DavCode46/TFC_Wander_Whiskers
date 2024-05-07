@@ -63,7 +63,7 @@ const CustomLayout = () => {
 
   useEffect(() => {
     setIsLoggedIn(currentUser !== null);
-  }, [currentUser]);
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {

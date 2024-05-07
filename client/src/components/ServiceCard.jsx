@@ -1,90 +1,91 @@
-import React, { useContext } from "react";
-import { servicesData } from "@/data/data";
+import React, { useContext, useEffect, useState, useId } from "react";
+// import { servicesData } from "@/data/data";
 import { Button } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { CartContext } from "@/context/CartContext";
+import axios from "axios";
+import { UserContext } from "@/context/userContext";
 
 const ServiceCard = () => {
+  const [cart, setCart] = useContext(CartContext);
+  const [loading, setLoading] = useState('')
+  const { currentUser } = useContext(UserContext);
+  const [products, setProducts] = useState([])
+  const id = useId()
 
-  const [cart, setCart] = useContext(CartContext)
-
-  const addToCart = (service) => {
-    setCart((currentItems) => {
-      const isItemInCart = currentItems.find((item) => item.id === service.id)
-      if(isItemInCart) {
-        return currentItems.map((item) => item.id === service.id ? {...item, quantity: item.quantity + 1} : item)
-      } else {
-        return [...currentItems, {...service, quantity: 1}]
-        // return [...currentItems, {id, quantity: 1, price}]
+  useEffect(() => {
+    const fetchingProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_REACT_APP_URL}/products`
+        );
+        setProducts(res?.data);
+      } catch (err) {
+        console.log(err);
       }
-    })
-  }
+      setLoading(false);
+    };
+    fetchingProducts();
+  })
 
-  const removeFromCart = (id) => {
-    setCart((currentItems) => {
-      // return currentItems.reduce((acc, item) => {
-      //   if(item.id === id) {
-      //     if(item.quantity === 1) return acc
-      //     return [...acc, {...item, quantity: item.quantity - 1}]
-      //   } else {
-      //     return [...acc, item]
-      //   }
-      // }, [])
+  const addToCart = async (service) => {
+    try {
+      const { _id, name, price, description } = service; // Extraer los campos necesarios del servicio
+      const data = {
+        productId: _id,
+        name,
+        description,
+        price,
+        // quantity: 1, // Por defecto, agregamos una cantidad de 1 al carrito
+      };
+      console.log('data', data)
+      const res = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_URL}/users/cart/add-product/${currentUser.id}`,
+        data
+      );
+      console.log("add to cart res", res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
-      if(currentItems.find((item) => item.id === id)?.quantity === 1) {
-        return currentItems.filter((item) => item.id !== id)
-      } else {
-        return currentItems.map((item) => {
-          if(item.id === id) {
-            return {...item, quantity: item.quantity - 1}
-          } else {
-            return item
-          }
-        })
-      }
-    })
-  }
 
-  // const getQuantityByProduct = (id) => {
-  //   return cart.find((item) => item.id === id)?.quantity || 0
-  // }
-
-  // getQuantityByProduct(id)
 
   return (
     <div className="flex flex-col lg:flex-row sm:ml-[2rem] items-center justify-center gap-[2rem] lg:ml-[3rem]">
-      {servicesData.map((service) => (
+      {products.map((product) => (
         <div
-          key={service.id}
+          key={product._id}
           className="w-[12rem] max-lg:w-full min-h-[38rem] px-6 border border-n-6 rounded-[2rem] lg:w-auto py-8 my-4 [&>h4]:odd:text-color-btn  [&>h4]:even:text-[#FFC876] mb-[3rem]"
         >
-          <h4 className="text-[2rem] mb-4">{service.title}</h4>
+          <h4 className="text-[2rem] mb-4">{product.name}</h4>
 
           <p className="min-h-[3rem] text-[1.2rem] mb-3 text-color-dark">
-            {service.description}
+            {product.description}
           </p>
 
           <div className="flex items-center h-[5.5rem] mb-6">
-            {service.price && (
+            {product.price && (
               <div className="flex flex-col">
                 <div
                   className={`${
-                    service.title == "Anual" &&
-                    "line-through text-[1.5rem] text-red-500 flex"
+                    product.name == "Anual" &&
+                    "line-through text-[1rem] text-red-500 flex"
                   } text-[4rem] leading-none font-bold flex items-center`}
                 >
-                  {service.price}
-                <div className="text-xl">€</div>
+                  {product.price}
+                  <div className="text-xl">€</div>
                 </div>
 
                 <div>
-                  {service.discountPrice && (
+                  {product.discountPrice && (
                     <div
                       className={
-                        "text-[4rem] leading-none font-bold flex items-center text-xl "
+                        "text-[4rem] leading-none font-bold flex items-center"
                       }
                     >
-                      {service.discountPrice}
+                      {product.discountPrice}
                       <div className="text-xl">€</div>
                     </div>
                   )}
@@ -97,13 +98,13 @@ const ServiceCard = () => {
             className="w-full mb-6"
             // href={!service.price && "mailto:davidblanco1993@gmail.com"}
             // white={!!service.price}
-            onClick={() => addToCart(service)}
+            onClick={() => addToCart(product)}
           >
-            {service.price ? "Subscribirse" : "Solicitar información"}
+            {product.price ? "Subscribirse" : "Solicitar información"}
           </Button>
 
           <ul>
-            {service.features.map((feature, index) => (
+            {product.features.map((feature, index) => (
               <li
                 key={index}
                 className="flex items-start py-5 border-t border-n-6"

@@ -22,6 +22,9 @@ const userSchema = new Schema({
     profileImage: {
         type: String
     },
+    subscriptionId: {
+        type: String
+    },
     cart: [{
         type: Schema.Types.ObjectId,
         ref: "Cart"

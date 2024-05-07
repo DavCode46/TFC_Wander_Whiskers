@@ -7,10 +7,10 @@ import authenticate from '../middleware/auth.middleware.js';
 const router = Router()
 
 router.get('/:id', cartCtrl.getProductsCart)
-router.post('/:id', cartCtrl.addProductCart)
-router.put('/:id',authenticate, cartCtrl.updateProductCart)
-router.delete('/:id',authenticate, cartCtrl.deleteProductCart)
-router.post('/checkout', cartCtrl.checkout)
+router.post('/add-product/:id', cartCtrl.addProductCart)
+router.put('/update-cart/:id',authenticate, cartCtrl.updateProductCart)
+router.delete('/:userId/:productId',authenticate, cartCtrl.deleteProductCart)
+router.post('/checkout/:id',authenticate, cartCtrl.checkout)
 
 export default router;
 

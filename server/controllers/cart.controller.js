@@ -2,18 +2,31 @@ import Cart from "../models/Cart.model.js";
 import User from "../models/User.model.js";
 import ErrorModel from "../models/Error.model.js";
 import Product from "../models/Products.model.js";
-
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
+const {
+  SECRET_STRIPE_KEY,
+  CLIENT_URL_SUCCESS,
+  CLIENT_URL_CANCEL,
+  STRIPE_MONTHLY_SUBSCRIPTION,
+  STRIPE_ANNUAL_SUBSCRIPTION,
+} = process.env;
+console.log("Secret stripe key", SECRET_STRIPE_KEY);
+console.log('price', STRIPE_ANNUAL_SUBSCRIPTION)
+console.log('success page', CLIENT_URL_SUCCESS)
+console.log('cancel page', CLIENT_URL_CANCEL)
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.SECRET_STRIPE_KEY);
+const stripe = new Stripe(SECRET_STRIPE_KEY);
 
 const getProductsCart = async (req, res, next) => {
   // Get the products in the cart
   try {
     const userId = req.params.id;
     console.log(userId);
-    const productsCart = await Cart.find({user: userId});
-    console.log('productsCart', productsCart)
+    const productsCart = await Cart.find({ user: userId });
+    console.log("productsCart", productsCart);
     if (!productsCart)
       return next(new ErrorModel("No hay productos en el carro"));
     res.status(200).json(productsCart);
@@ -23,47 +36,31 @@ const getProductsCart = async (req, res, next) => {
 };
 
 const addProductCart = async (req, res, next) => {
-  // Extraer el ID del usuario autenticado desde la solicitud
-  console.log("req.user", req.user);
   const userId = req.params.id;
-  console.log("userId", userId);
-  // Extraer los detalles del producto del cuerpo de la solicitud
-  const { name, image, quantity, price } = req.body;
+  const { productId } = req.body;
 
   try {
-    // Buscar el usuario por su ID
-    const user = await User.findById(userId);
-    console.log(user);
+    let cart = await Cart.findOne({ user: userId });
 
-    if (!user) {
-      return next(new ErrorModel("Usuario no encontrado"));
+    if (!cart) {
+      cart = await Cart.create({ user: userId, products: [] });
     }
 
-    // Crear un nuevo documento de carrito con los detalles del producto
-    const newProduct = await Cart.create({
-      name,
-      image,
-      quantity,
-      price,
-      user,
-    });
-
-    // Guardar el producto en el carrito del usuario
-    user.cart.push(newProduct);
-
-    // Guardar los cambios en el usuario (con el nuevo producto en el carrito)
-    await user.save();
-
-    // Responder con el producto agregado al carrito
-    res
-      .status(201)
-      .json({ message: "Producto agregado al carrito", product: newProduct });
+    // Agregar el ID del producto al array de productos en el carrito
+    if (!cart.products.includes(productId)) {
+      cart.products.push(productId);
+      await cart.save();
+      res.status(201).json({ message: 'Producto agregado al carrito' });
+    } else {
+      res.status(400).json({ message: 'El producto ya está en el carrito' });
+    }
   } catch (error) {
-    // Manejar errores
     console.error(error);
-    return next(new ErrorModel(error));
+    return next(new Error('Error al agregar el producto al carrito'));
   }
 };
+
+
 const updateProductCart = async (req, res, next) => {
   // Extraer el ID del usuario autenticado desde la solicitud
   const userId = req.user.id;
@@ -139,7 +136,7 @@ const deleteProductCart = async (req, res, next) => {
 };
 
 const checkout = async (req, res, next) => {
-  const userId = req.body.userId; // Obtener el ID del usuario desde la solicitud
+  const userId = req.params.id; // Obtener el ID del usuario desde la solicitud
   console.log("user id", userId);
   try {
     // Obtener el carrito del usuario
@@ -155,32 +152,44 @@ const checkout = async (req, res, next) => {
         currency: "eur",
         product_data: {
           name: product.name,
-          images: [product.image],
+          // images: [product.image],
         },
-        unit_amount: product.price * 100, // Precio en centavos
       },
-      quantity: product.quantity,
+      quantity: 1,
     }));
+    
 
     // Crear una sesión de pago en Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card", "paypal"],
-      line_items: lineItems,
-      mode: "payment",
-      success_url: "https://example.com/success",
-      cancel_url: "https://example.com/cancel",
-      payment_intent_data: {
-        // currency: "eur",
-        metadata: { userId: userId }, // Agregar metadatos relevantes, como el ID de usuario
-      },
+      line_items: [
+        {
+          // ...lineItems,
+          price: STRIPE_MONTHLY_SUBSCRIPTION,
+          quantity: 1
+        }
+      ],
+
+      mode: "subscription",
+    success_url: `${CLIENT_URL_SUCCESS}`,
+      cancel_url: `${CLIENT_URL_CANCEL}`,
+      // payment_intent_data: {
+      //   // currency: "eur",
+      //   metadata: { userId: userId }, // Agregar metadatos relevantes, como el ID de usuario
+      // },
     });
+    console.log("session", session.id, session.url, session);
+
+    const sessionId = session.id;
+    console.log("sessionId", sessionId);
 
     // Limpiar el carrito del usuario después de la compra
     user.cart = [];
+    user.subscriptionId = sessionId;
     await user.save();
 
     // Responder con la URL de redirección a la página de pago de Stripe
-    res.status(200).json({ redirectUrl: session.url });
+    res.status(200).json({ url: session.url });
   } catch (error) {
     console.error(error);
     return next(new ErrorModel(error));
