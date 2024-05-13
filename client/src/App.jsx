@@ -27,7 +27,7 @@ import Contact from "./pages/Contact";
 import Help from "./pages/Help";
 import PostsBySpecie from "./pages/PostsBySpecie";
 import OrdersPage from "./pages/OrdersPage";
-import UserProvider from "./context/userContext";
+import UserProvider from "./context/UserContext";
 import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
 import { CartProvider } from "./context/CartContext";

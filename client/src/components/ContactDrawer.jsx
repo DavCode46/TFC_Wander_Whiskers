@@ -3,7 +3,7 @@ import { PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 import LOGO from "@images/logo/1.svg";
 import emailjs from "@emailjs/browser";
 import Confetti from "react-confetti";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 import { FaRegUser } from "react-icons/fa";
 
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";

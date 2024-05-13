@@ -15,7 +15,7 @@ import {
 import { GoogleLogin } from "@react-oauth/google";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { message, Input, Divider } from "antd";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 
 import axios from "axios";
 

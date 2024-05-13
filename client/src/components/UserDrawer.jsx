@@ -22,7 +22,7 @@ import {
   Select,
   Space,
 } from "antd";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 // const { Option } = Select;

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Button } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@nextui-org/react";

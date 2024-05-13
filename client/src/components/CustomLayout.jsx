@@ -40,7 +40,7 @@ import { ImProfile } from "react-icons/im";
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 import ContactDrawer from "./ContactDrawer";
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { CartContext } from "@/context/CartContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";

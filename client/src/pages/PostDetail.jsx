@@ -5,7 +5,7 @@ import { Link, useParams } from "react-router-dom";
 import SendMessageButton from "@components/Utilities/SendMessageButton";
 import CustomShareButton from "@components/Utilities/CustomShareButton";
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import DeletePost from "./DeletePost";

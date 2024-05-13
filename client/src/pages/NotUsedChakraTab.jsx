@@ -19,7 +19,7 @@ import { EmailIcon } from "@chakra-ui/icons";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegEye, FaRegEyeSlash, FaRegUser } from "react-icons/fa";
 
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 

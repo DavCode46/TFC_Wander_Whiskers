@@ -12,7 +12,7 @@ import ScrollXAnimation from "./Animations/Xanimation/ScrollXAnimation";
 import PostDrawer from "./PostDrawer";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 
 const Hero = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);

@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Button, Empty, FloatButton, Upload, message } from "antd";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 import axios from "axios";
 import DeleteUser from "./DeleteUser";
 import UserDrawer from "@components/UserDrawer";

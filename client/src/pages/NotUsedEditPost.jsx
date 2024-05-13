@@ -16,7 +16,7 @@ import { MdOutlinePets } from "react-icons/md";
 import { useState, useEffect, useContext } from "react";
 
 import axios from "axios";
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { PET_TYPE, locationData, CONDITION } from "@/data/data.js";
 import { InboxOutlined } from "@ant-design/icons";

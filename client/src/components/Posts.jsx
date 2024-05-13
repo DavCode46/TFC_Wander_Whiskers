@@ -13,7 +13,7 @@ import PostDrawer from "./PostDrawer";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Xanimation from "./Animations/Xanimation/Xanimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);

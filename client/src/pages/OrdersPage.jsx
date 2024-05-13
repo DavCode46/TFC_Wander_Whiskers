@@ -3,7 +3,7 @@ import { Button, Empty } from "antd";
 import { CartContext } from "@/context/CartContext";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 
 import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";

@@ -3,7 +3,7 @@ import { Button, Empty, List, Skeleton, message } from "antd";
 import { CartContext } from "@/context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
 import { v4 as uuid } from "uuid";
 import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
