@@ -13,6 +13,7 @@ const __dirname = dirname(__filename);
 import ErrorModel from "../models/Error.model.js";
 import User from "../models/User.model.js";
 import Post from "../models/Post.model.js";
+import Cart from "../models/Cart.model.js";
 
 /* 
     REGISTER A USER
@@ -107,7 +108,7 @@ const login = async (req, res, next) => {
       expiresIn: "1d",
     });
 
-    res.status(200).json({ token, id, username, role: user.role });
+    res.status(200).json({ token, id, username, role: user.role, isSubscribed: user.isSubscribed });
   } catch (err) {
     return next(new ErrorModel("Inicio de sesión fallido", 422));
   }
@@ -248,7 +249,7 @@ const editUser = async (req, res, next) => {
       user.password
     );
     if (!validatePassword)
-      return next(new ErrorModel("Contraseña incorrecta", 400));
+      return next(new ErrorModel("Credenciales incorrectas", 400));
 
     if (newPassword !== confirmNewPassword)
       return next(new ErrorModel("Las contraseñas no coinciden", 400));
@@ -280,9 +281,11 @@ const editUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-    console.log("req.user.id", req.user.id);
+  
     const userId = req.params.id;
     const posts = await Post.find({ author: userId });
+    const cart = await Cart.findOne({user: userId})
+    await Cart.findByIdAndDelete(cart)
     posts.forEach(async (post) => {
       if (post.image) {
         const imagePath = path.join(__dirname, "..", "uploads", post.image);
@@ -295,12 +298,12 @@ const deleteUser = async (req, res, next) => {
     });
     await Post.deleteMany({ author: userId });
     const userToDelete = await User.findById(userId);
-    console.log("usertodelete", userToDelete);
+   
     const user = await User.findById(req.user.id);
     if (!userToDelete) {
       return next(new ErrorModel("Usuario no encontrado", 404));
     }
-    console.log(req.user.id, userToDelete.id, user.role, req.user.username);
+   
 
     // Verificar permisos: el usuario actual debe ser el propietario del usuario a eliminar o un administrador
     if (req.user.id !== userToDelete.id && req.user.username !== "admin") {

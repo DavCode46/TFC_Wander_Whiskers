@@ -53,7 +53,7 @@ const DeletePost = ({ postID: id }) => {
   const success = () => {
     messageApi.open({
       type: "success",
-      content: "Usuario eliminado con éxito",
+      content: "Publicación eliminada con éxito",
     });
   };
 

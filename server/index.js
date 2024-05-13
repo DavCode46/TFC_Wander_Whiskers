@@ -9,8 +9,9 @@ import userRoutes from "./routes/user.routes.js";
 import postsRoutes from "./routes/posts.routes.js";
 import cartRoutes from './routes/cart.routes.js'
 import productRoutes from './routes/products.routes.js'
+import orderRoutes from './routes/orders.routes.js'
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
-import Product from './models/Products.model.js'
+import Product from './models/Product.model.js'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -28,6 +29,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postsRoutes);
 app.use('/api/users/cart', cartRoutes)
 app.use('/api/products', productRoutes)
+app.use('/api/orders', orderRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
@@ -46,9 +48,11 @@ connect(process.env.MONGO_URI)
 //       description: "Suscripción mensual",
 //       price: 20.99,
 //       features: [
-//         "Acceso a la base de datos de animales perdidos y encontrados",
-//         "Notificaciones en tiempo real",
+//         "Posibilidad de publicar anuncios",
+//         "Acceso a la base de datos de animales",
+//         "Notificaciones",
 //         "Soporte prioritario",
+//         "Un mes de prueba"
 //       ],
 //     },
 //     {
@@ -57,8 +61,9 @@ connect(process.env.MONGO_URI)
 //       price: 251.88,
 //       discountPrice: 200,
 //       features: [
-//         "Acceso a la base de datos de animales perdidos y encontrados",
-//         "Notificaciones en tiempo real",
+//         "Posibilidad de publicar anuncios",
+//         "Acceso a la base de datos de animales",
+//         "Notificaciones",
 //         "Soporte prioritario",
 //         "Descuento del 10% en servicios adicionales",
 //       ],
@@ -67,8 +72,9 @@ connect(process.env.MONGO_URI)
 //       name: "Protectoras",
 //       description: "Suscripción especial protectoras",   
 //       features: [
-//         "Acceso a la base de datos de animales perdidos y encontrados",
-//         "Notificaciones en tiempo real",
+//         "Posibilidad de publicar anuncios",
+//         "Acceso a la base de datos de animales",
+//         "Notificaciones",
 //         "Soporte prioritario",
 //         "Descuento del 30% en servicios adicionales",
 //       ],

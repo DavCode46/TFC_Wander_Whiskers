@@ -4,6 +4,9 @@ import { EditOutlined, EyeOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import DeletePost from "./DeletePost";
+import Yanimation from "@/components/Animations/Yanimation/Yanimation";
+import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 
 const Dashboard = () => {
   const [postData, setPostData] = useState([]);
@@ -33,13 +36,8 @@ const Dashboard = () => {
   const uniqueLocations = [...new Set(postData.map((item) => item.location))];
 
   const handleChange = (pagination, filters, sorter) => {
-    console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
-  };
-
-  const clearFilters = () => {
-    setFilteredInfo({});
   };
 
   const truncateText = (text, maxLength) => {
@@ -72,7 +70,7 @@ const Dashboard = () => {
       })),
       filterMode: "tree",
       filterSearch: true,
-      
+
       onFilter: (value, record) => record.title === value,
       width: "20%",
       render: (text) => truncateText(text, 25),
@@ -115,11 +113,11 @@ const Dashboard = () => {
               Ver
             </Button>
           </Link>
-          <Link to={`/posts/${record._id}/edit`}>
+          {/* <Link to={`/posts/${record._id}/edit`}>
             <Button icon={<EditOutlined />} className="">
               Editar
             </Button>
-          </Link>
+          </Link> */}
           <DeletePost postID={record._id} />
         </Space>
       ),
@@ -129,26 +127,29 @@ const Dashboard = () => {
 
   return (
     <div className="grid items-center justify-center overflow-x-auto w-[80%] m-auto mb-[10rem] z-[-1000]">
-      <Space
-        style={{
-          marginBottom: 16,
-          marginTop: 90,
-        }}
-      >
-        <Button onClick={() => clearFilters()}>Eliminar filtros</Button>
-        <Link to="/dashboard/users">
-          <Button>Administrar usuarios</Button>
-        </Link>
-      </Space>
-      <Table
-        columns={columns}
-        dataSource={postData}
-        loading={loading}
-        onChange={handleChange}
-        pagination={{ pageSize: 10 }}
-        className="table"
-        rowKey={(record) => record._id}
-      />
+      <FadeAnimation>
+        <Space
+          style={{
+            marginBottom: 16,
+            marginTop: 90,
+          }}
+        >
+          {/* <Button onClick={() => clearFilters()}>Eliminar filtros</Button> */}
+          <Link to="/dashboard/users">
+            <Button>Administrar usuarios</Button>
+          </Link>
+        </Space>
+
+        <Table
+          columns={columns}
+          dataSource={postData}
+          loading={loading}
+          onChange={handleChange}
+          pagination={{ pageSize: 10 }}
+          className="table"
+          rowKey={(record) => record._id}
+        />
+      </FadeAnimation>
     </div>
   );
 };

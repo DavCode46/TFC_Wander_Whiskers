@@ -48,9 +48,11 @@ const Post = ({
       <Flex direction={{ base: "column", md: "row" }}>
         <Image
           objectFit="cover"
-          maxW={{ base: "100%", md: "200px" }}
+          maxW={{ base: "100%", md: "150px" }}
+          
           src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${image}`}
           alt={title}
+          
         />
         <Stack ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} flex="1">
           <CardBody>

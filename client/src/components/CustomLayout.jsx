@@ -1,5 +1,13 @@
 import { useState, useEffect, useContext } from "react";
-import { Affix, Avatar, Button, Divider, Layout, Menu } from "antd";
+import {
+  Affix,
+  Avatar,
+  Button,
+  Divider,
+  FloatButton,
+  Layout,
+  Menu,
+} from "antd";
 import { Link, Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
@@ -11,7 +19,8 @@ import {
   ProfileOutlined,
   MenuOutlined,
   CloseOutlined,
-  ShoppingCartOutlined
+  ShoppingCartOutlined,
+  QuestionOutlined,
 } from "@ant-design/icons";
 
 import { GiArchiveRegister } from "react-icons/gi";
@@ -22,53 +31,39 @@ import {
   MdOutlinePostAdd,
   MdContactSupport,
   MdDashboard,
- 
 } from "react-icons/md";
 import { BsSignpostSplit } from "react-icons/bs";
+import { SiGradleplaypublisher } from "react-icons/si";
 
 import { ImProfile } from "react-icons/im";
-import avatar from "@images/avatar1.jpg";
-
-import Header from "./Header";
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
-
+import ContactDrawer from "./ContactDrawer";
 import { UserContext } from "../context/userContext";
 import axios from "axios";
 import { CartContext } from "@/context/CartContext";
-
+import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [role, setRole] = useState('user');
+  const [role, setRole] = useState("user");
 
   const { currentUser } = useContext(UserContext);
-  const [cart, setCart] = useContext(CartContext)
+  const [cart, setCart] = useContext(CartContext);
 
-  const quantity = cart.reduce((acc, current) => {
-    return acc + current.quantity;
-  }, 0);
-  
+  const totalQuantity = cart.reduce(
+    (total, product) => total + product.quantity,
+    0
+  );
+
   const token = currentUser?.token;
-
-  // console.log('usuario', currentUser.profileImage)
-  useEffect(() => {
-    if (currentUser) {
-      setRole(currentUser.role);
-    }
-  },[currentUser])
-
-  useEffect(() => {
-    setIsLoggedIn(currentUser !== null);
-  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        if (currentUser) {        
+        if (currentUser) {
           const res = await axios.get(
             `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`,
             {
@@ -78,9 +73,6 @@ const CustomLayout = () => {
           );
           const { profileImage } = res.data;
           setProfileImage(profileImage);
-          console.log("Profile Image:", profileImage);
-          console.log("res:", res.data);
-          console.log("User ID:", currentUser.id);
         } else {
           console.log("currentUser is null");
         }
@@ -90,7 +82,7 @@ const CustomLayout = () => {
     };
 
     fetchUser();
-  }, [profileImage]);
+  }, [profileImage, currentUser, token]);
 
   const menuItemsBurger = [
     {
@@ -101,19 +93,19 @@ const CustomLayout = () => {
           key: "login",
           icon: <LoginOutlined />,
           label: <Link to="/login">Login</Link>,
-          hidden: isLoggedIn,
+          hidden: currentUser,
         },
-        {
-          key: "register",
-          icon: <GiArchiveRegister />,
-          label: <Link to="/register">Registrarse</Link>,
-          hidden: isLoggedIn,
-        },
+        // {
+        //   key: "register",
+        //   icon: <GiArchiveRegister />,
+        //   label: <Link to="/register">Registrarse</Link>,
+        //   hidden: currentUser,
+        // },
         {
           key: "logout",
           icon: <LogoutOutlined />,
           label: <Link to="/logout">Logout</Link>,
-          hidden: !isLoggedIn,
+          hidden: !currentUser,
         },
         {
           key: "home",
@@ -125,7 +117,7 @@ const CustomLayout = () => {
           key: "myAccount",
           label: "Mi Cuenta",
           icon: <ProfileOutlined />,
-          hidden: !isLoggedIn,
+          hidden: !currentUser,
           children: [
             {
               key: "profile",
@@ -137,14 +129,14 @@ const CustomLayout = () => {
         {
           key: "posts",
           label: "Posts",
-          icon: <MdOutlinePostAdd />,
+          icon: <SiGradleplaypublisher />,
           children: [
-            {
-              key: "create-post",
-              label: <Link to="/create-post">Publicar anuncio</Link>,
-              icon: <MdOutlinePublish />,
-              hidden: !isLoggedIn,
-            },
+            // {
+            //   key: "create-post",
+            //   label: <Link to="/create-post">Publicar anuncio</Link>,
+            //   icon: <MdOutlinePublish />,
+            //   // hidden: !currentUser || !currentUser.isSubscribed || currentUser.role !== 'admin',
+            // },
             {
               key: "allposts",
               label: <Link to="/posts">Anuncios</Link>,
@@ -154,33 +146,32 @@ const CustomLayout = () => {
         },
         {
           key: "contact",
-          label: "Contacto",
+          label: "Ayuda",
           icon: <MdOutlineImportContacts />,
           children: [
-            {
-              key: "contactUs",
-              label: <Link to="/contact">Contactar</Link>,
-              icon: <MdContactMail />,
-            },
+            // {
+            //   key: "contactUs",
+            //   label: <Link to="/contact">Contactar</Link>,
+            //   icon: <MdContactMail />,
+            // },
             {
               key: "help",
-              label: <Link to="/help">Ayuda</Link>,
+              label: <Link to="/help">Preguntas frecuentes</Link>,
               icon: <MdContactSupport />,
             },
           ],
         },
         {
-          key: 'cart',
-          label: <Link to="/cart">Carrito ({quantity})</Link>,
+          key: "cart",
+          label: <Link to="/cart">Carrito ({totalQuantity})</Link>,
           icon: <ShoppingCartOutlined />,
         },
         {
           key: "dashboard",
           label: <Link to="/dashboard">Dashboard</Link>,
           icon: <MdDashboard />,
-          hidden:!isLoggedIn || role !== 'admin',
+          hidden: !currentUser || currentUser.role !== "admin",
         },
-        
       ],
     },
   ];
@@ -210,66 +201,69 @@ const CustomLayout = () => {
         />
       ) : (
         <>
-          <Sider
-            theme="light"
-            collapsed={collapsed}
-            collapsedWidth={isMobile ? 0 : 80}
-            onBreakpoint={(broken) => setCollapsed(broken)}
-            style={{
-              overflow: "auto",
-              height: "100vh",
-              position: "fixed",
-              left: 0,
-              top: 0,
-              bottom: 0,
-              zIndex: 1000,
-            }}
-            width={150}
+          <FadeAnimation
+            className={"fixed top-0 left-0 bottom-0 z-[1000] overflow-auto"}
           >
-            <div className="logo" />
-            <div className="logo-image">
-              <img src={logo} alt="" />
-            </div>
-
-            <Button
-              type="primary"
-              onClick={toggleCollapsed}
-              className="mb-5 text-black py-4 px-3 flex items-center justify-center m-auto"
-            >
-              {collapsed ? <MenuOutlined /> : <CloseOutlined />}
-            </Button>
-            <Menu
+            <Sider
               theme="light"
-              mode="vertical"
-              defaultSelectedKeys={["home"]}
-              items={menuItemsBurger[0].children}
-            ></Menu>
-            {isLoggedIn && currentUser && (
-              <>
-                <Link to={`/profile/${currentUser.id}`}>
-                  <Avatar
-                    src={`${
-                      import.meta.env.VITE_REACT_APP_ASSETS_URL
-                    }/uploads/${profileImage}`}
-                    size={60}
-                    className="flex m-auto mt-5"
-                  />
-                </Link>
-                {/* <div>
-                  <Link to="/logout">
-                    <LogoutOutlined />
-                    Logout
+              collapsed={collapsed}
+              collapsedWidth={isMobile ? 0 : 80}
+              onBreakpoint={(broken) => setCollapsed(broken)}
+              className="transition-all duration-300"
+              style={{
+                // overflow: "auto",
+                height: "100vh",
+                // position: "fixed",
+                // left: 0,
+                // top: 0,
+                // bottom: 0,
+                // zIndex: 1000,
+              }}
+              width={150}
+            >
+              <Link to="/">
+                <img src={logo} alt="" />
+              </Link>
+
+              <Button
+                type="primary"
+                onClick={toggleCollapsed}
+                className="mb-5 text-white bg-color-btn hover:bg-color-btnHover active:bg-color-btnHover py-4 px-3 flex items-center justify-center m-auto transition-all duration-300"
+              >
+                {collapsed ? <MenuOutlined /> : <CloseOutlined />}
+              </Button>
+              <Menu
+                theme="light"
+                mode="vertical"
+                className="font-sora"
+                defaultSelectedKeys={["home"]}
+                items={menuItemsBurger[0].children}
+              ></Menu>
+              {currentUser && (
+                <>
+                  <Link to={`/profile/${currentUser.id}`}>
+                    <Avatar
+                      src={`${
+                        import.meta.env.VITE_REACT_APP_ASSETS_URL
+                      }/uploads/${profileImage}`}
+                      size={60}
+                      className="flex m-auto mt-5"
+                    />
                   </Link>
-                </div> */}
-              </>
-            )}
-          </Sider>
+                </>
+              )}
+            </Sider>
+          </FadeAnimation>
         </>
       )}
 
       <Layout>
         <Content style={{ margin: "0 16px" }}>
           <Outlet />
+          {/* <Link to="/contact">
+            <FloatButton icon={<QuestionOutlined />} />
+          </Link> */}
+          <ContactDrawer />
         </Content>
         <Footer />
       </Layout>

@@ -18,6 +18,24 @@ const locationData = [
     ],
   },
   {
+    label: "Condición",
+    value: "condition",
+    children: [
+      {
+        label: "Encontrado",
+        value: "encontrado",
+      },
+      {
+        label: "Perdido",
+        value: "perdido",
+      },
+      {
+        label: "En adopción",
+        value: "enadopcion",
+      },
+    ],
+  },
+  {
     label: "España",
     value: "espana",
     children: [

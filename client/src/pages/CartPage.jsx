@@ -4,8 +4,11 @@ import { CartContext } from "@/context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "@/context/userContext";
-
+import { v4 as uuid } from "uuid";
 import DeleteFromCart from "./DeleteFromCart";
+import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+import Yanimation from "@/components/Animations/Yanimation/Yanimation";
+import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 
 const CartPage = () => {
   const [cart, setCart] = useContext(CartContext);
@@ -14,40 +17,29 @@ const CartPage = () => {
   const [list, setList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [productsCart, setProductsCart] = useState([]);
-
+  const [error, setError] = useState("Error al procesar el pago");
+  const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-
-  console.log("products cart", productsCart);
 
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
-  useEffect(() => {
-    if (!token) navigate("/login");
-  }, []);
-  console.log("id usuario cart", currentUser.id);
 
   useEffect(() => {
     const fetchProductsCart = async () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_REACT_APP_URL}/users/cart/${currentUser.id}`,
-          {
-            withCredentials: true,
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          `${import.meta.env.VITE_REACT_APP_URL}/users/cart/${currentUser.id}`
         );
-        setProductsCart(response?.data);
 
         // Obtener todos los identificadores de productos en el carrito
         const productIds = response?.data.reduce((ids, cartItem) => {
           return [...ids, ...cartItem.products];
         }, []);
-        console.log("productId", productIds);
         // Consultar los detalles de cada producto en el carrito
         const productDetailsPromises = productIds.map((productId) =>
           axios.get(
-            `${import.meta.env.VITE_REACT_APP_URL}/products/663a64ec6f7175c97919f4d9`
+            `${import.meta.env.VITE_REACT_APP_URL}/products/${productId}`
           )
         );
         const productDetailsResponses = await Promise.all(
@@ -56,8 +48,8 @@ const CartPage = () => {
         const productDetails = productDetailsResponses.map(
           (response) => response.data
         );
-
-        console.log("Product details in cart", productDetails);
+        setProductsCart(productDetails);
+        setCart(productDetails);
       } catch (err) {
         console.log(err);
       }
@@ -66,31 +58,29 @@ const CartPage = () => {
     fetchProductsCart();
   }, []);
 
-  console.log("productsCart", productsCart);
+  // const handleIncrement = (productId) => {
+  //   // Incrementa la cantidad del producto en el carrito
+  //   setCart((prevCart) =>
+  //     prevCart.map((item) => {
+  //       if (item.id === productId) {
+  //         return { ...item, quantity: item.quantity + 1 };
+  //       }
+  //       return item;
+  //     })
+  //   );
+  // };
 
-  const handleIncrement = (productId) => {
-    // Incrementa la cantidad del producto en el carrito
-    setCart((prevCart) =>
-      prevCart.map((item) => {
-        if (item.id === productId) {
-          return { ...item, quantity: item.quantity + 1 };
-        }
-        return item;
-      })
-    );
-  };
-
-  const handleDecrement = (productId) => {
-    // Decrementa la cantidad del producto en el carrito, evita que sea menor que 1
-    setCart((prevCart) =>
-      prevCart.map((item) => {
-        if (item.id === productId && item.quantity > 1) {
-          return { ...item, quantity: item.quantity - 1 };
-        }
-        return item;
-      })
-    );
-  };
+  // const handleDecrement = (productId) => {
+  //   // Decrementa la cantidad del producto en el carrito, evita que sea menor que 1
+  //   setCart((prevCart) =>
+  //     prevCart.map((item) => {
+  //       if (item.id === productId && item.quantity > 1) {
+  //         return { ...item, quantity: item.quantity - 1 };
+  //       }
+  //       return item;
+  //     })
+  //   );
+  // };
 
   const handlePay = async () => {
     setIsLoading(true);
@@ -98,40 +88,75 @@ const CartPage = () => {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${
           currentUser.id
-        }`
+        }`,
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        }
       );
+      success();
       const paymentUrl = response.data.url; // Obtener la URL de pago de la respuesta
       window.location.href = paymentUrl; // Redirigir al usuario a la página de pago de Stripe
     } catch (error) {
       console.error(error);
-      message.error("Error al procesar el pago");
+      setError(error.response.data.message);
+      errorMessage();
     }
     setIsLoading(false);
   };
-  console.log("productsCart", productsCart);
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Procesando pago ...",
+    });
+  };
+  const errorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: error,
+    });
+  };
+
   return (
     <div className="flex flex-col justify-start items-center w-full h-screen py-10">
-      <h1 className="text-center font-bold text-2xl mb-5">
-        Carrito de Compras
-      </h1>
+      {contextHolder}
+      <Xanimation>
+        <h1 className="text-center font-bold text-2xl mb-5">
+          Carrito de Compras
+        </h1>
+      </Xanimation>
       {productsCart.length ? (
-        <div className="w-full">
-          {productsCart.map((item, index) => (
-            <div
-              key={item._id}
-              className="flex flex-col border border-gray-200 rounded-md p-5 mb-5"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-lg font-semibold">{item.name}</h1>
-                  <p className="text-gray-500">{item.description}</p>
-                  <p className="text-gray-600">
-                    Precio: {item.price} €/ud Total:{" "}
-                    {(item.price * item.quantity).toFixed(2)} €
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Button
+        <div className="w-full md:w-3/4 lg:w-2/3">
+          <FadeAnimation>
+            {productsCart.map((item) => (
+              <>
+                <div
+                  key={crypto.randomUUID()}
+                  className="flex flex-col border border-gray-200 rounded-md p-5 mb-5"
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h1 className="text-lg font-semibold">{item.name}</h1>
+                      <p className="text-gray-500">{item.description}</p>
+                      <p className="text-gray-600">
+                        Precio:{" "}
+                        {`${
+                          item.name === "Anual"
+                            ? item.discountPrice
+                            : item.price
+                        }`}{" "}
+                        €/ud Total:{" "}
+                        {`${
+                          item.name === "Anual"
+                            ? (item.discountPrice * item.quantity).toFixed(2)
+                            : (item.price * item.quantity).toFixed(2)
+                        }`}{" "}
+                        €
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {/* <Button
                     type="default"
                     size="small"
                     onClick={() => handleDecrement(item.id)}
@@ -145,56 +170,59 @@ const CartPage = () => {
                     onClick={() => handleIncrement(item.id)}
                   >
                     +
-                  </Button>
-                  {/* <Button
-                    danger
-                    size="small"
-                    onClick={() => handleRemoveFromCart(item.id)}
-                  >
-                    Eliminar
                   </Button> */}
-                  <DeleteFromCart productId={item.id} />
+                      <DeleteFromCart productId={item._id} />
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              </>
+            ))}
+          </FadeAnimation>
         </div>
       ) : (
         <div className="flex items-center justify-center h-screen">
-          <Empty
-            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-            imageStyle={{
-              height: 100,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: "1rem",
-            }}
-            description={
-              <div>
-                <span className="mt-[3rem]">
-                  No se han encontrado{" "}
-                  <span className="text-color-btn">productos en el carro</span>
-                </span>
-                <div className="mt-[3rem]">
-                  {" "}
-                  {/* Espaciado entre el texto y el botón */}
-                  <Link
-                    className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
-                    to="/"
-                  >
-                    Ir a inicio
-                  </Link>
+          <FadeAnimation delay={0.5}>
+            <Empty
+              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              imageStyle={{
+                height: 100,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "1rem",
+              }}
+              description={
+                <div>
+                  <span className="mt-[3rem]">
+                    No se han encontrado{" "}
+                    <span className="text-color-btn">
+                      productos en el carro
+                    </span>
+                  </span>
+                  <div className="mt-[3rem]">
+                    {" "}
+                    {/* Espaciado entre el texto y el botón */}
+                    <Link
+                      className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                      to="/"
+                    >
+                      Ir a inicio
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            }
-          />
+              }
+            />
+          </FadeAnimation>
         </div>
       )}
       {productsCart.length > 0 && (
-        <Button type="default" className="mt-5" onClick={handlePay}>
-          Pagar pedido
-        </Button>
+        <>
+          <Xanimation>
+            <Button type="default" className="mt-5" onClick={handlePay}>
+              Pagar pedido
+            </Button>
+          </Xanimation>
+        </>
       )}
     </div>
   );

@@ -5,7 +5,7 @@ const CustomSearch = ({ onSearch }) => {
 
   const handleInputChange = (event) => {
     const newSearchTerm = event.target.value;
-    console.log(newSearchTerm);
+ 
     setSearchTerm(newSearchTerm);
     if (onSearch) {
       onSearch(newSearchTerm);

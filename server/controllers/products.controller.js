@@ -1,5 +1,5 @@
 import ErrorModel from '../models/Error.model.js'
-import Product from '../models/Products.model.js'
+import Product from '../models/Product.model.js'
 
 const getProducts = async (req, res, next) => {   
     try {

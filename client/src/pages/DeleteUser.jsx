@@ -11,7 +11,7 @@ const DeleteUser = ({ userID: id, text, float }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-console.log('id',id)
+
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);

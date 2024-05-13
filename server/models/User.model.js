@@ -22,8 +22,9 @@ const userSchema = new Schema({
     profileImage: {
         type: String
     },
-    subscriptionId: {
-        type: String
+    isSubscribed: {
+        type: Boolean,
+        default: false
     },
     cart: [{
         type: Schema.Types.ObjectId,

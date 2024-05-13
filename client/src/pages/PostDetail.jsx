@@ -9,6 +9,9 @@ import { UserContext } from "@/context/userContext";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import DeletePost from "./DeletePost";
+import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
+import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -20,15 +23,12 @@ const PostDetail = () => {
 
   useEffect(() => {
     const fetchPost = async () => {
-      // console.log(currentUser?.id)
-      // console.log(post.author)
-      // console.log(post)
       setLoading(true);
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_REACT_APP_URL}/posts/${id}`
         );
-        console.log(res.data);
+
         setPost(res.data);
       } catch (err) {
         setError(err);
@@ -65,16 +65,22 @@ const PostDetail = () => {
         <section>
           <div className="max-w-full mt-[7rem] md:ml-[5rem]">
             <div className=" px-5 py-3">
-              <PostCreator authorId={post.author} createdAt={post.createdAt} />
+              <Yanimation>
+                <PostCreator
+                  authorId={post.author}
+                  createdAt={post.createdAt}
+                />
+              </Yanimation>
             </div>
-            <img
-              src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${
-                post.image
-              }`}
-              alt=""
-              className="w-full h-auto"
-            />
-
+            <FadeAnimation>
+              <img
+                src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${
+                  post.image
+                }`}
+                alt=""
+                className="w-full h-auto"
+              />
+            </FadeAnimation>
             <div className="flex items-center justify-between">
               <div>
                 <SendMessageButton
@@ -96,11 +102,11 @@ const PostDetail = () => {
               </div>
             </div>
             <div className="flex flex-col gap-5 px-5 w-full mt-5 mb-5 md:mt-[3rem] md:mb-[4rem]">
-            <h1 className=" font-bold">{post.title}</h1>
+              <h1 className=" font-bold">{post.title}</h1>
               <p
-                dangerouslySetInnerHTML={{ __html: post.content }}
+               
                 className="mb-5"
-              ></p>
+              > { post.content }</p>
             </div>
           </div>
         </section>

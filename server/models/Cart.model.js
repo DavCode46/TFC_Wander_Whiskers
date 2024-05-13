@@ -7,15 +7,10 @@ const CartSchema = new Schema({
       ref: "Product",
     },
   ],
-  quantity: {
-    type: Number,
-    required: true,
-    default: 1
-  },
   user: {
     type: Schema.Types.ObjectId,
     ref: "User",
   }
-});
+}, { timestamps: true });
 
 export default model("Cart", CartSchema);

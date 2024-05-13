@@ -12,13 +12,20 @@ import {
   InputRightElement,
   InputLeftAddon,
 } from "@chakra-ui/react";
+import { GoogleLogin } from "@react-oauth/google";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
-import { message, Input } from "antd";
+import { message, Input, Divider } from "antd";
 import { UserContext } from "@/context/userContext";
 
 import axios from "axios";
 
 import UserDrawer from "@/components/UserDrawer";
+
+import LOGO from "@images/logo/5.svg";
+import FOOTER_LOGO from "@images/logo/1.svg";
+import GOOGLE_ICON from "@images/googleIcon.svg";
+import GITHUB_ICON from "@images/githubIcon.svg";
+// import {jwt_decode} from 'jwt-decode'
 
 const Login = () => {
   const [show, setShow] = useState(true);
@@ -54,6 +61,8 @@ const Login = () => {
         data
       );
       const user = await response.data;
+      console.log('login response', response)
+
       setCurrentUser(user);
       success();
       setTimeout(() => {
@@ -74,123 +83,133 @@ const Login = () => {
   const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: error,
+      content: error || 'Ha ocurrido un error',
     });
   };
 
   return (
-    <Center h="100vh">
-      {contextHolder}
-      <Box className="w-full md:w-3/5 lg:w-2/4 xl:w-1/3">
-        <section>
-          <div>
-            <h2 className=" text-lg mb-3 text-color-dark">Login</h2>
-            <form action="" onSubmit={login}>
-              {/* {error && (
-                <p className=" bg-red-400 rounded-md text-white text-medium py-2 block mb-2 text-center">
-                  {error}
-                </p>
-              )} */}
-              <Stack spacing={4}>
-                <InputGroup size="sm">
-                  {/* <InputLeftAddon
-                    pointerEvents="none"
-                    color="gray.300"
-                    fontSize="1rem"
-                  >
-                    <EmailIcon />
-                  </InputLeftAddon> */}
-                  
-                  <Input
-                   addonBefore={<EmailIcon />}
-                    size="sm"
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    pr="2rem"
-                    borderradius="none"
-                    bordertoprightradius="md"
-                    _focus={{ outline: "none", border: "none" }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
-                    value={data.email}
-                    onChange={(e) => {
-                      changeHandler(e);
-                      handleSetError();
-                    }}
-                    aria-label="Email"
-                    autoComplete="both"
-                  />
-                </InputGroup>
-                <InputGroup size="sm">
-                  {/* <InputLeftAddon
-                    pointerEvents="none"
-                    color="gray.300"
-                    fontSize="1rem"
-                  >
-                    <RiLockPasswordLine />
-                  </InputLeftAddon> */}
-                  <Input.Password
-                  addonBefore={<RiLockPasswordLine />}
-                    pr="2rem"
-                    type={!show ? "text" : "password"}
-                    placeholder="Contraseña"
-                    name="password"
-                    size="sm"
-                    borderradius="none"
-                    bordertoprightradius="md"
-                    _focus={{ outline: "none", border: "none" }}
-                    fontSize={{ base: "sm", md: "md", lg: "md" }}
-                    value={data.password}
-                    onChange={(e) => {
-                      changeHandler(e);
-                      handleSetError();
-                    }}
-                    aria-label="Contraseña"
-                    autoComplete="both"
-                  />
-                  {/* <InputRightElement width="1rem">
-                    <Button
-                      size="sm"
-                      variant="unstyled"
-                      onClick={handleClick}
+    <section >
+      
+      <Center h="100vh" zIndex={'1000'}>
+        {contextHolder}
+        <Box className="relative w-full md:w-3/5 lg:w-2/4 xl:w-1/3">
+          <section className="bg-color-form rounded-2xl h-[35rem] flex flex-col items-center justify-center shadow-2xl">
+            <div className="mt-[3rem]">
+              {/* <img
+              src={LOGO}
+              alt="wander whiskers logo"
+              className="w-[5rem] h-auto m-auto"
+            /> */}
+              <div className="flex flex-col items-center justify-center z-[1000]">
+                <h2 className=" text-lg font-bold">
+                  Iniciar sesión en Wander Whiskers
+                </h2>
+                <small className="text-color-dark m-4">
+                  Bienvenido de nuevo, inicia sesión para continuar
+                </small>
+                <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
+                  {/* <button className="w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300">
+                  <img src={GOOGLE_ICON} alt="" className="w-[1rem]" />
+                  Google
+                </button> */}
+                  {/* <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    const credentialResponseDecoded = jwt_decode(credentialResponse.credential)
+                    console.log(credentialResponse);
+                  }}
+                  onError={() => {
+                    console.log("Login Failed");
+                  }}
+                /> */}
+
+                  {/* <button className="w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300">
+                  <img src={GITHUB_ICON} alt="" className="w-[1rem]" />
+                  GitHub
+                </button> */}
+                </div>
+              </div>
+              <div className="flex justify-center items-center mb-[1.5rem]">
+                {/* <div className="border-t border-gray-400 w-full mr-4"></div>{" "}
+                <p className="font-bold text-md">O</p>
+                <div className="border-t border-gray-400 w-full ml-4"></div>{" "} */}
+                <div className="border-t border-gray-400 w-full ml-4"></div>{" "} 
+              </div>
+
+              <form action="" onSubmit={login}>
+                <Stack spacing={4}>
+                  <InputGroup size="xs">
+                    <Input
+                      addonBefore={<EmailIcon />}
+                      size="xs"
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      pr="2rem"
                       borderradius="none"
                       bordertoprightradius="md"
-                    >
-                      {!show ? (
-                        <FaRegEye className="icon" />
-                      ) : (
-                        <FaRegEyeSlash className="icon" />
-                      )}
-                    </Button>
-                  </InputRightElement> */}
-                </InputGroup>
-                <Button
-                  type="submit"
-                  size="sm"
-                  _hover={{ bg: "btnHover" }}
-                  _active={{ bg: "blue.600" }}
-                  _focus={{ outline: "none" }}
-                  color={{ base: "white", md: "white" }}
-                  bg="btn"
-                >
-                  Iniciar sesión
-                </Button>
-              </Stack>
-            </form>
-            <small className="block mt-4">
-              <span className="text-[.9rem]">¿Aún no tienes una cuenta?</span>{" "}
-              {/* <Link
-                to={"/register"}
-                className=" text-blue-400 hover:text-blue-500 hover:underline text-[.8rem]"
-              >
-                Regístrate
-              </Link> */}
-              <UserDrawer isRegistering openButton='Registrarse'/>
-            </small>
-          </div>
-        </section>
-      </Box>
-    </Center>
+                      _focus={{ outline: "none", border: "none" }}
+                      fontSize={{ base: "sm", md: "md", lg: "md" }}
+                      value={data.email}
+                      onChange={(e) => {
+                        changeHandler(e);
+                        handleSetError();
+                      }}
+                      aria-label="Email"
+                      autoComplete="on"
+                    />
+                  </InputGroup>
+                  <InputGroup size="xs">
+                    <Input.Password
+                      addonBefore={<RiLockPasswordLine />}
+                      pr="2rem"
+                      type={!show ? "text" : "password"}
+                      placeholder="Contraseña"
+                      name="password"
+                      size="xs"
+                      borderradius="none"
+                      bordertoprightradius="md"
+                      _focus={{ outline: "none", border: "none" }}
+                      fontSize={{ base: "sm", md: "md", lg: "md" }}
+                      value={data.password}
+                      onChange={(e) => {
+                        changeHandler(e);
+                        handleSetError();
+                      }}
+                      aria-label="Contraseña"
+                      autoComplete="on"
+                    />
+                  </InputGroup>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    _hover={{ bg: "btnHover" }}
+                    _active={{ bg: "blue.600" }}
+                    _focus={{ outline: "none" }}
+                    color={{ base: "white", md: "white" }}
+                    bg="btn"
+                  >
+                    Iniciar sesión
+                  </Button>
+                </Stack>
+              </form>
+              <small className="block mt-4">
+                <span className="text-[.8rem]">¿Aún no tienes una cuenta?</span>{" "}
+                <UserDrawer isRegistering openButton="Registrarse" />
+              </small>
+            </div>
+            <Divider />
+            <div className="flex gap-2 items-center justify-center">
+              <p>Secured by Wander Whiskers</p>
+              <img
+                src={FOOTER_LOGO}
+                alt="Logo footer sign in form"
+                className="w-[5rem] h-auto"
+              />
+            </div>
+          </section>
+        </Box>
+      </Center>
+    </section>
   );
 };
 

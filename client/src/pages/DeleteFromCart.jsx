@@ -9,7 +9,7 @@ import { CircularProgress } from "@chakra-ui/react";
 
 const DeleteFromCart = ({ productId: id }) => {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("Error al eliminar la publicación");
+  const [error, setError] = useState("Error al eliminar el producto");
   const navigate = useNavigate();
  
 
@@ -21,6 +21,7 @@ const DeleteFromCart = ({ productId: id }) => {
     if (!token) navigate("/login");
   }, []);
   const deleteProduct = async () => {
+    
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_REACT_APP_URL}/users/cart/${
