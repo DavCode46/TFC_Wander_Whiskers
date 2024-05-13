@@ -35,10 +35,12 @@ import CartPage from "./pages/CartPage";
 import OrderPage from "./pages/OrdersPage";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
-import { useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
 import PrivacityPage from "./pages/PrivacityPage";
+
+import { ThemeProvider } from "@/context/theme";
 
 const Wrapper = ({ children }) => {
   const location = useLocation();
@@ -223,9 +225,26 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
+  const [themeMode, setThemeMode] = useState("light");
+
+  const darkTheme = () => {
+    setThemeMode("dark");
+  };
+
+  const lightTheme = () => {
+    setThemeMode("light");
+  };
+
+  useEffect(() => {
+    document.querySelector("html").classList.remove("dark", "light");
+    document.querySelector("html").classList.add(themeMode);
+  }, [themeMode]);
+
   return (
     <>
-      <RouterProvider router={router} />
+      <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </>
   );
 }

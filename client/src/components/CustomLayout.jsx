@@ -20,7 +20,8 @@ import {
   MenuOutlined,
   CloseOutlined,
   ShoppingCartOutlined,
-  QuestionOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from "@ant-design/icons";
 
 import { GiArchiveRegister } from "react-icons/gi";
@@ -44,11 +45,13 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { CartContext } from "@/context/CartContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
+import useTheme from "@context/theme";
+
 const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [role, setRole] = useState("user");
+  const { themeMode, lightTheme, darkTheme } = useTheme();
 
   const { currentUser } = useContext(UserContext);
   const [cart, setCart] = useContext(CartContext);
@@ -191,6 +194,10 @@ const CustomLayout = () => {
     setCollapsed(!collapsed);
   };
 
+  const toggleTheme = () => {
+    themeMode === "light" ? darkTheme() : lightTheme();
+  };
+
   return (
     <Layout>
       {isMobile ? (
@@ -205,7 +212,7 @@ const CustomLayout = () => {
             className={"fixed top-0 left-0 bottom-0 z-[1000] overflow-auto"}
           >
             <Sider
-              theme="light"
+              theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
               collapsed={collapsed}
               collapsedWidth={isMobile ? 0 : 80}
               onBreakpoint={(broken) => setCollapsed(broken)}
@@ -233,7 +240,7 @@ const CustomLayout = () => {
                 {collapsed ? <MenuOutlined /> : <CloseOutlined />}
               </Button>
               <Menu
-                theme="light"
+                theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
                 mode="vertical"
                 className="font-sora"
                 defaultSelectedKeys={["home"]}
@@ -260,9 +267,14 @@ const CustomLayout = () => {
       <Layout>
         <Content style={{ margin: "0 16px" }}>
           <Outlet />
-          {/* <Link to="/contact">
-            <FloatButton icon={<QuestionOutlined />} />
-          </Link> */}
+          <FloatButton
+            shape="circle"
+            className={`${
+              darkTheme ? "bg-indigo-500" : "bg-orange-500"
+            } top-[5rem] text-white`}
+            icon={themeMode === "dark" ? <SunOutlined /> : <MoonOutlined />}
+            onClick={toggleTheme}
+          />
           <ContactDrawer />
         </Content>
         <Footer />
