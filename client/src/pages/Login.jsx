@@ -26,7 +26,7 @@ import FOOTER_LOGO from "@images/logo/1.svg";
 import GOOGLE_ICON from "@images/googleIcon.svg";
 import GITHUB_ICON from "@images/githubIcon.svg";
 // import {jwt_decode} from 'jwt-decode'
-
+import useTheme from '@context/theme'
 const Login = () => {
   const [show, setShow] = useState(true);
   const [loginSuccess, setLoginSuccess] = useState(false);
@@ -34,6 +34,8 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const { themeMode, lightTheme, darkTheme } = useTheme();
+
 
   const [error, setError] = useState("Error al iniciar sesión");
   const navigate = useNavigate();
@@ -93,7 +95,7 @@ const Login = () => {
       <Center h="100vh" zIndex={'1000'}>
         {contextHolder}
         <Box className="relative w-full md:w-3/5 lg:w-2/4 xl:w-1/3">
-          <section className="bg-color-form rounded-2xl h-[35rem] flex flex-col items-center justify-center shadow-2xl">
+          <section className={`${themeMode === 'dark' ? 'bg-color-bgDarkMode' : 'bg-color-form'} rounded-2xl h-[35rem] flex flex-col items-center justify-center shadow-2xl`}>
             <div className="mt-[3rem]">
               {/* <img
               src={LOGO}
@@ -101,10 +103,10 @@ const Login = () => {
               className="w-[5rem] h-auto m-auto"
             /> */}
               <div className="flex flex-col items-center justify-center z-[1000]">
-                <h2 className=" text-lg font-bold">
+                <h2 className={`${themeMode === 'dark' ? 'text-color-light': 'text-color-dark'} text-lg font-bold`}>
                   Iniciar sesión en Wander Whiskers
                 </h2>
-                <small className="text-color-dark m-4">
+                <small className={`${themeMode === 'dark' ? 'text-color-light' : 'text-color-dark'} m-4`}>
                   Bienvenido de nuevo, inicia sesión para continuar
                 </small>
                 <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
@@ -135,16 +137,20 @@ const Login = () => {
                 <div className="border-t border-gray-400 w-full ml-4"></div>{" "} 
               </div>
 
-              <form action="" onSubmit={login}>
+              <form action="" onSubmit={login} className={themeMode === 'dark' ? 'bg-color-bgDarkMode' : 'bg-color-bg'}>
+
                 <Stack spacing={4}>
                   <InputGroup size="xs">
                     <Input
-                      addonBefore={<EmailIcon />}
+                      addonBefore={<EmailIcon  color={themeMode === 'dark' ? 'white' : 'black'} 
+                      fontSize="1rem" 
+                      />}
                       size="xs"
                       type="email"
                       name="email"
                       placeholder="Email"
                       pr="2rem"
+                      className={`${themeMode === 'dark' && 'bg-color-bgDarkMode'}`}
                       borderradius="none"
                       bordertoprightradius="md"
                       _focus={{ outline: "none", border: "none" }}
@@ -158,12 +164,15 @@ const Login = () => {
                       autoComplete="on"
                     />
                   </InputGroup>
-                  <InputGroup size="xs">
+                  <InputGroup size="xs" >
                     <Input.Password
-                      addonBefore={<RiLockPasswordLine />}
+                      addonBefore={<RiLockPasswordLine color={themeMode === 'dark' ? 'white' : 'black'} 
+                      fontSize="1rem" 
+                      />}
                       pr="2rem"
                       type={!show ? "text" : "password"}
                       placeholder="Contraseña"
+                      className={`${themeMode === 'dark' && 'bg-color-bgDarkMode'}`}
                       name="password"
                       size="xs"
                       borderradius="none"

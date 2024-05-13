@@ -20,6 +20,7 @@ import {
   Space,
 } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
+import useTheme from "@context/theme";
 
 const ContactDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -32,6 +33,7 @@ const ContactDrawer = () => {
   const [error, setError] = useState("Ha ocurrido un error");
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
+  const { themeMode, lightTheme, darkTheme } = useTheme();
 
   const navigate = useNavigate();
 
@@ -104,6 +106,7 @@ const ContactDrawer = () => {
       {/* {contextHolder} */}
       <FloatButton onClick={showDrawer} icon={<QuestionOutlined />} />
       <Drawer
+        className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
             <div className="flex items-center mt-4">
@@ -216,10 +219,23 @@ const ContactDrawer = () => {
               </Row>
               <Form.Item>
                 <Space>
-                  <Button onClick={onClose}>Cancelar</Button>
+                  <Button
+                    className={`${
+                      themeMode === "dark"
+                        ? " bg-color"
+                        : "bg-color-btn hover:bg-color-btnHover"
+                    } text-white`}
+                    onClick={onClose}
+                  >
+                    Cancelar
+                  </Button>
                   <button
                     type="submit"
-                    className="bg-color-btn hover:bg-color-btnHover transition-all duration-300  text-white px-3 py-1 rounded-md"
+                    className={`${
+                      themeMode === "dark"
+                        ? "bg-color-darkBtn hover:bg-color-darkHover"
+                        : "bg-color-btn hover:bg-color-btnHover"
+                    } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
                   >
                     ¡Enviar mensaje!
                   </button>
@@ -234,7 +250,11 @@ const ContactDrawer = () => {
               </h3>
               <p>¡Gracias por contactarnos!</p>
               <Button
-                className="bg-color-btn hover:bg-color-btnHover transition-all duration-300  text-white px-3 py-1 rounded-md mt-5"
+                className={`${
+                  themeMode === "dark"
+                    ? "bg-color-darkBtn hover:bg-color-darkHover"
+                    : "bg-color-btn hover:bg-color-btnHover transition-all duration-300  text-white px-3 py-1 rounded-md mt-5"
+                } `}
                 onClick={onClose}
               >
                 Cerrar

@@ -11,6 +11,7 @@ import {
 import { Link, Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
+import darkLogo from "@images/logo/3.svg";
 import logo from "@images/logo/5.svg";
 import {
   HomeOutlined,
@@ -199,7 +200,7 @@ const CustomLayout = () => {
   };
 
   return (
-    <Layout>
+    <Layout theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}>
       {isMobile ? (
         <Menu
           mode="horizontal"
@@ -229,7 +230,7 @@ const CustomLayout = () => {
               width={150}
             >
               <Link to="/">
-                <img src={logo} alt="" />
+                {themeMode === 'light' ? <img src={logo} alt="" /> : <img src={darkLogo} alt="" />}
               </Link>
 
               <Button
@@ -264,8 +265,8 @@ const CustomLayout = () => {
         </>
       )}
 
-      <Layout>
-        <Content style={{ margin: "0 16px" }}>
+      <Layout theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}>
+        <Content style={{ margin: "0 16px" }} >
           <Outlet />
           <FloatButton
             shape="circle"
