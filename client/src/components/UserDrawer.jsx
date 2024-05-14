@@ -7,6 +7,7 @@ import { FaRegUser } from "react-icons/fa";
 import axios from "axios";
 
 import LOGO from "@images/logo/1.svg";
+import DARK_LOGO from "@images/logo/3.svg";
 import GOOGLE_ICON from "@images/googleIcon.svg";
 import GITHUB_ICON from "@images/githubIcon.svg";
 import { PlusOutlined, EditOutlined } from "@ant-design/icons";
@@ -25,6 +26,7 @@ import {
 import { UserContext } from "@/context/UserContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
+import useTheme from "@context/theme";
 // const { Option } = Select;
 const UserDrawer = ({ isRegistering, openButton, email }) => {
   const [open, setOpen] = useState(false);
@@ -32,7 +34,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
   const [error, setError] = useState("Ha ocurrido un error");
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
-
+  const { themeMode } = useTheme();
   const navigate = useNavigate();
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -64,7 +66,11 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
   const success = () => {
     messageApi.open({
       type: "success",
-      content: `${isRegistering ? "Registro realizado con éxito" : "Usuario actualizado con éxito"}`,
+      content: `${
+        isRegistering
+          ? "Registro realizado con éxito"
+          : "Usuario actualizado con éxito"
+      }`,
     });
     onClose(); // Cierra el Drawer
   };
@@ -72,7 +78,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
   const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: error || 'Ha ocurrido un error',
+      content: error || "Ha ocurrido un error",
     });
   };
 
@@ -150,17 +156,26 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
         {openButton}
       </Button>
       <Drawer
+       className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-             <div className="flex items-center mt-4">
+            <div className="flex items-center mt-4">
               {isRegistering
                 ? "Registrarse en Wander Whiskers"
                 : "Editar perfil"}
-              <img
-                src={LOGO}
-                alt="wander whiskers logo"
-                className="w-[4rem] h-auto"
-              />
+              {themeMode === "light" ? (
+                <img
+                  src={LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              ) : (
+                <img
+                  src={DARK_LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              )}
             </div>
           </Yanimation>
         }
@@ -202,7 +217,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
               <Col span={12}>
                 <Form.Item
                   name="username"
-                  initialValue={`${!isRegistering ? currentUser.username : ''}`}
+                  initialValue={`${!isRegistering ? currentUser.username : ""}`}
                   label="Nombre de usuario"
                   rules={[
                     {
@@ -214,7 +229,6 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                   <Input
                     addonBefore={<FaRegUser />}
                     placeholder="Por favor introduce tu nombre"
-                   
                     onChange={(e) => {
                       {
                         handleChange(e);
@@ -228,7 +242,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                 <Form.Item
                   name="email"
                   label="Email"
-                  initialValue={`${!isRegistering ? email : ''}`}
+                  initialValue={`${!isRegistering ? email : ""}`}
                   rules={[
                     {
                       type: "email",
@@ -245,7 +259,6 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                       width: "100%",
                     }}
                     addonBefore={<EmailIcon />}
-                   
                     onChange={(e) => {
                       {
                         handleChange(e);
@@ -412,10 +425,23 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
             </Row>
             <Form.Item>
               <Space>
-                <Button onClick={onClose}>Cancelar</Button>
+                <button
+                  className={`${
+                    themeMode === "dark"
+                      ? " bg-gray-400 hover:bg-transparent text-white"
+                      : "text-color-dark"
+                  } border rounded-md py-1 px-3 transition-all duration-300`}
+                  onClick={onClose}
+                >
+                  Cancelar
+                </button>
                 <button
                   type="submit"
-                  className=" bg-color-btn hover:bg-color-btnHover transition-all duration-300  text-white px-3 py-1 rounded-md"
+                  className={`${
+                    themeMode === "dark"
+                      ? "bg-dark-primary hover:bg-a-6"
+                      : "bg-color-btn hover:bg-color-btnHover"
+                  } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
                 >
                   {isRegistering ? "Registrarse" : "Actualizar perfil"}
                 </button>

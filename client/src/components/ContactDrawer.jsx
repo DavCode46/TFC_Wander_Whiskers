@@ -1,10 +1,14 @@
 import { useState, useRef, useContext } from "react";
 import { PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 import LOGO from "@images/logo/1.svg";
+import DARK_LOGO from "@images/logo/3.svg";
 import emailjs from "@emailjs/browser";
 import Confetti from "react-confetti";
 import { UserContext } from "@/context/UserContext";
 import { FaRegUser } from "react-icons/fa";
+import { MdOutlineMail } from "react-icons/md";
+import { FaPhone } from "react-icons/fa";
+import useTheme from "@context/theme";
 
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
@@ -20,7 +24,6 @@ import {
   Space,
 } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
-import useTheme from "@context/theme";
 
 const ContactDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -104,18 +107,26 @@ const ContactDrawer = () => {
   return (
     <>
       {/* {contextHolder} */}
-      <FloatButton onClick={showDrawer} icon={<QuestionOutlined />} />
+      <FloatButton type={`${themeMode === 'dark' ? 'primary' : ''}`} onClick={showDrawer} icon={<QuestionOutlined />} />
       <Drawer
         className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
             <div className="flex items-center mt-4">
               Formulario de contacto
-              <img
-                src={LOGO}
-                alt="wander whiskers logo"
-                className="w-[4rem] h-auto"
-              />
+              {themeMode === "light" ? (
+                <img
+                  src={LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              ) : (
+                <img
+                  src={DARK_LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              )}
             </div>
           </Yanimation>
         }
@@ -144,7 +155,13 @@ const ContactDrawer = () => {
                     ]}
                   >
                     <Input
-                      addonBefore={<FaRegUser />}
+                      addonBefore={
+                        <FaRegUser
+                          className={`${
+                            themeMode === "dark" ? "text-dark-white" : ""
+                          }`}
+                        />
+                      }
                       placeholder="Por favor introduce tu nombre"
                       onChange={(e) => setName(e.target.value)}
                     />
@@ -166,7 +183,13 @@ const ContactDrawer = () => {
                     ]}
                   >
                     <Input
-                      addonBefore={<PhoneIcon />}
+                      addonBefore={
+                        <FaPhone
+                          className={`${
+                            themeMode === "dark" ? "text-dark-white" : ""
+                          } text-md`}
+                        />
+                      }
                       placeholder="Por favor introduce tu teléfono"
                       onChange={(e) => setPhone(e.target.value)}
                     />
@@ -190,7 +213,13 @@ const ContactDrawer = () => {
                     ]}
                   >
                     <Input
-                      addonBefore={<EmailIcon />}
+                      addonBefore={
+                        <MdOutlineMail
+                          className={`${
+                            themeMode === "dark" ? "text-dark-white" : ""
+                          } text-lg`}
+                        />
+                      }
                       placeholder="Por favor introduce tu email"
                       onChange={(e) => setEmail(e.target.value)}
                     />
@@ -219,21 +248,21 @@ const ContactDrawer = () => {
               </Row>
               <Form.Item>
                 <Space>
-                  <Button
+                  <button
                     className={`${
                       themeMode === "dark"
-                        ? " bg-color"
-                        : "bg-color-btn hover:bg-color-btnHover"
-                    } text-white`}
+                        ? " bg-gray-400 hover:bg-transparent text-white"
+                        : "text-color-dark"
+                    } border rounded-md py-1 px-3 transition-all duration-300`}
                     onClick={onClose}
                   >
                     Cancelar
-                  </Button>
+                  </button>
                   <button
                     type="submit"
                     className={`${
                       themeMode === "dark"
-                        ? "bg-color-darkBtn hover:bg-color-darkHover"
+                        ? "bg-dark-primary hover:bg-a-6"
                         : "bg-color-btn hover:bg-color-btnHover"
                     } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
                   >
@@ -248,13 +277,14 @@ const ContactDrawer = () => {
               <h3 className="text-green-500 text-xl font-bold mb-4">
                 ¡Mensaje enviado con éxito!
               </h3>
-              <p>¡Gracias por contactarnos!</p>
+              <p className={`${themeMode === 'dark' ? 'text-dark-white' : ''} mb-5`}>¡Gracias por contactarnos!</p>
+              <p className={`${themeMode === 'dark' ? 'text-dark-white' : ''} mb-5`}>Responderemos a la mayor brevedad posible</p>
               <Button
                 className={`${
                   themeMode === "dark"
-                    ? "bg-color-darkBtn hover:bg-color-darkHover"
-                    : "bg-color-btn hover:bg-color-btnHover transition-all duration-300  text-white px-3 py-1 rounded-md mt-5"
-                } `}
+                    ? "bg-dark-primary hover:bg-a-6"
+                    : "bg-color-btn hover:bg-color-btnHover"
+                } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
                 onClick={onClose}
               >
                 Cerrar

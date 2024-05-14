@@ -100,14 +100,17 @@
     background-color: #ffcf81;
   }
 
-  .darkMode .ant-drawer-header,
-  .darkMode .ant-drawer-body {
+  .darkMode .ant-drawer-header {
     background-color: #001529;
+    
+  }
+
+  .darkMode .ant-drawer-body {
+    background-color: #081C24;
   }
   .darkMode .ant-drawer-header-title button {
     color: white;
   }
-  .darkMode .ant-drawer-header-title button:hover {
-    color: white;
-  }  
+
+  
 }

@@ -8,7 +8,7 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import theme from "./theme/theme";
-
+import { ConfigProvider } from "antd";
 import CustomLayout from "./components/CustomLayout";
 import Home from "./pages/Home";
 
@@ -242,9 +242,45 @@ function App() {
 
   return (
     <>
-      <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+      <ConfigProvider theme={{
+        components: {
+          Select: {
+            optionActiveBg: themeMode === 'dark' ? '#1890ff' : '',
+            optionSelectedBg: themeMode === 'dark' ? '#1890ff' : '',
+            optionSelectedColor: themeMode === 'dark' ? '#fff' : '',
+            selectorBg: themeMode === 'dark' ? '#081C24' : '',
+            colorText: themeMode === 'dark' ? 'white' : '',
+          },
+          Drawer: {
+            colorIcon: themeMode === 'dark' ? '#fff' : '',
+            colorIconHover: themeMode === 'dark' ? '#ccc' : '',
+            colorSplit: themeMode === 'dark' ? '#fff' : '',
+            colorText: themeMode === 'dark' ? '#fff' : '',
+          },
+          Upload: {
+            colorPrimary: themeMode === 'dark' ? '#1890ff' : '',
+            colorPrimaryHover: themeMode === 'dark' ? '#1890ff' : '',
+          },
+          Input: {
+            activeBorderColor: themeMode === 'dark' ? '#1890ff' : '',
+            addonBg: themeMode === 'dark' ? '#2e2e2e' : '',
+            colorBgContainer: themeMode === 'dark' ? '#081C24' : '',
+            colorTextPlaceholder: themeMode === 'dark' ? '#fff' : '',
+            colorText: themeMode === 'dark' ? '#fff' : '',
+          },
+          Form: {
+            labelColor: themeMode === 'dark' ? '#fff' : '',
+          },
+          Button: {
+            colorTextDisabled: themeMode === 'dark' ? '#ccc' : ''
+          }
+          
+        }
+      }}>
+        <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </ConfigProvider>
     </>
   );
 }

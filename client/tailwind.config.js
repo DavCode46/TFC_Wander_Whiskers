@@ -1,10 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 import { fontFamily } from "tailwindcss/defaultTheme";
 
-// import { nextui } from "@nextui-org/react";
-
-// import plugin from "tailwindcss/plugin";
-
 export default {
   content: [
     "./index.html",
@@ -18,12 +14,10 @@ export default {
           dark: '#6d6875',
           light: '#f0f3fa',
           bgDarkMode: '#001529',
-          // bg: '#d5deef',
           form: '#fefefe',
           primary: '#b1c9ef',
           secondary: '#8aaee0',
           btn: '#638ecb',
-          // btnSecondary: 'rgb(37, 150, 190)',
           btnHover: '#395886',
           darkBg: '#032030',
           darkPrimary: '#022b42',
@@ -32,11 +26,6 @@ export default {
           darkBtn: '#006494',
           darkHover: '#006da4',
           content: 'rgba(245,245,245,255)',
-          // selected: '#5252a3',
-          // notSelected: '#fbf7f0',
-          // secondNotSelected: '#fefefe',
-          // postsBgContainer: '#e6d3f6',
-          // pageBg: '#a89cf5'
         },
         p: {
           1: '#1a1325',
@@ -62,20 +51,25 @@ export default {
           9: '#8dcff8',
           10: '#b7e3fa',
         },
+        dark: {
+          bg: '#081C24',
+          bg3: '#141414',
+          bg2: '#001222',
+          primary: '#1890ff',
+          heading: '#b7e3fa',
+          text: '#b7e3fa',
+          footer: ' #00111A',
+          footer2: '#000A11',
+          deepBlue: '#0e182a',
+          greyBlue: '#1f2937',
+          grey: '#2e2e2e',
+          white: '#FFFFFF',
+          lightGrey: '#CCCCCC',
+          silver: '#BFBFBF',
+          card: '#1F2E35',
+        },
         n: {
-          // 1: "#FFFFFF",
-          // 2: "#CAC6DD",
-          // 3: "#ADA8C3",
-          // 4: "#757185",
-          // 5: "#3F3A52",
-          6: "#252134",
-          // 7: "#15131D",
-          // 8: "#0E0C15",
-          // 9: "#474060",
-          // 10: "#43435C",
-          // 11: "#1B1B2E",
-          // 12: "#2E2A41",
-          // 13: "#6C7275",   
+          6: "#252134", 
         },
       },
       fontFamily: {
@@ -84,18 +78,10 @@ export default {
         poppins: "var(--font-poppins)",
         code: "var(--font-code)",
         grotesk: "var(--font-grotesk)",
-      },
-      // transitionDuration: {
-      //   DEFAULT: "300ms",
-      // },
-      // transitionTimingFunction: {
-      //   DEFAULT: "ease-in-out",
-      // },
-      
+      },    
     },
   },
   darkMode: "class",
-  // plugins: [nextui()],
   corePlugins: {
     preflight: false,
   }, 

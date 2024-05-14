@@ -24,8 +24,10 @@ import {
 import { FormControl } from "@chakra-ui/react";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import LOGO from "@images/logo/1.svg";
+import DARK_LOGO from "@images/logo/3.svg";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
-import { button } from "@nextui-org/react";
+import useTheme from "@context/theme";
+
 const { Option } = Select;
 
 const { Dragger } = Upload;
@@ -47,6 +49,8 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   const token = currentUser?.token;
   const navigate = useNavigate();
   const { id } = useParams();
+  const { themeMode } = useTheme();
+
   useEffect(() => {
     if (!token) navigate("login");
   }, []);
@@ -213,7 +217,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: error || 'Ha ocurrido un error',
+      content: error || "Ha ocurrido un error",
     });
   };
   const showDrawer = () => {
@@ -226,27 +230,55 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   return (
     <>
       {contextHolder}
-      
-        <Button
-          className="text-blue-400 hover:text-blue-500 hover:underline text-[.8rem]"
-          onClick={showDrawer}
-          icon={<PlusCircleOutlined />}
-          type={`${homeButton ? 'default' : ''}`}
-        >
-          {!isEditing && !homeButton ? "Publicar anuncio" : (homeButton ? "Reportar mascota perdida" : "Editar anuncio")}
-        </Button>
-      
+
+      <Button
+        className={`${
+          themeMode === "dark"
+            ? "text-dark-white"
+            : "text-blue-400 hover:text-blue-500 "
+        } hover:underline text-[.8rem]`}
+        onClick={showDrawer}
+        icon={<PlusCircleOutlined />}
+        type={
+          homeButton && !themeMode === "dark"
+            ? "default"
+            : themeMode === "dark"
+            ? "primary"
+            : undefined
+        }
+      >
+        {!isEditing && !homeButton
+          ? "Publicar anuncio"
+          : homeButton
+          ? "Reportar mascota perdida"
+          : "Editar anuncio"}
+      </Button>
+
       <Drawer
+      
         loading={true}
+        className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-            <div className="flex items-center mt-4">
+            <div
+              className={`${
+                themeMode === "dark" ? "text-dark-white" : ""
+              } flex items-center mt-4`}
+            >
               {isEditing ? "Actualizar anuncio" : "Publicar anuncio"}
-              <img
-                src={LOGO}
-                alt="wander whiskers logo"
-                className="w-[4rem] h-auto"
-              />
+              {themeMode === "light" ? (
+                <img
+                  src={LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              ) : (
+                <img
+                  src={DARK_LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              )}
             </div>
           </Yanimation>
         }
@@ -275,7 +307,13 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   ]}
                 >
                   <Input
-                    addonBefore={<MdOutlinePets />}
+                    addonBefore={
+                      <MdOutlinePets
+                        className={`${
+                          themeMode === "dark" ? "text-dark-white" : ""
+                        }`}
+                      />
+                    }
                     placeholder="Nombre de la mascota"
                     size="sm"
                     _focus={{ outline: "none", border: "none" }}
@@ -306,6 +344,10 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   <Select
                     size="sm"
                     fontSize="sm"
+                    dropdownStyle={{
+                      backgroundColor: themeMode === "dark" ? "#001529" : "",
+                      color: themeMode === "dark" ? "white !important" : "",
+                    }}
                     _focus={{ outline: "none", border: "none" }}
                     onChange={(value) => {
                       setCondition(value);
@@ -341,6 +383,10 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                       handleProvinceChange(value);
                       handleSetError();
                     }}
+                    dropdownStyle={{
+                      backgroundColor: themeMode === "dark" ? "#001529" : "",
+                      color: themeMode === "dark" ? "white !important" : "",
+                    }}
                     fontSize="sm"
                     _focus={{ outline: "none", border: "none" }}
                     placeholder="Provincia"
@@ -368,6 +414,9 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   <Select
                     size="sm"
                     fontSize="sm"
+                    dropdownStyle={{
+                      backgroundColor: themeMode === "dark" ? "#001529" : "",
+                    }}
                     _focus={{ outline: "none", border: "none" }}
                     onChange={(value) => {
                       setSpecie(value);
@@ -429,10 +478,18 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                       <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                       </p>
-                      <p className="ant-upload-text">
+                      <p
+                        className={`${
+                          themeMode === "dark" ? "text-dark-white" : ""
+                        }`}
+                      >
                         Haz click o arrastra una imagen
                       </p>
-                      <p className="ant-upload-hint">
+                      <p
+                        className={`${
+                          themeMode === "dark" ? "text-dark-white" : ""
+                        }`}
+                      >
                         La imagen debe ser en formato PNG, JPG, JPEG, WEBP o
                         AVIF
                       </p>
@@ -443,10 +500,23 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
             </Row>
             <Form.Item>
               <Space>
-                <Button onClick={onClose}>Cancelar</Button>
+                <button
+                  className={`${
+                    themeMode === "dark"
+                      ? " bg-gray-400 hover:bg-transparent text-white"
+                      : "text-color-dark"
+                  } border rounded-md py-1 px-3 transition-all duration-300`}
+                  onClick={onClose}
+                >
+                  Cancelar
+                </button>
                 <button
                   type="submit"
-                  className=" bg-color-btn  text-white px-3 py-1 rounded-md"
+                  className={`${
+                    themeMode === "dark"
+                      ? "bg-dark-primary hover:bg-a-6"
+                      : "bg-color-btn hover:bg-color-btnHover"
+                  } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
                 >
                   {!isEditing ? "Publicar anuncio" : "Actualizar anuncio"}
                 </button>

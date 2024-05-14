@@ -5,11 +5,14 @@ import {
   XOutlined,
 } from "@ant-design/icons";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
+import useTheme from '@context/theme'
 
 const Footer = () => {
+  const { themeMode } = useTheme()
+
   return (
     <FadeAnimation>
-      <footer className="font-grotesk bg-[rgba(45,45,63,255)] text-[#d5deef] grid md:justify-items-center lg:grid-cols-3">
+      <footer className={`${themeMode === 'dark' ? 'bg-dark-footer text-dark-lightGrey' : 'bg-[rgba(45,45,63,255)] text-[#d5deef]'} font-grotesk grid md:justify-items-center lg:grid-cols-3`}>
         <div className="p-5 lg:col-span-1">
           <h2 className="text-xl mb-3 ml-3">Sobre nosotros</h2>
           <ul className=" list-disc ml-3">
@@ -45,7 +48,7 @@ const Footer = () => {
             <li>
               <Link
                 to="/posts/species/Perro"
-                className="hover:text-[#ff7f0e] animated-underline"
+                className={`${themeMode === 'dark' ? 'hover:text-dark-primary' : 'hover:text-[#ff7f0e]'} animated-underline`}
               >
                 Perro
               </Link>
@@ -53,7 +56,7 @@ const Footer = () => {
             <li>
               <Link
                 to="/posts/species/Gato"
-                className="hover:text-[#ff7f0e] animated-underline"
+                className={`${themeMode === 'dark' ? 'hover:text-dark-primary' : 'hover:text-[#ff7f0e]'} animated-underline`}
               >
                 Gato
               </Link>
@@ -61,7 +64,7 @@ const Footer = () => {
             <li>
               <Link
                 to="/posts/species/Otro"
-                className="hover:text-[#ff7f0e] animated-underline"
+                className={`${themeMode === 'dark' ? 'hover:text-dark-primary' : 'hover:text-[#ff7f0e]'} animated-underline`}
               >
                 Otro
               </Link>
@@ -75,7 +78,7 @@ const Footer = () => {
             <li>
               <Link
                 to="/legal"
-                className="hover:text-[#ff7f0e] animated-underline"
+                className={`${themeMode === 'dark' ? 'hover:text-dark-primary' : 'hover:text-[#ff7f0e]'} animated-underline`}
               >
                 Aviso legal
               </Link>
@@ -83,7 +86,7 @@ const Footer = () => {
             <li>
               <Link
                 to="/privacity"
-                className="hover:text-[#ff7f0e] animated-underline"
+                className={`${themeMode === 'dark' ? 'hover:text-dark-primary' : 'hover:text-[#ff7f0e]'} animated-underline`}
               >
                 Política de privacidad
               </Link>
@@ -91,17 +94,17 @@ const Footer = () => {
             <li>
               <Link
                 to="cookies"
-                className="hover:text-[#ff7f0e] animated-underline"
+                className={`${themeMode === 'dark' ? 'hover:text-dark-primary' : 'hover:text-[#ff7f0e]'} animated-underline`}
               >
                 Política de cookies
               </Link>
             </li>
           </ul>
         </div>
-        <div className="bg-[rgba(34,34,49,255)] h-20 flex justify-center items-center md:col-span-2 lg:col-span-3 w-full">
+        <div className={`${themeMode === 'dark' ? 'bg-dark-footer2' : 'bg-[rgba(34,34,49,255)]'} h-20 flex justify-center items-center md:col-span-2 lg:col-span-3 w-full`}>
           <p className="ml-1 mr-1">
             © {new Date().getFullYear()} - Todos los derechos reservados{" "}
-            <span className="text-[#638ecb]">Wander Whiskers</span>
+            <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-[#638ecb]'}`}>Wander Whiskers</span>
           </p>
         </div>
       </footer>

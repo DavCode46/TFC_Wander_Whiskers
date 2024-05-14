@@ -36,7 +36,7 @@ import {
 } from "react-icons/md";
 import { BsSignpostSplit } from "react-icons/bs";
 import { SiGradleplaypublisher } from "react-icons/si";
-
+import UserDrawer from "./UserDrawer";
 import { ImProfile } from "react-icons/im";
 
 const { Sider, Content } = Layout;
@@ -47,6 +47,7 @@ import axios from "axios";
 import { CartContext } from "@/context/CartContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import useTheme from "@context/theme";
+import LoginDrawer from "./LoginDrawer";
 
 const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
@@ -93,24 +94,24 @@ const CustomLayout = () => {
       key: "toggleBtn",
       icon: <MenuOutlined />,
       children: [
-        {
-          key: "login",
-          icon: <LoginOutlined />,
-          label: <Link to="/login">Login</Link>,
-          hidden: currentUser,
-        },
+        // {
+        //   key: "login",
+        //   icon: <LoginOutlined />,
+        //   label: <ContactDrawer />,
+        //   hidden: currentUser,
+        // },
         // {
         //   key: "register",
         //   icon: <GiArchiveRegister />,
         //   label: <Link to="/register">Registrarse</Link>,
         //   hidden: currentUser,
         // },
-        {
-          key: "logout",
-          icon: <LogoutOutlined />,
-          label: <Link to="/logout">Logout</Link>,
-          hidden: !currentUser,
-        },
+        // {
+        //   key: "logout",
+        //   icon: <LogoutOutlined />,
+        //   label: <Link to="/logout">Logout</Link>,
+        //   hidden: !currentUser,
+        // },
         {
           key: "home",
           icon: <HomeOutlined />,
@@ -200,7 +201,7 @@ const CustomLayout = () => {
   };
 
   return (
-    <Layout theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}>
+    <Layout theme={`${themeMode === "dark" ? "dark" : "light"}`}>
       {isMobile ? (
         <Menu
           mode="horizontal"
@@ -213,7 +214,7 @@ const CustomLayout = () => {
             className={"fixed top-0 left-0 bottom-0 z-[1000] overflow-auto"}
           >
             <Sider
-              theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
+              theme={`${themeMode === "dark" ? "dark" : "light"}`}
               collapsed={collapsed}
               collapsedWidth={isMobile ? 0 : 80}
               onBreakpoint={(broken) => setCollapsed(broken)}
@@ -230,18 +231,39 @@ const CustomLayout = () => {
               width={150}
             >
               <Link to="/">
-                {themeMode === 'light' ? <img src={logo} alt="" /> : <img src={darkLogo} alt="" />}
+                {themeMode === "light" ? (
+                  <img src={logo} alt="" />
+                ) : (
+                  <img src={darkLogo} alt="" />
+                )}
               </Link>
 
               <Button
                 type="primary"
                 onClick={toggleCollapsed}
-                className="mb-5 text-white bg-color-btn hover:bg-color-btnHover active:bg-color-btnHover py-4 px-3 flex items-center justify-center m-auto transition-all duration-300"
+                className={`${
+                  themeMode === "dark"
+                    ? ""
+                    : "text-white bg-color-btn hover:bg-color-btnHover active:bg-color-btnHover"
+                } mb-5 py-4 px-3 flex items-center justify-center m-auto transition-all duration-300`}
               >
                 {collapsed ? <MenuOutlined /> : <CloseOutlined />}
               </Button>
+              
+                {!currentUser ? (
+                  <LoginDrawer />
+                ) : (
+                  <FloatButton
+                 
+                    icon={<LogoutOutlined />}
+                    shape="square"
+                    type={`${themeMode === "dark" ? "primary" : "default"}`}
+                    href="/logout"
+                  />
+                )}
+              
               <Menu
-                theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
+                theme={`${themeMode === "dark" ? "dark" : "light"}`}
                 mode="vertical"
                 className="font-sora"
                 defaultSelectedKeys={["home"]}
@@ -265,16 +287,15 @@ const CustomLayout = () => {
         </>
       )}
 
-      <Layout theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}>
-        <Content style={{ margin: "0 16px" }} >
+      <Layout>
+        <Content className={`${themeMode === "dark" ? "bg-dark-bg" : ""}`}>
           <Outlet />
           <FloatButton
             shape="circle"
-            className={`${
-              darkTheme ? "bg-indigo-500" : "bg-orange-500"
-            } top-[5rem] text-white`}
+            className=" top-[5rem]"
             icon={themeMode === "dark" ? <SunOutlined /> : <MoonOutlined />}
             onClick={toggleTheme}
+            type={`${themeMode === "dark" ? "primary" : "default"}`}
           />
           <ContactDrawer />
         </Content>

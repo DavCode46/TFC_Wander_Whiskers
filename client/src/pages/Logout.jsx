@@ -8,7 +8,7 @@ const Logout = () => {
 
   useEffect(() => {
     setCurrentUser(null);
-    navigate('/login');
+    navigate('/');
   }, [setCurrentUser, navigate]);
 
   return null; 

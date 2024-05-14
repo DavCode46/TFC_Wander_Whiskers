@@ -77,7 +77,7 @@ const Posts = () => {
     setSearchTerm(searchTerm);
     setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
   };
-console.log('subscripcion', currentUser.isSubscribed)
+
   const filteredPosts = selectedOptions.length
     ? posts.filter((post) =>
         selectedOptions.some((label) => Object.values(post).includes(label))
@@ -124,7 +124,7 @@ console.log('subscripcion', currentUser.isSubscribed)
               handleFilterChange(selectedOptions)
             }
           />
-          {isSubscribed && <PostDrawer />}
+          {currentUser || isSubscribed && <PostDrawer />}
         </div>
       </Xanimation>
 
