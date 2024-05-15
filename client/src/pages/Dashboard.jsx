@@ -7,13 +7,13 @@ import DeletePost from "./DeletePost";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-
+import useTheme from "@/context/theme";
 const Dashboard = () => {
   const [postData, setPostData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-
+  const {themeMode} = useTheme()
   useEffect(() => {
     const fetchPosts = async () => {
       try {
@@ -109,7 +109,7 @@ const Dashboard = () => {
       render: (text, record) => (
         <Space size="middle">
           <Link to={`/post/${record._id}/detail`}>
-            <Button type="dashed" icon={<EyeOutlined />}>
+            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} icon={<EyeOutlined />}>
               Ver
             </Button>
           </Link>
@@ -136,7 +136,7 @@ const Dashboard = () => {
         >
           {/* <Button onClick={() => clearFilters()}>Eliminar filtros</Button> */}
           <Link to="/dashboard/users">
-            <Button>Administrar usuarios</Button>
+            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`}>Administrar usuarios</Button>
           </Link>
         </Space>
 

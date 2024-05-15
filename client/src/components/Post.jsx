@@ -21,7 +21,7 @@ import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addLocale(es)
 TimeAgo.addLocale(en)
 
-
+import useTheme from '@context/theme'
 
 const Post = ({
   postId,
@@ -38,12 +38,15 @@ const Post = ({
     content.length > 70 ? content.substr(0, 70) + "..." : content;
   const substrTitle = title.length > 40 ? title.substr(0, 40) + "..." : title;
 
+  const {themeMode} = useTheme()
   return (
     <Card
       variant="outline"
       mb="5"
       mt="5"
-      className="hover:card__selected hover:shadow-2xl transition-all duration-300"
+      backgroundColor={themeMode === 'dark' ? '#1F2E35' : ''}
+      color={themeMode === 'dark' ? '#ccc' : ''}
+      className={`${themeMode === 'dark' ? ' hover:shadow-neutral-500 hover:shadow-lg' : 'hover:shadow-2xl '} hover:card__selected transition-all duration-300`}
     >
       <Flex direction={{ base: "column", md: "row" }}>
         <Image

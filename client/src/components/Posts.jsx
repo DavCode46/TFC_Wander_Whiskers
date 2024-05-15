@@ -14,6 +14,7 @@ import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Xanimation from "./Animations/Xanimation/Xanimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import { UserContext } from "@/context/UserContext";
+import useTheme from "@/context/theme";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -24,6 +25,7 @@ const Posts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { currentUser } = useContext(UserContext);
   const [isSubscribed, setIsSubscribed] = useState(false)
+  const {themeMode} = useTheme()
   console.log("usuario actual", currentUser);
   useEffect(() => {
     const fetchingPosts = async () => {
@@ -116,6 +118,7 @@ const Posts = () => {
             <CustomSearch onSearch={handleSearch} />
           </div>
           <FilterProvince
+         
             options={locationData.map(({ key, label }) => ({
               label,
               value: key,
@@ -124,7 +127,8 @@ const Posts = () => {
               handleFilterChange(selectedOptions)
             }
           />
-          {currentUser || isSubscribed && <PostDrawer />}
+          {/* {currentUser || isSubscribed && <PostDrawer />} */}
+          <PostDrawer />
         </div>
       </Xanimation>
 
@@ -205,6 +209,10 @@ const Posts = () => {
         pageSize={pageSize}
         pageSizeOptions={[1, 5, 10, 20, 30]}
         style={{ textAlign: "center", marginTop: "1rem" }}
+        dropdownStyle={{
+          backgroundColor: themeMode === "dark" ? "#001529" : "",
+          color: themeMode === "dark" ? "white !important" : "",
+        }}
       />
     </section>
   );

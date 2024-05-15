@@ -273,6 +273,38 @@ function App() {
           },
           Button: {
             colorTextDisabled: themeMode === 'dark' ? '#ccc' : ''
+          },
+          Pagination: {
+            itemActiveBg: themeMode === 'dark' ? '#00111A' : '',
+            itemBg: themeMode === 'dark' ? 'red' : '',
+            itemInputBg: themeMode === 'dark' ? 'red' : '',
+            itemActiveBgDisabled: themeMode === 'dark' ? 'red' : '',
+            colorText: themeMode === 'dark' ? 'white' : '',
+
+            
+          },
+          Cascader: {
+            optionSelectedBg: themeMode === 'dark' ? '#1890ff' : '',
+            colorPrimary: themeMode === 'dark' ? '#1890ff' : '',
+            colorPrimaryBgHover: themeMode === 'dark' ? '#3c9ae8' : '',
+            colorSplit: themeMode === 'dark' ? '#3c9ae8' : '',
+            colorHighlight: themeMode === 'dark' ? '#3c9ae8' : '',
+            controlItemBgHover: themeMode === 'dark' ? '#00213f' : '',
+          },
+          Card: {
+            colorPrimary: themeMode === 'dark' ? '#1F2E35' : '',
+          },
+          Table: {
+            filterDropdownBg: themeMode === 'dark' ? '#1F2E35' : '',
+            filterDropdownMenuBg: themeMode === 'dark' ? '#1F2E35' : '',
+            colorText: themeMode === 'dark' ? '#ccc' : '',
+            expandIconBg: themeMode === 'dark' ? '#ccc' : '',
+            colorBgContainer: themeMode === 'dark' ? '#1F2E35' : 'white',
+            rowHoverBg: themeMode === 'dark' ? '#00213f' : '#fafafa',
+            headerSplitColor: themeMode === 'dark' ? '#1890ff' : '#fafafa',
+            headerBg: themeMode === 'dark' ? '#1890ff' : '#fafafa',
+            fixedHeaderSortActiveBg: themeMode === 'dark' ? '#1890ff' : '#fafafa',
+            
           }
           
         }

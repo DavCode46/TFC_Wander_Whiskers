@@ -112,5 +112,8 @@
     color: white;
   }
 
+  table thead.ant-table-thead th{
+    background-color: green !important;
+    }
   
 }

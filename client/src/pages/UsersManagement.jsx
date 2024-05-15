@@ -6,13 +6,13 @@ import { Link } from "react-router-dom";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-
+import useTheme from "@/context/theme";
 const UsersManagement = () => {
   const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-
+  const {themeMode} = useTheme()
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -109,7 +109,7 @@ const UsersManagement = () => {
           }}
         >
           <Link to="/dashboard">
-            <Button>Administrar Publicaciones</Button>
+            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`}>Administrar Publicaciones</Button>
           </Link>
         </Space>
 

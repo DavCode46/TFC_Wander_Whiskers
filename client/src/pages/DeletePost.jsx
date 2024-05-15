@@ -4,7 +4,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { Button, message, Popconfirm } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-
+import useTheme from '@context/theme'
 import { CircularProgress } from "@chakra-ui/react";
 
 const DeletePost = ({ postID: id }) => {
@@ -12,7 +12,7 @@ const DeletePost = ({ postID: id }) => {
   const [error, setError] = useState("Error al eliminar la publicación");
   const navigate = useNavigate();
   const location = useLocation();
-
+  const {themeMode} = useTheme()
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
@@ -97,7 +97,7 @@ const DeletePost = ({ postID: id }) => {
         okType="danger"
         onConfirm={deletePost}
       >
-        <Button danger icon={<DeleteOutlined />}>
+        <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} danger icon={<DeleteOutlined />}>
           <div className="hidden md:inline">Eliminar</div>
         </Button>
       </Popconfirm>
