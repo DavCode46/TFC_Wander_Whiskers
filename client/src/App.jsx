@@ -249,7 +249,8 @@ function App() {
             optionSelectedBg: themeMode === 'dark' ? '#1890ff' : '',
             optionSelectedColor: themeMode === 'dark' ? '#fff' : '',
             selectorBg: themeMode === 'dark' ? '#081C24' : '',
-            colorText: themeMode === 'dark' ? 'white' : '',
+            colorText: themeMode === 'dark' ? '#ccc' : '',
+            colorPrimary: themeMode === 'dark' ? '#ccc' : '',
           },
           Drawer: {
             colorIcon: themeMode === 'dark' ? '#fff' : '',
@@ -260,6 +261,7 @@ function App() {
           Upload: {
             colorPrimary: themeMode === 'dark' ? '#1890ff' : '',
             colorPrimaryHover: themeMode === 'dark' ? '#1890ff' : '',
+            colorText: themeMode === 'dark' ? '#ccc' : '',
           },
           Input: {
             activeBorderColor: themeMode === 'dark' ? '#1890ff' : '',
@@ -279,9 +281,7 @@ function App() {
             itemBg: themeMode === 'dark' ? 'red' : '',
             itemInputBg: themeMode === 'dark' ? 'red' : '',
             itemActiveBgDisabled: themeMode === 'dark' ? 'red' : '',
-            colorText: themeMode === 'dark' ? 'white' : '',
-
-            
+            colorText: themeMode === 'dark' ? 'white' : '',          
           },
           Cascader: {
             optionSelectedBg: themeMode === 'dark' ? '#1890ff' : '',
@@ -296,15 +296,18 @@ function App() {
           },
           Table: {
             filterDropdownBg: themeMode === 'dark' ? '#1F2E35' : '',
-            filterDropdownMenuBg: themeMode === 'dark' ? '#1F2E35' : '',
+            filterDropdownMenuBg: themeMode === 'dark' ? '#00213f' : '',
             colorText: themeMode === 'dark' ? '#ccc' : '',
             expandIconBg: themeMode === 'dark' ? '#ccc' : '',
             colorBgContainer: themeMode === 'dark' ? '#1F2E35' : 'white',
             rowHoverBg: themeMode === 'dark' ? '#00213f' : '#fafafa',
             headerSplitColor: themeMode === 'dark' ? '#1890ff' : '#fafafa',
-            headerBg: themeMode === 'dark' ? '#1890ff' : '#fafafa',
-            fixedHeaderSortActiveBg: themeMode === 'dark' ? '#1890ff' : '#fafafa',
-            
+            headerBg: themeMode === 'dark' ? '#00213f' : '#fafafa',
+            headerColor: themeMode === 'dark' ? '#ccc' : '#212529',
+            footerBg: themeMode === 'dark' ? '#00213f' : '#fafafa',  
+          },
+          Empty: {
+            colorText:  themeMode === 'dark' ? '#ccc' : '',
           }
           
         }

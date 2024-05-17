@@ -1,5 +1,5 @@
-import { PhoneIcon, EmailIcon } from "@chakra-ui/icons";
-import { MdOutlinePets, MdOutlinePublish } from "react-icons/md";
+import {EditOutlined} from '@ant-design/icons'
+import { MdOutlinePets } from "react-icons/md";
 
 import { useState, useEffect, useContext } from "react";
 
@@ -238,7 +238,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
             : "text-blue-400 hover:text-blue-500 "
         } hover:underline text-[.8rem]`}
         onClick={showDrawer}
-        icon={<PlusCircleOutlined />}
+        icon={themeMode === 'dark' ? <PlusCircleOutlined /> : <EditOutlined />}
         type={
           homeButton && !themeMode === "dark"
             ? "default"

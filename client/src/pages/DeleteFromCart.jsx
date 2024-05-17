@@ -6,12 +6,13 @@ import { Button, message, Popconfirm } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import { CircularProgress } from "@chakra-ui/react";
+import useTheme from "@context/theme";
 
 const DeleteFromCart = ({ productId: id }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("Error al eliminar el producto");
   const navigate = useNavigate();
- 
+  const {themeMode} = useTheme()
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -91,7 +92,7 @@ const DeleteFromCart = ({ productId: id }) => {
         okType="danger"
         onConfirm={deleteProduct}
       >
-        <Button danger icon={<DeleteOutlined />}>
+        <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} danger icon={<DeleteOutlined />}>
           <div className="hidden md:inline">Eliminar</div>
         </Button>
       </Popconfirm>

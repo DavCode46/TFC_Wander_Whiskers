@@ -20,7 +20,7 @@ import DeletePost from "./DeletePost";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import PostDrawer from "@/components/PostDrawer";
-
+import useTheme from '@context/theme'
 const Profile = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(true);
   const [showNewPassword, setShowNewPassword] = useState(true);
@@ -42,7 +42,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
-
+  const {themeMode} = useTheme()
   useEffect(() => {
     if (!token) {
       navigate("/login");
@@ -179,6 +179,7 @@ const Profile = () => {
     },
     fileList,
     showRemoveIcon: true,
+    status: themeMode === 'dark' ? 'error' : ''
   };
 
   const success = () => {
@@ -214,7 +215,7 @@ const Profile = () => {
             <FloatButton icon={<ProfileOutlined />} />
           </Link> */}
 
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-2">
             <FadeAnimation delay={0.2}>
               <div className="flex flex-col gap-3 justify-center items-center">
                 <DeleteUser
@@ -227,15 +228,15 @@ const Profile = () => {
                 />
               </div>
             </FadeAnimation>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center justify-center">
               <FadeAnimation delay={0.4}>
-                <Upload {...props}>
-                  <Button icon={<UploadOutlined />}>Seleccionar imagen</Button>
+                <Upload {...props}> 
+                  <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} icon={<UploadOutlined /> }>Seleccionar imagen</Button>
                 </Upload>
 
                 <Button
-                  type="primary"
-                  className=" bg-color-secondary"
+                  type='primary'
+                  className={`${themeMode === 'dark' ? '' : 'bg-color-secondary'} ml-5`}
                   onClick={handleUpload}
                   disabled={fileList.length === 0}
                   loading={uploading}
@@ -250,7 +251,7 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className="text-lg text-center font-semibold mt-4 w-full">
+        <div className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} text-lg text-center font-semibold mt-4 w-full`}>
           <Xanimation duration={1}>{username}</Xanimation>
         </div>
       </div>
@@ -277,9 +278,9 @@ const Profile = () => {
                         <div className="flex gap-2 justify-around lg:justify-evenly mt-3 text-white hover:text-white">
                           <Link to={`/post/${post._id}/detail`}>
                             <Button
-                              type="default"
+                              type={`${themeMode === 'dark' ? 'primary' : 'default'}`}
                               icon={<EyeOutlined />}
-                              className="text-color-btn hover:text-color-btnHover"
+                              className={`${themeMode === 'dark' ? '' : 'text-color-btn hover:text-color-btnHover'}`}
                             >
                               <div className="hidden md:inline">Ver</div>
                             </Button>

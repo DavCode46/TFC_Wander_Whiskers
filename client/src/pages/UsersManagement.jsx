@@ -114,7 +114,7 @@ const UsersManagement = () => {
         </Space>
 
         <Table
-          className="table"
+          className="dark table"
           columns={columns}
           dataSource={usersData}
           loading={loading}

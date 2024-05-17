@@ -64,7 +64,7 @@ const Post = ({
 
               <Link
                 to={`/posts/location/${location}`}
-                className="bg-color-btn text-white py-2 px-4 rounded-md hover:bg-color-btnHover transition duration-300 hover:text-white"
+                className={`${themeMode === 'dark' ? 'bg-a-5 hover:bg-a-6' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
               >
                 {location}
               </Link>
@@ -76,7 +76,7 @@ const Post = ({
           <CardFooter className="flex justify-between items-center">
             <Link
               to={`/post/${postId}/detail`}
-              className="bg-color-btn text-white py-2 px-4 rounded-md hover:bg-color-btnHover transition duration-300 hover:text-white"
+              className={`${themeMode === 'dark' ? 'bg-a-5 hover:bg-a-6' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
             >
               Ver más
             </Link>

@@ -1,3 +1,4 @@
+import useTheme from "@/context/theme";
 import { Button } from "@chakra-ui/react";
 
 import { FaRegPaperPlane } from "react-icons/fa";
@@ -7,6 +8,7 @@ const ShareButton = ({
   url,
   size
 }) => {
+  const {themeMode} = useTheme()
   const shareContent = async () => {
     try {
       await navigator.share({
@@ -34,10 +36,9 @@ const ShareButton = ({
       onClick={handleClick}
       flex="1"
       variant={'default'}
-      size='lg'     
-      className='hover:text-gray-500'
+      size='lg'      
     >
-      <FaRegPaperPlane />
+      <FaRegPaperPlane className={`${themeMode === 'dark' ? 'text-gray-300 hover:text-gray-400' : 'hover:text-gray-500'} transition-all duration-300`}/>
     </Button>
   );
 };

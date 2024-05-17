@@ -8,11 +8,11 @@ import { UserContext } from "@/context/UserContext";
 import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-
+import useTheme from '@context/theme'
 const OrdersPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orders, setOrders] = useState([]);
-
+  const {themeMode} = useTheme()
   const { currentUser } = useContext(UserContext);
   const token = currentUser.token;
   useEffect(() => {
@@ -58,7 +58,7 @@ const OrdersPage = () => {
   return (
     <div className="flex flex-col justify-start items-center w-full h-screen py-10">
       <Xanimation>
-        <h1 className="text-center font-bold text-2xl mb-5">Tus pedidos</h1>
+        <h1  className={`${themeMode === 'dark' ? 'text-white' : ''} text-center font-bold text-2xl mb-5`}>Tus pedidos</h1>
       </Xanimation>
       {orders.length ? (
         <div className="w-full md:w-3/4 lg:w-2/3">
@@ -115,7 +115,7 @@ const OrdersPage = () => {
         </div>
       ) : (
         <div className="flex items-center justify-center h-screen">
-          <FadeAnimation>
+          <FadeAnimation delay={0.5}>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
               imageStyle={{
@@ -128,12 +128,20 @@ const OrdersPage = () => {
               description={
                 <div>
                   <span className="mt-[3rem]">
-                    No tienes ningún{" "}
-                    <span className="text-color-btn">pedido</span>
+                    No se han encontrado{" "}
+                    <span className="text-color-btn">
+                      pedidos
+                    </span>
                   </span>
                   <div className="mt-[3rem]">
                     {" "}
                     {/* Espaciado entre el texto y el botón */}
+                    <Link
+                      className={`${themeMode === 'dark' ? 'bg-a-6 hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover'}  text-white px-3 py-2 rounded-md hover:text-white transition-all duration-300`}
+                      to="/"
+                    >
+                      Ir a inicio
+                    </Link>
                   </div>
                 </div>
               }
@@ -141,14 +149,14 @@ const OrdersPage = () => {
           </FadeAnimation>
         </div>
       )}
-      <Xanimation>
+      {/* <Xanimation>
         <Link
-          className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+          className={`${themeMode === 'dark' ? 'bg-a-6 hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover'}  text-white px-3 py-2 rounded-md hover:text-white transition-all duration-300`}
           to="/"
         >
           Volver al inicio
         </Link>
-      </Xanimation>
+      </Xanimation> */}
     </div>
   );
 };

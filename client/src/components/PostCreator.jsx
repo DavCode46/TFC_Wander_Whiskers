@@ -6,7 +6,7 @@ import TimeAgo from 'javascript-time-ago'
 
 import es from 'javascript-time-ago/locale/es.json'
 import en from 'javascript-time-ago/locale/en.json'
-
+import useTheme from '@/context/theme';
 
 TimeAgo.addDefaultLocale(es)
 TimeAgo.addLocale(en)
@@ -15,7 +15,7 @@ TimeAgo.addLocale(en)
 const PostCreator = ({authorId, createdAt}) => {
 
   const [creator, setCreator] = useState({})
-
+  const {themeMode} = useTheme()
   useEffect(() => {
     const getCreator = async () => {
       try {
@@ -34,7 +34,7 @@ const PostCreator = ({authorId, createdAt}) => {
           <img src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${creator?.profileImage}`} alt='User Profile Image' className=' rounded-full w-[3.5rem]'/>
         </div>
         <div className="flex items-center gap-3">
-          <h4>{creator?.username}</h4>
+          <h4 className={`${themeMode === 'dark' ? 'text-gray-300 hover:text-gray-400' : ''} transition-all duration-300`}>{creator?.username}</h4>
           {/* <small className=' whitespace-nowrap'><ReactTimeAgo date={new Date(createdAt)} locale='es' /></small> */}
         </div>
     </Link>

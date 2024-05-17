@@ -1,11 +1,13 @@
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+import { useTheme } from "@chakra-ui/react";
 import React from "react";
 
 const PrivacyPage = () => {
+  const {themeMode} = useTheme()
   return (
     <FadeAnimation>
-      <div className="bg-gray-100 min-h-screen py-12">
+      <div className={`${themeMode === 'dark' ? 'bg-red' : 'bg-gray-100 '} min-h-screen py-12`}>
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <Xanimation>
             <h1 className="text-3xl font-bold text-color-dark mb-6">

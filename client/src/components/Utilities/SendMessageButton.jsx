@@ -1,8 +1,10 @@
 import { Button } from "@chakra-ui/react";
 
 import { MessageOutlined } from "@ant-design/icons";
+import useTheme from "@/context/theme";
 
 const SendMessageButton = ({ size }) => {
+  const {themeMode} = useTheme()
   const handleSendMessage = () => {
     // Dirección de correo electrónico del destinatario
     const recipientEmail = "destinatario@example.com";
@@ -30,7 +32,7 @@ const SendMessageButton = ({ size }) => {
       className="hover:text-gray-500"
       onClick={handleSendMessage}
     >
-      <MessageOutlined />
+      <MessageOutlined className={`${themeMode === 'dark' ? 'text-gray-300 hover:text-gray-400' : 'hover:text-gray-500'} transition-all duration-300`}/>
     </Button>
   );
 };

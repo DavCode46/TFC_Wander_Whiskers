@@ -9,6 +9,7 @@ import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
+import useTheme from "@context/theme";
 
 const CartPage = () => {
   const [cart, setCart] = useContext(CartContext);
@@ -20,6 +21,7 @@ const CartPage = () => {
   const [error, setError] = useState("Error al procesar el pago");
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
+  const {themeMode} = useTheme()
 
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
@@ -122,7 +124,7 @@ const CartPage = () => {
     <div className="flex flex-col justify-start items-center w-full h-screen py-10">
       {contextHolder}
       <Xanimation>
-        <h1 className="text-center font-bold text-2xl mb-5">
+        <h1 className={`${themeMode === 'dark' ? 'text-white' : ''} text-center font-bold text-2xl mb-5`}>
           Carrito de Compras
         </h1>
       </Xanimation>
@@ -137,9 +139,9 @@ const CartPage = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h1 className="text-lg font-semibold">{item.name}</h1>
-                      <p className="text-gray-500">{item.description}</p>
-                      <p className="text-gray-600">
+                      <h1 className={`${themeMode === 'dark' ? 'text-white' : ''} text-lg font-semibold`}>{item.name}</h1>
+                      <p className={`${themeMode === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{item.description}</p>
+                      <p className={`${themeMode === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
                         Precio:{" "}
                         {`${
                           item.name === "Anual"
@@ -203,7 +205,7 @@ const CartPage = () => {
                     {" "}
                     {/* Espaciado entre el texto y el botón */}
                     <Link
-                      className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                      className={`${themeMode === 'dark' ? 'bg-a-6 hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover'}  text-white px-3 py-2 rounded-md hover:text-white transition-all duration-300`}
                       to="/"
                     >
                       Ir a inicio
@@ -218,7 +220,7 @@ const CartPage = () => {
       {productsCart.length > 0 && (
         <>
           <Xanimation>
-            <Button type="default" className="mt-5" onClick={handlePay}>
+            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} className="mt-5" onClick={handlePay}>
               Pagar pedido
             </Button>
           </Xanimation>

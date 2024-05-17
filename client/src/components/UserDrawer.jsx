@@ -149,7 +149,8 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
     <>
       {contextHolder}
       <Button
-        className="  text-blue-400 hover:text-blue-500 hover:underline text-[.85rem] w-[13rem]"
+        type={`${themeMode === 'dark' ? 'primary' : 'default'}`}
+        className={`${themeMode !== 'dark' ? 'text-blue-400 hover:text-blue-500 hover:underline ' : ''} text-[.85rem] w-[13rem]`}
         onClick={showDrawer}
         icon={isRegistering ? <PlusOutlined /> : <EditOutlined />}
       >
