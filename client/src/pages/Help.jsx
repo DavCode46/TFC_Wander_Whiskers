@@ -3,6 +3,7 @@ import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FAQAccordion from "@/components/FAQAccordion";
 
 const Help = () => {
+
   return (
     <section className="flex justify-center items-center md:h-[65vh] mt-[5rem]">
       <div className="text-center">

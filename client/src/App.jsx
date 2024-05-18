@@ -22,7 +22,7 @@ import Login from "./pages/Login";
 import Creator from "./pages/Creator";
 
 import Logout from "./pages/Logout";
-import NotFoundPage from "./pages/NotFound";
+import Error404 from "./pages/Error404";
 import Contact from "./pages/Contact";
 import Help from "./pages/Help";
 import PostsBySpecie from "./pages/PostsBySpecie";
@@ -40,7 +40,9 @@ import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
 import PrivacityPage from "./pages/PrivacityPage";
 
-import { ThemeProvider } from "@/context/theme";
+import { ThemeProvider } from "@/context/ThemeContext";
+import Error403 from "./pages/Error403";
+import Error500 from "./pages/Error500";
 
 const Wrapper = ({ children }) => {
   const location = useLocation();
@@ -54,21 +56,21 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <GoogleOAuthProvider clientId={`${import.meta.env.GOOGLE_ID_KEY}`}>
-        <ChakraProvider theme={theme}>
-          <AnimatePresence mode="wait">
-            <Wrapper>
-              <UserProvider>
-                <CartProvider>
-                  <CustomLayout />
-                </CartProvider>
-              </UserProvider>
-            </Wrapper>
-          </AnimatePresence>
-        </ChakraProvider>
-      </GoogleOAuthProvider>
+        <GoogleOAuthProvider clientId={`${import.meta.env.GOOGLE_ID_KEY}`}>
+          <ChakraProvider theme={theme}>
+            <AnimatePresence mode="wait">
+              <Wrapper>
+                <UserProvider>
+                  <CartProvider>
+                    <CustomLayout />
+                  </CartProvider>
+                </UserProvider>
+              </Wrapper>
+            </AnimatePresence>
+          </ChakraProvider>
+        </GoogleOAuthProvider>
     ),
-    errorElement: <NotFoundPage />,
+    errorElement: <Error404 />,
     children: [
       {
         path: "/",
@@ -242,76 +244,88 @@ function App() {
 
   return (
     <>
-      <ConfigProvider theme={{
-        components: {
-          Select: {
-            optionActiveBg: themeMode === 'dark' ? '#1890ff' : '',
-            optionSelectedBg: themeMode === 'dark' ? '#1890ff' : '',
-            optionSelectedColor: themeMode === 'dark' ? '#fff' : '',
-            selectorBg: themeMode === 'dark' ? '#081C24' : '',
-            colorText: themeMode === 'dark' ? '#ccc' : '',
-            colorPrimary: themeMode === 'dark' ? '#ccc' : '',
+      <ConfigProvider
+        theme={{
+          components: {
+            Select: {
+              optionActiveBg: themeMode === "dark" ? "#1890ff" : "",
+              optionSelectedBg: themeMode === "dark" ? "#1890ff" : "",
+              optionSelectedColor: themeMode === "dark" ? "#fff" : "",
+              selectorBg: themeMode === "dark" ? "#081C24" : "",
+              colorText: themeMode === "dark" ? "#ccc" : "",
+              colorPrimary: themeMode === "dark" ? "#ccc" : "",
+            },
+            Drawer: {
+              colorIcon: themeMode === "dark" ? "#fff" : "",
+              colorIconHover: themeMode === "dark" ? "#ccc" : "",
+              colorSplit: themeMode === "dark" ? "#fff" : "",
+              colorText: themeMode === "dark" ? "#fff" : "",
+            },
+            Upload: {
+              colorPrimary: themeMode === "dark" ? "#1890ff" : "",
+              colorPrimaryHover: themeMode === "dark" ? "#1890ff" : "",
+              colorText: themeMode === "dark" ? "#ccc" : "",
+            },
+            Input: {
+              activeBorderColor: themeMode === "dark" ? "#1890ff" : "",
+              addonBg: themeMode === "dark" ? "#2e2e2e" : "",
+              colorBgContainer: themeMode === "dark" ? "#081C24" : "",
+              colorTextPlaceholder: themeMode === "dark" ? "#fff" : "",
+              colorText: themeMode === "dark" ? "#fff" : "",
+            },
+            Form: {
+              labelColor: themeMode === "dark" ? "#fff" : "",
+            },
+            Button: {
+              colorTextDisabled: themeMode === "dark" ? "#ccc" : "",
+            },
+            Pagination: {
+              itemActiveBg: themeMode === "dark" ? "#00111A" : "",
+              itemBg: themeMode === "dark" ? "red" : "",
+              itemInputBg: themeMode === "dark" ? "red" : "",
+              itemActiveBgDisabled: themeMode === "dark" ? "red" : "",
+              colorText: themeMode === "dark" ? "white" : "",
+            },
+            Cascader: {
+              optionSelectedBg: themeMode === "dark" ? "#1890ff" : "",
+              colorPrimary: themeMode === "dark" ? "#1890ff" : "",
+              colorPrimaryBgHover: themeMode === "dark" ? "#3c9ae8" : "",
+              colorSplit: themeMode === "dark" ? "#3c9ae8" : "",
+              colorHighlight: themeMode === "dark" ? "#3c9ae8" : "",
+              controlItemBgHover: themeMode === "dark" ? "#00213f" : "",
+            },
+            Card: {
+              colorPrimary: themeMode === "dark" ? "#1F2E35" : "",
+            },
+            Table: {
+              filterDropdownBg: themeMode === "dark" ? "#1F2E35" : "",
+              filterDropdownMenuBg: themeMode === "dark" ? "#00213f" : "",
+              colorText: themeMode === "dark" ? "#ccc" : "",
+              expandIconBg: themeMode === "dark" ? "#ccc" : "",
+              colorBgContainer: themeMode === "dark" ? "#1F2E35" : "white",
+              rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              headerSplitColor: themeMode === "dark" ? "#ccc" : "#fafafa",
+              headerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              headerColor: themeMode === "dark" ? "#ccc" : "#212529",
+              footerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              bodySortBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+            },
+            Empty: {
+              colorText: themeMode === "dark" ? "#ccc" : "",
+            },
+            Popconfirm: {
+              colorText: themeMode === "dark" ? "#ccc" : "",
+              colorTextHeading: themeMode === "dark" ? "#cacaca" : "",
+            },
+            Result: {
+              colorText: themeMode === "dark" ? "#ccc" : "",
+            },
+            Menu: {
+              darkItemSelectedBg: themeMode === "dark" ? "transparent" : "",
+            }
           },
-          Drawer: {
-            colorIcon: themeMode === 'dark' ? '#fff' : '',
-            colorIconHover: themeMode === 'dark' ? '#ccc' : '',
-            colorSplit: themeMode === 'dark' ? '#fff' : '',
-            colorText: themeMode === 'dark' ? '#fff' : '',
-          },
-          Upload: {
-            colorPrimary: themeMode === 'dark' ? '#1890ff' : '',
-            colorPrimaryHover: themeMode === 'dark' ? '#1890ff' : '',
-            colorText: themeMode === 'dark' ? '#ccc' : '',
-          },
-          Input: {
-            activeBorderColor: themeMode === 'dark' ? '#1890ff' : '',
-            addonBg: themeMode === 'dark' ? '#2e2e2e' : '',
-            colorBgContainer: themeMode === 'dark' ? '#081C24' : '',
-            colorTextPlaceholder: themeMode === 'dark' ? '#fff' : '',
-            colorText: themeMode === 'dark' ? '#fff' : '',
-          },
-          Form: {
-            labelColor: themeMode === 'dark' ? '#fff' : '',
-          },
-          Button: {
-            colorTextDisabled: themeMode === 'dark' ? '#ccc' : ''
-          },
-          Pagination: {
-            itemActiveBg: themeMode === 'dark' ? '#00111A' : '',
-            itemBg: themeMode === 'dark' ? 'red' : '',
-            itemInputBg: themeMode === 'dark' ? 'red' : '',
-            itemActiveBgDisabled: themeMode === 'dark' ? 'red' : '',
-            colorText: themeMode === 'dark' ? 'white' : '',          
-          },
-          Cascader: {
-            optionSelectedBg: themeMode === 'dark' ? '#1890ff' : '',
-            colorPrimary: themeMode === 'dark' ? '#1890ff' : '',
-            colorPrimaryBgHover: themeMode === 'dark' ? '#3c9ae8' : '',
-            colorSplit: themeMode === 'dark' ? '#3c9ae8' : '',
-            colorHighlight: themeMode === 'dark' ? '#3c9ae8' : '',
-            controlItemBgHover: themeMode === 'dark' ? '#00213f' : '',
-          },
-          Card: {
-            colorPrimary: themeMode === 'dark' ? '#1F2E35' : '',
-          },
-          Table: {
-            filterDropdownBg: themeMode === 'dark' ? '#1F2E35' : '',
-            filterDropdownMenuBg: themeMode === 'dark' ? '#00213f' : '',
-            colorText: themeMode === 'dark' ? '#ccc' : '',
-            expandIconBg: themeMode === 'dark' ? '#ccc' : '',
-            colorBgContainer: themeMode === 'dark' ? '#1F2E35' : 'white',
-            rowHoverBg: themeMode === 'dark' ? '#00213f' : '#fafafa',
-            headerSplitColor: themeMode === 'dark' ? '#1890ff' : '#fafafa',
-            headerBg: themeMode === 'dark' ? '#00213f' : '#fafafa',
-            headerColor: themeMode === 'dark' ? '#ccc' : '#212529',
-            footerBg: themeMode === 'dark' ? '#00213f' : '#fafafa',  
-          },
-          Empty: {
-            colorText:  themeMode === 'dark' ? '#ccc' : '',
-          }
-          
-        }
-      }}>
+        }}
+      >
         <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
           <RouterProvider router={router} />
         </ThemeProvider>

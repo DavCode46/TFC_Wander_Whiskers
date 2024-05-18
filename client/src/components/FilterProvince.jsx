@@ -1,6 +1,6 @@
 import { Cascader } from "antd";
 import { locationData } from "@/data/data.js";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 import { ArrowRightOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
 const FilterProvince = ({ onChange }) => {

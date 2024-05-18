@@ -13,7 +13,7 @@ import PostDrawer from "./PostDrawer";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { UserContext } from "@/context/UserContext";
-import useTheme  from '@context/theme'
+import useTheme  from '@context/ThemeContext'
 const Hero = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);

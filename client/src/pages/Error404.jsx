@@ -1,9 +1,9 @@
 import { Result, Button } from "antd";
 import { Link } from "react-router-dom";
 
-const NotFoundPage = () => {
+const Error404 = () => {
   return (
-    <div className="not-found-container">
+    <div className="">
       <div className="not-found-content">
         <Result
           status="404"
@@ -11,7 +11,7 @@ const NotFoundPage = () => {
           subTitle="La página que estás buscando no se encontró."
           extra={
             <Link to="/">
-              <Button type="primary" className=" bg-blue-400">Volver al inicio</Button>
+              <Button type="primary" className=" bg-dark-primary hover:bg-a-7">Volver al inicio</Button>
             </Link>
           }
         />
@@ -20,4 +20,4 @@ const NotFoundPage = () => {
   );
 };
 
-export default NotFoundPage;
+export default Error404;

@@ -75,6 +75,45 @@
   .dark .table .ant-table-pagination {
     background-color: #00213f;
   }
+  .dark .ant-table-filter-dropdown-tree span,
+  .dark .ant-input-affix-wrapper .ant-input-prefix svg,
+  .dark .ant-table-filter-trigger svg,
+  .dark .ant-table-column-sorter {
+    color: #ccc;
+  }
+  
+  .dark .ant-tree-checkbox-checked .ant-tree-node-content-wrapper .ant-tree-node-content-wrapper-normal {
+    background: red;
+  }
+.dark .ant-table-column-sorter {
+  background-color: transparent;
+}
+.dark .ant-table-column-sorter-inner {
+  background-color: transparent;
+}
+.dark .ant-table-column-sorter-down,
+.dark .ant-table-column-sorter-up{
+  color: #ccc;
+}
+.dark .ant-popover-inner {
+  background-color: #0e182a;
+}
+
+.dark .ant-select-selection-placeholder {
+  color: #cacaca;
+}
+.dark .ant-menu-submenu-selected {
+  background-color: #1890ff;
+}
+.dark .ant-menu-item-selected {
+  background-color: #1890ff !important;
+}
+.dark .ant-select-dropdown {
+  background-color: #0e182a;
+  border: 1px solid #ccc;
+}
+
+/* ant-menu-overflow-item ant-menu-submenu ant-menu-submenu-horizontal ant-menu-submenu-active ant-menu-submenu-selected */
   .clip-path {
     clip-path: polygon(
       49% 70%,

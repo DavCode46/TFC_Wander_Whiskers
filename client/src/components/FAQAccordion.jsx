@@ -7,8 +7,9 @@ import {
   Box,
 } from "@chakra-ui/react";
 import { accordionData } from "@/data/data.js";
-
+import useTheme from '@context/ThemeContext'
 const FAQAccordion = () => {
+  const {themeMode} = useTheme()
   return (
     <section className="mb-auto">
       <div className="w-full md:w-2/3 m-auto shadow-2xl rounded-md mb-[7rem]">

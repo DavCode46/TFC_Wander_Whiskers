@@ -26,7 +26,7 @@ import Yanimation from "./Animations/Yanimation/Yanimation";
 import LOGO from "@images/logo/1.svg";
 import DARK_LOGO from "@images/logo/3.svg";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 
 const { Option } = Select;
 

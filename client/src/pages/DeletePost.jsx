@@ -4,7 +4,7 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { Button, message, Popconfirm } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 import { CircularProgress } from "@chakra-ui/react";
 
 const DeletePost = ({ postID: id }) => {

@@ -1,7 +1,7 @@
 import { Button } from "@chakra-ui/react";
 
 import { MessageOutlined } from "@ant-design/icons";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 
 const SendMessageButton = ({ size }) => {
   const {themeMode} = useTheme()

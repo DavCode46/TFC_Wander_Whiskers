@@ -21,7 +21,7 @@ import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addLocale(es)
 TimeAgo.addLocale(en)
 
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 
 const Post = ({
   postId,
@@ -64,7 +64,7 @@ const Post = ({
 
               <Link
                 to={`/posts/location/${location}`}
-                className={`${themeMode === 'dark' ? 'bg-a-5 hover:bg-a-6' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
+                className={`${themeMode === 'dark' ? 'bg-dark-primary hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
               >
                 {location}
               </Link>
@@ -76,7 +76,7 @@ const Post = ({
           <CardFooter className="flex justify-between items-center">
             <Link
               to={`/post/${postId}/detail`}
-              className={`${themeMode === 'dark' ? 'bg-a-5 hover:bg-a-6' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
+              className={`${themeMode === 'dark' ? 'bg-dark-primary hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
             >
               Ver más
             </Link>

@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 const UsersManagement = () => {
   const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -100,8 +100,8 @@ const UsersManagement = () => {
   ];
 
   return (
-    <div className="grid items-center justify-center overflow-x-auto w-[80%] m-auto mb-[10rem] mt-[5rem] z-[-1000]">
-      <FadeAnimation>
+    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[10rem] mt-[5rem] z-[-1000]">
+      <FadeAnimation className={'overflow-x-auto'}>
         <Space
           style={{
             marginBottom: 16,

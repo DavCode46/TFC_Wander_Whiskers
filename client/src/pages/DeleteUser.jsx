@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 import axios from "axios";
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 import { CircularProgress } from "@chakra-ui/react";
 import { Button, message, Popconfirm, FloatButton } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";

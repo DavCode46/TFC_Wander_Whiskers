@@ -20,7 +20,7 @@ import DeletePost from "./DeletePost";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import PostDrawer from "@/components/PostDrawer";
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 const Profile = () => {
   const [showCurrentPassword, setShowCurrentPassword] = useState(true);
   const [showNewPassword, setShowNewPassword] = useState(true);

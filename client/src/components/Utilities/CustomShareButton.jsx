@@ -1,4 +1,4 @@
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 import { Button } from "@chakra-ui/react";
 
 import { FaRegPaperPlane } from "react-icons/fa";

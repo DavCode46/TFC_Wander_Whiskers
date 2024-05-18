@@ -9,7 +9,7 @@ import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 
 const CartPage = () => {
   const [cart, setCart] = useContext(CartContext);

@@ -7,7 +7,7 @@ import { RiCheckboxBlankCircleFill } from "react-icons/ri";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
 import ScrollXAnimation from "./Animations/Xanimation/ScrollXAnimation";
 import ScrollYAnimation from "./Animations/Yanimation/ScrollYAnimation";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 
 const HomeFound = () => {
   const {themeMode} = useTheme()

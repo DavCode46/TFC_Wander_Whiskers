@@ -6,7 +6,7 @@ import { Button, message, Popconfirm } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
 
 import { CircularProgress } from "@chakra-ui/react";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 
 const DeleteFromCart = ({ productId: id }) => {
   const [loading, setLoading] = useState(false);

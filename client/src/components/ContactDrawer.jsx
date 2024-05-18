@@ -8,7 +8,7 @@ import { UserContext } from "@/context/UserContext";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { FaPhone } from "react-icons/fa";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";

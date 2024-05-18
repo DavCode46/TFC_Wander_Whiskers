@@ -14,7 +14,7 @@ import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Xanimation from "./Animations/Xanimation/Xanimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import { UserContext } from "@/context/UserContext";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);

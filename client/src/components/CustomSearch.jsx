@@ -1,5 +1,5 @@
 import { useState } from "react";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 const CustomSearch = ({ onSearch }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const {themeMode} = useTheme()

@@ -7,7 +7,7 @@ import DeletePost from "./DeletePost";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 const Dashboard = () => {
   const [postData, setPostData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -126,8 +126,8 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="grid items-center justify-center overflow-x-auto w-[80%] m-auto mb-[10rem] z-[-1000]">
-      <FadeAnimation>
+    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[10rem] z-[-1000]">
+     <FadeAnimation className={'overflow-x-auto'}>
         <Space
           style={{
             marginBottom: 16,

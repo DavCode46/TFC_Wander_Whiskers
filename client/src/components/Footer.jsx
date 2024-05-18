@@ -5,7 +5,7 @@ import {
   XOutlined,
 } from "@ant-design/icons";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 
 const Footer = () => {
   const { themeMode } = useTheme()
@@ -102,7 +102,7 @@ const Footer = () => {
           </ul>
         </div>
         <div className={`${themeMode === 'dark' ? 'bg-dark-footer2' : 'bg-[rgba(34,34,49,255)]'} h-20 flex justify-center items-center md:col-span-2 lg:col-span-3 w-full`}>
-          <p className="ml-1 mr-1">
+          <p className="ml-1 mr-1 text-center">
             © {new Date().getFullYear()} - Todos los derechos reservados{" "}
             <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-[#638ecb]'}`}>Wander Whiskers</span>
           </p>

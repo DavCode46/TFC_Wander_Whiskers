@@ -26,7 +26,7 @@ import FOOTER_LOGO from "@images/logo/1.svg";
 import GOOGLE_ICON from "@images/googleIcon.svg";
 import GITHUB_ICON from "@images/githubIcon.svg";
 // import {jwt_decode} from 'jwt-decode'
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 const Login = () => {
   const [show, setShow] = useState(true);
   const [loginSuccess, setLoginSuccess] = useState(false);

@@ -26,7 +26,7 @@ import {
 import { UserContext } from "@/context/UserContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 // const { Option } = Select;
 const UserDrawer = ({ isRegistering, openButton, email }) => {
   const [open, setOpen] = useState(false);

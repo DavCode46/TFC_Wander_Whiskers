@@ -7,7 +7,7 @@ import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@nextui-org/react";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
-import useTheme from "@/context/theme";
+import useTheme from "@/context/ThemeContext";
 
 const ServiceCard = () => {
   const [loading, setLoading] = useState("");

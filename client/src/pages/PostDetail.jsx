@@ -10,7 +10,7 @@ import DeletePost from "./DeletePost";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 import PostDrawer from "@/components/PostDrawer";
 
 const PostDetail = () => {
@@ -62,7 +62,7 @@ const PostDetail = () => {
         </p>
       )}
       {post && (
-        <section className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <section className="w-full md:w-3/4 max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
           <div className="relative">
             <FadeAnimation>
               <img

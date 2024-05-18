@@ -46,14 +46,14 @@ import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { CartContext } from "@/context/CartContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@context/theme";
+import useTheme from "@context/ThemeContext";
 import LoginDrawer from "./LoginDrawer";
 
 const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const { themeMode, lightTheme, darkTheme } = useTheme();
+  const { themeMode, lightTheme, darkTheme, toggleTheme } = useTheme();
 
   const { currentUser } = useContext(UserContext);
   const [cart, setCart] = useContext(CartContext);
@@ -196,15 +196,15 @@ const CustomLayout = () => {
     setCollapsed(!collapsed);
   };
 
-  const toggleTheme = () => {
-    themeMode === "light" ? darkTheme() : lightTheme();
-  };
+  // const toggleTheme = () => {
+  //   themeMode === "light" ? darkTheme() : lightTheme();
+  // };
 
   return (
     <Layout theme={`${themeMode === "dark" ? "dark" : "light"}`}>
       {isMobile ? (
         <Menu
-        theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
+          theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
           mode="horizontal"
           className="fixed top-3 left-3 rounded-full z-50 flex items-center justify-center pl-2 w-14 h-14"
           items={menuItemsBurger}

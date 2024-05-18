@@ -8,7 +8,7 @@ import { UserContext } from "@/context/UserContext";
 import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import useTheme from '@context/theme'
+import useTheme from '@context/ThemeContext'
 const OrdersPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [orders, setOrders] = useState([]);
