@@ -316,15 +316,15 @@ const Profile = () => {
                   }}
                   description={
                     <div>
-                      <span className="mt-[3rem]">
+                      <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} mt-[3rem]`}>
                         No se han encontrado{" "}
-                        <span className="text-color-btn">anuncios</span>
+                        <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'}`}>anuncios</span>
                       </span>
                       <div className="mt-[3rem]">
                         {" "}
                         {/* Espaciado entre el texto y el botón */}
                         <Link
-                          className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                          className={`${themeMode === 'dark' ? 'bg-dark-primary hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover'}  text-white px-3 py-2 rounded-md  hover:text-white transition-all duration-300`}
                           to="/create-post"
                         >
                           Publicar anuncio

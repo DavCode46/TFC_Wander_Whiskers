@@ -161,4 +161,30 @@
   .darkMode .ant-drawer-header-title button {
     color: white;
   }
+  .darkMode .ant-form-item-required {
+    color: #ccc;
+  }
+  .darkMode .ant-upload-drag-icon {
+    color: #1890ff;
+  }
+  .darkMode .ant-upload:hover {
+    border-color: #1890ff;
+  }
+
+  .darkMode .ant-select-selection-item,
+  .darkMode .ant-select-in-form-item {
+    color: #ccc;
+  }
+
+  .darkMode .ant-input,
+  .darkMode .ant-input:focus,
+  .darkMode .ant-input-affix-wrapper {
+    background-color: #081C24;
+    color: #ccc;
+  }
+ 
+  .darkMode .ant-input-suffix svg,
+  .darkReset .ant-input-suffix svg  {
+    color: #ccc;
+  }
 }

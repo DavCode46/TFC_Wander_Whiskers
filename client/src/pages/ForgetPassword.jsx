@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useTheme from "@context/ThemeContext";
 import axios from "axios";
 import { UserContext } from "@/context/UserContext";
+import { MdOutlineEmail } from "react-icons/md";
 const ForgetPassword = () => {
   const [error, setError] = useState();
   const [email, setEmail] = useState()
@@ -78,12 +79,13 @@ const ForgetPassword = () => {
               <Input
                 onChange={(e) => setEmail(e.target.value)}
                 prefix={
-                  <LockOutlined
+                  <MdOutlineEmail
                     className={`${
                       themeMode === "dark" ? "text-[#ccc]" : "text-gray-400"
                     } `}
                   />
                 }
+                className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''}`}
                 placeholder="Correo Electrónico"
               />
             </Form.Item>
@@ -103,7 +105,7 @@ const ForgetPassword = () => {
             </Form.Item>
           </Form>
           <div className="text-center mt-5">
-            <Link to="/login" className="text-blue-500 hover:underline">
+            <Link to="/" className="text-blue-500 hover:underline">
               Volver al inicio
             </Link>
           </div>

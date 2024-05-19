@@ -112,7 +112,7 @@ const ContactDrawer = () => {
         className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-            <div className="flex items-center mt-4">
+            <div className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} flex items-center mt-4`}>
               Formulario de contacto
               {themeMode === "light" ? (
                 <img

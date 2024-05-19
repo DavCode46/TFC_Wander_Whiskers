@@ -95,7 +95,7 @@ const ResetPassword = () => {
   return (
     <>
       {contextHolder}
-      <div className="flex flex-col items-center justify-center min-h-screen">
+      <div className={`${themeMode === 'dark' ? 'darkReset' : ''} flex flex-col items-center justify-center min-h-screen`}>
         {contextHolder}
         <div
           className={`${
@@ -135,6 +135,7 @@ const ResetPassword = () => {
                 onChange={(e) => handleChange(e)}
                 placeholder="Nueva Contraseña"
                 autoComplete="on"
+                className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''}`}
               />
             </Form.Item>
 
@@ -170,6 +171,7 @@ const ResetPassword = () => {
                 placeholder="Confirmar Nueva Contraseña"
                 onChange={(e) => handleChange(e)}
                 autoComplete="on"
+                className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''}`}
               />
             </Form.Item>
 
@@ -181,14 +183,14 @@ const ResetPassword = () => {
                   themeMode === "dark"
                     ? "bg-dark-primary hover:bg-a-6"
                     : "bg-color-btn hover:bg-color-btnHover"
-                } transition-all duration-300 text-white px-3 py-1 rounded-md mt-5`}
+                } w-full transition-all duration-300 text-white px-3 py-1 rounded-md mt-5`}
               >
                 Restablecer Contraseña
               </Button>
             </Form.Item>
           </Form>
           <div className="text-center mt-5">
-            <Link to="/login" className="text-blue-500 hover:underline">
+            <Link to="/" className="text-blue-500 hover:underline">
               Volver a la página principal
             </Link>
           </div>
