@@ -95,7 +95,6 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
         setError("No se pudo registrar el usuario");
       }
       success();
-      navigate("/login");
     } catch (err) {
       console.log(err.response.data.message);
       setError(err.response.data.message);

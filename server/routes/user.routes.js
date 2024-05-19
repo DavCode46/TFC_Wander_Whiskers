@@ -7,6 +7,8 @@ const router = Router();
 
 router.post('/register', userCtrl.register);
 router.post('/login', userCtrl.login);
+router.post('/forget-password', userCtrl.forgetPassword)
+router.post('/reset-password/:id/:token', userCtrl.resetPassword)
 router.get('/:id', userCtrl.getUser);
 router.get('/', userCtrl.getUsers);
 router.post('/change-image', authenticate, userCtrl.changeImage);

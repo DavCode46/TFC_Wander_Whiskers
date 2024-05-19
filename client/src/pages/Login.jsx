@@ -63,8 +63,8 @@ const Login = () => {
         data
       );
       const user = await response.data;
-      console.log('login response', response)
-
+      console.log('login response', response.data)
+      console.log('user', user)
       setCurrentUser(user);
       success();
       setTimeout(() => {

@@ -39,10 +39,11 @@ import { useEffect, useLayoutEffect, useState } from "react";
 import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
 import PrivacityPage from "./pages/PrivacityPage";
-
+import ForgetPassword from './pages/ForgetPassword'
 import { ThemeProvider } from "@/context/ThemeContext";
 import Error403 from "./pages/Error403";
 import Error500 from "./pages/Error500";
+import ResetPassword from "./pages/ResetPassword";
 
 const Wrapper = ({ children }) => {
   const location = useLocation();
@@ -222,6 +223,18 @@ const router = createBrowserRouter([
         location: location,
         key: location.pathname,
       },
+      {
+        path: '/forgot-password',
+        element: <ForgetPassword />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: '/users/reset-password/:id/:token',
+        element: <ResetPassword />,
+        location: location,
+        key: location.pathname,
+      }
     ],
   },
 ]);

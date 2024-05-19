@@ -112,8 +112,13 @@
   background-color: #0e182a;
   border: 1px solid #ccc;
 }
+.dark .ant-upload-list-item-name,
+.dark .ant-upload-list-item-actions,
+.ant-upload-list-item-actions .anticon-delete,
+.ant-upload-list-item-actions .anticon-delete svg {
+  color: #ccc;
+}
 
-/* ant-menu-overflow-item ant-menu-submenu ant-menu-submenu-horizontal ant-menu-submenu-active ant-menu-submenu-selected */
   .clip-path {
     clip-path: polygon(
       49% 70%,

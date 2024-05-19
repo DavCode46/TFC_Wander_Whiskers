@@ -24,11 +24,13 @@ import {
   Select,
   Space,
   FloatButton,
+  Anchor,
 } from "antd";
 import { UserContext } from "@/context/UserContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import useTheme from "@context/ThemeContext";
+import UserDrawer from "./UserDrawer";
 
 const LoginDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -40,7 +42,6 @@ const LoginDrawer = () => {
   });
   const { themeMode, lightTheme, darkTheme } = useTheme();
 
-
   const [error, setError] = useState("Error al iniciar sesión");
   const navigate = useNavigate();
 
@@ -48,9 +49,6 @@ const LoginDrawer = () => {
 
   const { setCurrentUser } = useContext(UserContext);
   const handleClick = () => setShow(!show);
-  
-
-
 
   const showDrawer = () => {
     setOpen(true);
@@ -69,11 +67,11 @@ const LoginDrawer = () => {
   };
 
   const login = async (values) => {
-    const { email, password } = values
+    const { email, password } = values;
 
-    const data = new FormData()
-    data.set('email', email)
-    data.set('password', password)
+    const data = new FormData();
+    data.set("email", email);
+    data.set("password", password);
     setError("");
     try {
       const response = await axios.post(
@@ -89,10 +87,10 @@ const LoginDrawer = () => {
       setData({
         email: "",
         password: "",
-      })
+      });
 
       setTimeout(() => {
-        onClose()
+        onClose();
       }, 1000);
     } catch (err) {
       setError(err.response.data.message);
@@ -115,7 +113,12 @@ const LoginDrawer = () => {
   return (
     <>
       {contextHolder}
-      <FloatButton shape="square" type={`${themeMode === 'dark' ? 'primary' : 'default'}`} onClick={showDrawer} icon={<LoginOutlined />} />
+      <FloatButton
+        shape="square"
+        type={`${themeMode === "dark" ? "primary" : "default"}`}
+        onClick={showDrawer}
+        icon={<LoginOutlined />}
+      />
       {/* <FloatButton
       shape="circle"
         type={`${themeMode === 'dark' ? 'primary' : 'default'}`}
@@ -130,10 +133,10 @@ const LoginDrawer = () => {
         Login
       </FloatButton> */}
       <Drawer
-       className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
+        className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-            <div className="flex items-center mt-4">
+            <div className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} flex items-center mt-4`}>
               Iniciar sesión en Wander Whiskers
               {themeMode === "light" ? (
                 <img
@@ -162,13 +165,25 @@ const LoginDrawer = () => {
       >
         <div>
           <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
-            <button className={`${themeMode === 'dark' ? 'text-white hover:bg-[#001529] hover:text-white' : ''} w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}>
+            <button
+              className={`${
+                themeMode === "dark"
+                  ? "text-white hover:bg-dark-greyBlue hover:text-white"
+                  : ""
+              } w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}
+            >
               <img src={GOOGLE_ICON} alt="" className="w-[1rem]" />
               Google
             </button>
 
-            <button className={`${themeMode === 'dark' ? 'text-white hover:bg-[#001529] hover:text-white' : ''} w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}>
-             <FiGithub />
+            <button
+              className={`${
+                themeMode === "dark"
+                  ? "text-white hover:bg-dark-greyBlue hover:text-white"
+                  : ""
+              } w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}
+            >
+              <FiGithub />
               GitHub
             </button>
           </div>
@@ -202,7 +217,7 @@ const LoginDrawer = () => {
                       width: "100%",
                     }}
                     value={data.email}
-                    addonBefore={<EmailIcon />}
+                    addonBefore={<EmailIcon className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                     onChange={(e) => {
                       changeHandler(e);
                       handleSetError();
@@ -213,7 +228,7 @@ const LoginDrawer = () => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-              <Form.Item
+                <Form.Item
                   name="password"
                   label="Contraseña"
                   rules={[
@@ -240,28 +255,35 @@ const LoginDrawer = () => {
               </Col>
             </Row>
             <Form.Item>
-            <Space>
-                  <button
-                    className={`${
-                      themeMode === "dark"
-                        ? " bg-gray-400 hover:bg-transparent text-white"
-                        : "text-color-dark"
-                    } border rounded-md py-1 px-3 transition-all duration-300`}
-                    onClick={onClose}
-                  >
-                    Cancelar
-                  </button>
-                  <button
-                    type="submit"
-                    className={`${
-                      themeMode === "dark"
-                        ? "bg-dark-primary hover:bg-a-6"
-                        : "bg-color-btn hover:bg-color-btnHover"
-                    } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
-                  >
-                    Iniciar sesión
-                  </button>
-                </Space>
+              <p className="flex gap-2">
+                <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''}`}>¿Has olvidado tu contraseña?</span>
+                <Link to='/forgot-password' className={`${themeMode === 'dark' ? 'text-dark-primary hover:text-a-7' : 'text-color-btn hover:text-color-btnHover'}`}>Recuperar contraseña</Link>
+              </p>
+            </Form.Item>
+            <Form.Item>
+              <Space>
+                <button
+                  className={`${
+                    themeMode === "dark"
+                      ? " bg-gray-400 hover:bg-transparent text-white"
+                      : "text-color-dark"
+                  } border rounded-md py-1 px-3 transition-all duration-300`}
+                  onClick={onClose}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className={`${
+                    themeMode === "dark"
+                      ? "bg-dark-primary hover:bg-a-6"
+                      : "bg-color-btn hover:bg-color-btnHover"
+                  } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
+                >
+                  Iniciar sesión
+                </button>
+                <UserDrawer openButton={'Registrarse'} isRegistering />
+              </Space>
             </Form.Item>
           </Form>
         </FadeAnimation>

@@ -230,7 +230,7 @@ const Profile = () => {
             </FadeAnimation>
             <div className="flex flex-col items-center justify-center">
               <FadeAnimation delay={0.4}>
-                <Upload {...props}> 
+                <Upload {...props} className={themeMode === 'dark' ? 'dark' : ''}> 
                   <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} icon={<UploadOutlined /> }>Seleccionar imagen</Button>
                 </Upload>
 

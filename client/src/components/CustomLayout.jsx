@@ -204,7 +204,7 @@ const CustomLayout = () => {
     <Layout theme={`${themeMode === "dark" ? "dark" : "light"}`}>
       {isMobile ? (
         <Menu
-          theme={`${themeMode === 'dark' ? 'dark' : 'light'}`}
+          theme={`${themeMode === "dark" ? "dark" : "light"}`}
           mode="horizontal"
           className="fixed top-3 left-3 rounded-full z-50 flex items-center justify-center pl-2 w-14 h-14"
           items={menuItemsBurger}
@@ -250,19 +250,18 @@ const CustomLayout = () => {
               >
                 {collapsed ? <MenuOutlined /> : <CloseOutlined />}
               </Button>
-              
-                {!currentUser ? (
-                  <LoginDrawer />
-                ) : (
-                  <FloatButton
-                 
-                    icon={<LogoutOutlined />}
-                    shape="square"
-                    type={`${themeMode === "dark" ? "primary" : "default"}`}
-                    href="/logout"
-                  />
-                )}
-              
+
+              {!currentUser ? (
+                <LoginDrawer />
+              ) : (
+                <FloatButton
+                  icon={<LogoutOutlined />}
+                  shape="square"
+                  type={`${themeMode === "dark" ? "primary" : "default"}`}
+                  href="/logout"
+                />
+              )}
+
               <Menu
                 theme={`${themeMode === "dark" ? "dark" : "light"}`}
                 mode="vertical"

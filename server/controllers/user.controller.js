@@ -3,10 +3,11 @@ import jwt from "jsonwebtoken";
 import fs from "fs";
 import path from "path";
 import { v4 as uuid } from "uuid";
-
+import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-
+import dotenv from 'dotenv'
+dotenv.config()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -15,6 +16,14 @@ import User from "../models/User.model.js";
 import Post from "../models/Post.model.js";
 import Cart from "../models/Cart.model.js";
 
+const transporter = nodemailer.createTransport({
+  host: "smtp-relay.brevo.com",
+  port: 587,
+  auth: {
+    user: process.env.NODEMAILER_EMAIL,
+    pass: process.env.NODEMAILER_PASSWORD,
+  },
+});
 /* 
     REGISTER A USER
     post --> api/users/register
@@ -72,6 +81,69 @@ const register = async (req, res, next) => {
         password: hashedPassword,
       });
       await user.save();
+      transporter.sendMail({
+        from: "davidblanco1993@gmail.com",
+        to: email,
+        subject: "¡Registro Wander Whiskers!",
+        html: `<!DOCTYPE html>
+        <html lang="es">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>¡Registro exitoso!</title>
+        <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #1890ff;
+            text-align: center;
+        }
+        p {
+            color: #555;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            background-color: #1890ff;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #1473e6;
+        }
+        </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>¡Registro exitoso!</h1>
+                <p>Gracias por registrarte. Te has registrado exitosamente en Wander Whiskers.</p>
+                <p>Por favor, haz clic en el botón a continuación para iniciar sesión:</p>
+                <div style="text-align: center;">
+                    <a class="button" style="color: white;" href="http://localhost:5173/">Iniciar sesión</a>
+                </div>
+            </div>
+        </body>
+        </html>
+        `,
+      });
       res.status(201).json(`Usuario ${user.email} registrado con éxito`);
     }
   } catch (err) {
@@ -108,7 +180,13 @@ const login = async (req, res, next) => {
       expiresIn: "1d",
     });
 
-    res.status(200).json({ token, id, username, role: user.role, isSubscribed: user.isSubscribed });
+    res.status(200).json({
+      token,
+      id,
+      username,
+      role: user.role,
+      isSubscribed: user.isSubscribed,
+    });
   } catch (err) {
     return next(new ErrorModel("Inicio de sesión fallido", 422));
   }
@@ -281,11 +359,10 @@ const editUser = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
   try {
-  
     const userId = req.params.id;
     const posts = await Post.find({ author: userId });
-    const cart = await Cart.findOne({user: userId})
-    await Cart.findByIdAndDelete(cart)
+    const cart = await Cart.findOne({ user: userId });
+    await Cart.findByIdAndDelete(cart);
     posts.forEach(async (post) => {
       if (post.image) {
         const imagePath = path.join(__dirname, "..", "uploads", post.image);
@@ -298,12 +375,11 @@ const deleteUser = async (req, res, next) => {
     });
     await Post.deleteMany({ author: userId });
     const userToDelete = await User.findById(userId);
-   
+
     const user = await User.findById(req.user.id);
     if (!userToDelete) {
       return next(new ErrorModel("Usuario no encontrado", 404));
     }
-   
 
     // Verificar permisos: el usuario actual debe ser el propietario del usuario a eliminar o un administrador
     if (req.user.id !== userToDelete.id && req.user.username !== "admin") {
@@ -341,6 +417,167 @@ const deleteUser = async (req, res, next) => {
   }
 };
 
+const forgetPassword = async (req, res, next) => {
+  const { email } = req.body;
+  const lowerEmail = email.toLowerCase()
+  try {
+    if (!email) {
+      return next(new ErrorModel("Correo electrónico no proporcionado"));
+    }
+
+    // Validar si el correo electrónico es válido usando una expresión regular
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return next(new ErrorModel("Correo electrónico inválido"));
+    }
+
+    const user = await User.findOne({ email: lowerEmail });
+
+    if (!user) {
+      return next(new ErrorModel("Usuario no encontrado"));
+    }
+
+    const secret = process.env.SECRET_TOKEN + user.password;
+
+    const token = jwt.sign({ email: user.email, id: user._id }, secret, {
+      expiresIn: "1h",
+    });
+
+    const link = `${process.env.APP_RESET_PASSWORD_URL}/reset-password/${user._id}/${token}`;
+    // Send the reset token to the user's email
+    transporter.sendMail({
+      from: "davidblanco1993@gmail.com",
+      to: email,
+      subject: "Recuperar contraseña Wander Whiskers!",
+      html: `<!DOCTYPE html>
+      <html lang="es">
+      <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Recuperar contraseña</title>
+      <style>
+      /* Estilos generales */
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 0;
+      }
+      .container {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 20px;
+          background-color: #fff;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+          color: #1890ff;
+          text-align: center;
+      }
+      p {
+          color: #555;
+          text-align: center;
+          margin-bottom: 20px;
+      }
+      .button {
+          display: inline-block;
+          background-color: #1890ff;
+          color: white;
+          padding: 12px 24px;
+          text-decoration: none;
+          border-radius: 5px;
+          text-align: center;
+          transition: background-color 0.3s ease;
+      }
+      .button:hover {
+          background-color: #1473e6;
+      }
+      </style>
+      </head>
+      <body>
+        <div class="container">
+          <h1>¡Recuperación de contraseña!</h1>
+          <p>Hemos recibido una solicitud para restablecer tu contraseña en Wander Whiskers.</p>
+          <p>Por favor, haz clic en el botón a continuación para restablecer tu contraseña:</p>
+          <div style="text-align: center;">
+            <a class="button" style="color: white;" href="${link}">Restablecer Contraseña</a>
+          </div>
+        </div>
+      </body>
+      </html>
+      `,
+    });
+  } catch (err) {
+    return next(new ErrorModel(err));
+  }
+};
+
+const resetPassword = async (req, res, next) => {
+  const { id, token } = req.params;
+  console.log('id', id)
+  console.log('token', token)
+  try {
+    const user = await User.findById(id);
+    console.log('user', user)
+    if (!user) {
+      return next(new ErrorModel("Usuario no encontrado", 404));
+    }
+
+    const secret = process.env.SECRET_TOKEN + user.password;
+    console.log('secret', secret)
+    try {
+      // Verificar el token y asegurarse de que sea válido y correspondiente al usuario
+      const decoded = jwt.verify(token, secret);
+      console.log('decoded', decoded.id)
+      console.log('decoded user.id', user._id)
+      if (decoded.id == user._id) {
+        const { newPassword, confirmNewPassword } = req.body;
+        console.log('password', newPassword)
+        if (!newPassword || !confirmNewPassword) {
+          return next(new ErrorModel("Por favor, rellene todos los campos", 400));
+        }
+
+        if (newPassword !== confirmNewPassword) {
+          return next(new ErrorModel("Las contraseñas no coinciden", 400));
+        }
+
+        const passwordPattern =
+          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        if (!passwordPattern.test(newPassword.trim())) {
+          return next(
+            new ErrorModel(
+              `<ul>
+                    <li>Al menos 8 caracteres de longitud</li>
+                    <li>Al menos una letra mayúscula</li>
+                    <li>Al menos una letra minúscula</li>
+                    <li>Al menos un caracter especial</li>
+              </ul>`,
+              400
+            )
+          );
+        }
+
+        const salt = await bcrypt.genSalt(12);
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        console.log('hashedPassword', hashedPassword)
+        const updatedUser = await User.findByIdAndUpdate(
+          {_id: id},
+          { password: hashedPassword },
+          { new: true }
+        );
+
+        return res.status(200).json(updatedUser);
+      }
+    } catch (err) {
+      return next(new ErrorModel(err));
+    }
+  } catch (err) {
+    return next(new ErrorModel(err));
+  }
+};
+
+
 export {
   register,
   login,
@@ -349,4 +586,6 @@ export {
   changeImage,
   editUser,
   deleteUser,
+  forgetPassword,
+  resetPassword,
 };
