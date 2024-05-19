@@ -1,5 +1,5 @@
 import ErrorModel from '../models/Error.model.js'
-import Product from '../models/Products.model.js'
+import Product from '../models/Product.model.js'
 
 const getProducts = async (req, res, next) => {   
     try {
@@ -10,6 +10,17 @@ const getProducts = async (req, res, next) => {
     }
 }
 
+const getProduct = async (req, res, next) => {
+    try {
+        const product = await Product.findById(req.params.id)
+        if(!product) return next(new ErrorModel('Error al obtener el producto'))
+        return res.status(200).json(product)
+    } catch(err) {
+        return next(new ErrorModel(err))
+    }
+}
+
 export {
-    getProducts
+    getProducts,
+    getProduct
 }

@@ -9,8 +9,9 @@ import userRoutes from "./routes/user.routes.js";
 import postsRoutes from "./routes/posts.routes.js";
 import cartRoutes from './routes/cart.routes.js'
 import productRoutes from './routes/products.routes.js'
+import orderRoutes from './routes/orders.routes.js'
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
-
+import Product from './models/Product.model.js'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -28,6 +29,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/posts", postsRoutes);
 app.use('/api/users/cart', cartRoutes)
 app.use('/api/products', productRoutes)
+app.use('/api/orders', orderRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
@@ -40,5 +42,54 @@ connect(process.env.MONGO_URI)
   )
   .catch((error) => console.error(error));
 
+//   const servicesData = [
+//     {
+//       name: "Mensual",
+//       description: "Suscripción mensual",
+//       price: 20.99,
+//       features: [
+//         "Posibilidad de publicar anuncios",
+//         "Acceso a la base de datos de animales",
+//         "Notificaciones",
+//         "Soporte prioritario",
+//         "Un mes de prueba"
+//       ],
+//     },
+//     {
+//       name: "Anual",
+//       description: "Suscripción anual",
+//       price: 251.88,
+//       discountPrice: 200,
+//       features: [
+//         "Posibilidad de publicar anuncios",
+//         "Acceso a la base de datos de animales",
+//         "Notificaciones",
+//         "Soporte prioritario",
+//         "Descuento del 10% en servicios adicionales",
+//       ],
+//     },
+//     {
+//       name: "Protectoras",
+//       description: "Suscripción especial protectoras",   
+//       features: [
+//         "Posibilidad de publicar anuncios",
+//         "Acceso a la base de datos de animales",
+//         "Notificaciones",
+//         "Soporte prioritario",
+//         "Descuento del 30% en servicios adicionales",
+//       ],
+//     },
+//   ];
 
-  /*  --env-file .env  */
+
+// async function insertProducts(products) {
+//   try {
+//     // Insertar todos los productos en la base de datos de una vez
+//     await Product.insertMany(products);
+//     console.log('Productos insertados correctamente.');
+//   } catch (error) {
+//     console.error('Error al insertar productos:', error);
+//   } 
+// }
+
+// insertProducts(servicesData);

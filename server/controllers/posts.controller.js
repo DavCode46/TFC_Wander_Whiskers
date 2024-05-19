@@ -20,6 +20,7 @@ const __dirname = dirname(__filename);
 const createPost = async (req, res, next) => {
   try {
     let { title, content, specie, location, condition } = req.body;
+    console.log(title, content, specie, location, condition, req.files)
     if (!title || !content || !specie || !location || !condition || !req.files) {
       return next(
         new ErrorModel("Todos los campos son obligatorios", 422)
@@ -125,7 +126,7 @@ const getPostsByLocation = async (req, res, next) => {
 const getPostsBySpecie = async (req, res, next) => {
   try {
     const { specie } = req.params;
-    console.log(specie)
+   
     const petPosts = await Post.find({ specie }).sort({ updatedAt: -1 });
     if (!petPosts)
       return next(
@@ -249,17 +250,14 @@ const updatePost = async (req, res, next) => {
 
 const deletePost = async (req, res, next) => {
   try {
-    console.log(req.params.id)
-    console.log(req.user.id)
-    console.log('author', req.user)
-    console.log('role', req.user.role)
+   
     const postId = req.params.id;
     if (!postId) return next(new ErrorModel("Post no encontrado", 404));
     const post = await Post.findById(postId);
     const imageName = post?.image;
+    const user = await User.findById(req.user.id)
    
-    console.log(req.user.id, post.author, post.author == req.user.id)
-    if (req.user.id !== post.author || req.user.username !== "admin") return next(new ErrorModel("No tienes permisos para eliminar este post", 403));
+    if (req.user.id !== post.author && user.role != 'admin') return next(new ErrorModel("No tienes permisos para eliminar este post", 403));
       fs.unlink(
         path.join(__dirname, "..", "uploads", imageName),
         async (err) => {
@@ -267,6 +265,7 @@ const deletePost = async (req, res, next) => {
             return next(new ErrorModel(err));
           } else {
             await Post.findByIdAndDelete(postId);
+            console.log('postEliminado')
           }
         }
       );

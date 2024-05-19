@@ -18,6 +18,24 @@ const locationData = [
     ],
   },
   {
+    label: "Condición",
+    value: "condition",
+    children: [
+      {
+        label: "Encontrado",
+        value: "encontrado",
+      },
+      {
+        label: "Perdido",
+        value: "perdido",
+      },
+      {
+        label: "En adopción",
+        value: "enadopcion",
+      },
+    ],
+  },
+  {
     label: "España",
     value: "espana",
     children: [
@@ -258,7 +276,6 @@ const CONDITION = ["Encontrado", "Perdido", "En adopción"];
 
 const servicesData = [
   {
-    id: 0,
     title: "Mensual",
     description: "Suscripción mensual",
     price: 20.99,
@@ -269,7 +286,6 @@ const servicesData = [
     ],
   },
   {
-    id: 1,
     title: "Anual",
     description: "Suscripción anual",
     price: 251.88,

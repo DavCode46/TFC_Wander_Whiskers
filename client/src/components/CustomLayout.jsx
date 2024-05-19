@@ -1,8 +1,17 @@
 import { useState, useEffect, useContext } from "react";
-import { Affix, Avatar, Button, Divider, Layout, Menu } from "antd";
+import {
+  Affix,
+  Avatar,
+  Button,
+  Divider,
+  FloatButton,
+  Layout,
+  Menu,
+} from "antd";
 import { Link, Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
+import darkLogo from "@images/logo/3.svg";
 import logo from "@images/logo/5.svg";
 import {
   HomeOutlined,
@@ -11,7 +20,9 @@ import {
   ProfileOutlined,
   MenuOutlined,
   CloseOutlined,
-  ShoppingCartOutlined
+  ShoppingCartOutlined,
+  MoonOutlined,
+  SunOutlined,
 } from "@ant-design/icons";
 
 import { GiArchiveRegister } from "react-icons/gi";
@@ -22,53 +33,42 @@ import {
   MdOutlinePostAdd,
   MdContactSupport,
   MdDashboard,
- 
 } from "react-icons/md";
 import { BsSignpostSplit } from "react-icons/bs";
-
+import { SiGradleplaypublisher } from "react-icons/si";
+import UserDrawer from "./UserDrawer";
 import { ImProfile } from "react-icons/im";
-import avatar from "@images/avatar1.jpg";
-
-import Header from "./Header";
 
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
-
-import { UserContext } from "../context/userContext";
+import ContactDrawer from "./ContactDrawer";
+import { UserContext } from "../context/UserContext";
 import axios from "axios";
 import { CartContext } from "@/context/CartContext";
+import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
+import useTheme from "@context/ThemeContext";
+import LoginDrawer from "./LoginDrawer";
 
 const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const [role, setRole] = useState('user');
+  const { themeMode, lightTheme, darkTheme, toggleTheme } = useTheme();
 
   const { currentUser } = useContext(UserContext);
-  const [cart, setCart] = useContext(CartContext)
+  const [cart, setCart] = useContext(CartContext);
 
-  const quantity = cart.reduce((acc, current) => {
-    return acc + current.quantity;
-  }, 0);
-  
+  const totalQuantity = cart.reduce(
+    (total, product) => total + product.quantity,
+    0
+  );
+
   const token = currentUser?.token;
-
-  // console.log('usuario', currentUser.profileImage)
-  useEffect(() => {
-    if (currentUser) {
-      setRole(currentUser.role);
-    }
-  },[currentUser])
-
-  useEffect(() => {
-    setIsLoggedIn(currentUser !== null);
-  }, [currentUser]);
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        if (currentUser) {        
+        if (currentUser) {
           const res = await axios.get(
             `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`,
             {
@@ -78,9 +78,6 @@ const CustomLayout = () => {
           );
           const { profileImage } = res.data;
           setProfileImage(profileImage);
-          console.log("Profile Image:", profileImage);
-          console.log("res:", res.data);
-          console.log("User ID:", currentUser.id);
         } else {
           console.log("currentUser is null");
         }
@@ -90,31 +87,31 @@ const CustomLayout = () => {
     };
 
     fetchUser();
-  }, [profileImage]);
+  }, [profileImage, currentUser, token]);
 
   const menuItemsBurger = [
     {
       key: "toggleBtn",
       icon: <MenuOutlined />,
       children: [
-        {
-          key: "login",
-          icon: <LoginOutlined />,
-          label: <Link to="/login">Login</Link>,
-          hidden: isLoggedIn,
-        },
-        {
-          key: "register",
-          icon: <GiArchiveRegister />,
-          label: <Link to="/register">Registrarse</Link>,
-          hidden: isLoggedIn,
-        },
-        {
-          key: "logout",
-          icon: <LogoutOutlined />,
-          label: <Link to="/logout">Logout</Link>,
-          hidden: !isLoggedIn,
-        },
+        // {
+        //   key: "login",
+        //   icon: <LoginOutlined />,
+        //   label: <ContactDrawer />,
+        //   hidden: currentUser,
+        // },
+        // {
+        //   key: "register",
+        //   icon: <GiArchiveRegister />,
+        //   label: <Link to="/register">Registrarse</Link>,
+        //   hidden: currentUser,
+        // },
+        // {
+        //   key: "logout",
+        //   icon: <LogoutOutlined />,
+        //   label: <Link to="/logout">Logout</Link>,
+        //   hidden: !currentUser,
+        // },
         {
           key: "home",
           icon: <HomeOutlined />,
@@ -125,7 +122,7 @@ const CustomLayout = () => {
           key: "myAccount",
           label: "Mi Cuenta",
           icon: <ProfileOutlined />,
-          hidden: !isLoggedIn,
+          hidden: !currentUser,
           children: [
             {
               key: "profile",
@@ -137,14 +134,14 @@ const CustomLayout = () => {
         {
           key: "posts",
           label: "Posts",
-          icon: <MdOutlinePostAdd />,
+          icon: <SiGradleplaypublisher />,
           children: [
-            {
-              key: "create-post",
-              label: <Link to="/create-post">Publicar anuncio</Link>,
-              icon: <MdOutlinePublish />,
-              hidden: !isLoggedIn,
-            },
+            // {
+            //   key: "create-post",
+            //   label: <Link to="/create-post">Publicar anuncio</Link>,
+            //   icon: <MdOutlinePublish />,
+            //   // hidden: !currentUser || !currentUser.isSubscribed || currentUser.role !== 'admin',
+            // },
             {
               key: "allposts",
               label: <Link to="/posts">Anuncios</Link>,
@@ -154,33 +151,32 @@ const CustomLayout = () => {
         },
         {
           key: "contact",
-          label: "Contacto",
+          label: "Ayuda",
           icon: <MdOutlineImportContacts />,
           children: [
-            {
-              key: "contactUs",
-              label: <Link to="/contact">Contactar</Link>,
-              icon: <MdContactMail />,
-            },
+            // {
+            //   key: "contactUs",
+            //   label: <Link to="/contact">Contactar</Link>,
+            //   icon: <MdContactMail />,
+            // },
             {
               key: "help",
-              label: <Link to="/help">Ayuda</Link>,
+              label: <Link to="/help">Preguntas frecuentes</Link>,
               icon: <MdContactSupport />,
             },
           ],
         },
         {
-          key: 'cart',
-          label: <Link to="/cart">Carrito ({quantity})</Link>,
+          key: "cart",
+          label: <Link to="/cart">Carrito ({totalQuantity})</Link>,
           icon: <ShoppingCartOutlined />,
         },
         {
           key: "dashboard",
           label: <Link to="/dashboard">Dashboard</Link>,
           icon: <MdDashboard />,
-          hidden:!isLoggedIn || role !== 'admin',
+          hidden: !currentUser || currentUser.role !== "admin",
         },
-        
       ],
     },
   ];
@@ -200,76 +196,108 @@ const CustomLayout = () => {
     setCollapsed(!collapsed);
   };
 
+  // const toggleTheme = () => {
+  //   themeMode === "light" ? darkTheme() : lightTheme();
+  // };
+
   return (
-    <Layout>
+    <Layout theme={`${themeMode === "dark" ? "dark" : "light"}`}>
       {isMobile ? (
         <Menu
+          theme={`${themeMode === "dark" ? "dark" : "light"}`}
           mode="horizontal"
           className="fixed top-3 left-3 rounded-full z-50 flex items-center justify-center pl-2 w-14 h-14"
           items={menuItemsBurger}
         />
       ) : (
         <>
-          <Sider
-            theme="light"
-            collapsed={collapsed}
-            collapsedWidth={isMobile ? 0 : 80}
-            onBreakpoint={(broken) => setCollapsed(broken)}
-            style={{
-              overflow: "auto",
-              height: "100vh",
-              position: "fixed",
-              left: 0,
-              top: 0,
-              bottom: 0,
-              zIndex: 1000,
-            }}
-            width={150}
+          <FadeAnimation
+            className={"fixed top-0 left-0 bottom-0 z-[1000] overflow-auto"}
           >
-            <div className="logo" />
-            <div className="logo-image">
-              <img src={logo} alt="" />
-            </div>
-
-            <Button
-              type="primary"
-              onClick={toggleCollapsed}
-              className="mb-5 text-black py-4 px-3 flex items-center justify-center m-auto"
+            <Sider
+              theme={`${themeMode === "dark" ? "dark" : "light"}`}
+              collapsed={collapsed}
+              collapsedWidth={isMobile ? 0 : 80}
+              onBreakpoint={(broken) => setCollapsed(broken)}
+              className="transition-all duration-300"
+              style={{
+                // overflow: "auto",
+                height: "100vh",
+                // position: "fixed",
+                // left: 0,
+                // top: 0,
+                // bottom: 0,
+                // zIndex: 1000,
+              }}
+              width={150}
             >
-              {collapsed ? <MenuOutlined /> : <CloseOutlined />}
-            </Button>
-            <Menu
-              theme="light"
-              mode="vertical"
-              defaultSelectedKeys={["home"]}
-              items={menuItemsBurger[0].children}
-            ></Menu>
-            {isLoggedIn && currentUser && (
-              <>
-                <Link to={`/profile/${currentUser.id}`}>
-                  <Avatar
-                    src={`${
-                      import.meta.env.VITE_REACT_APP_ASSETS_URL
-                    }/uploads/${profileImage}`}
-                    size={60}
-                    className="flex m-auto mt-5"
-                  />
-                </Link>
-                {/* <div>
-                  <Link to="/logout">
-                    <LogoutOutlined />
-                    Logout
+              <Link to="/">
+                {themeMode === "light" ? (
+                  <img src={logo} alt="" />
+                ) : (
+                  <img src={darkLogo} alt="" />
+                )}
+              </Link>
+
+              <Button
+                type="primary"
+                onClick={toggleCollapsed}
+                className={`${
+                  themeMode === "dark"
+                    ? ""
+                    : "text-white bg-color-btn hover:bg-color-btnHover active:bg-color-btnHover"
+                } mb-5 py-4 px-3 flex items-center justify-center m-auto transition-all duration-300`}
+              >
+                {collapsed ? <MenuOutlined /> : <CloseOutlined />}
+              </Button>
+
+              {!currentUser ? (
+                <LoginDrawer />
+              ) : (
+                <FloatButton
+                  icon={<LogoutOutlined />}
+                  shape="square"
+                  type={`${themeMode === "dark" ? "primary" : "default"}`}
+                  href="/logout"
+                />
+              )}
+
+              <Menu
+                theme={`${themeMode === "dark" ? "dark" : "light"}`}
+                mode="vertical"
+                className="font-sora"
+                defaultSelectedKeys={["home"]}
+                items={menuItemsBurger[0].children}
+              ></Menu>
+              {currentUser && (
+                <>
+                  <Link to={`/profile/${currentUser.id}`}>
+                    <Avatar
+                      src={`${
+                        import.meta.env.VITE_REACT_APP_ASSETS_URL
+                      }/uploads/${profileImage}`}
+                      size={60}
+                      className="flex m-auto mt-5"
+                    />
                   </Link>
-                </div> */}
-              </>
-            )}
-          </Sider>
+                </>
+              )}
+            </Sider>
+          </FadeAnimation>
         </>
       )}
 
       <Layout>
-        <Content style={{ margin: "0 16px" }}>
+        <Content className={`${themeMode === "dark" ? "bg-dark-bg" : ""}`}>
           <Outlet />
+          <FloatButton
+            shape="circle"
+            className=" top-[5rem]"
+            icon={themeMode === "dark" ? <SunOutlined /> : <MoonOutlined />}
+            onClick={toggleTheme}
+            type={`${themeMode === "dark" ? "primary" : "default"}`}
+          />
+          <ContactDrawer />
         </Content>
         <Footer />
       </Layout>

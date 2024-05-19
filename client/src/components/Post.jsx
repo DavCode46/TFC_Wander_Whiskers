@@ -21,7 +21,7 @@ import en from 'javascript-time-ago/locale/en.json'
 TimeAgo.addLocale(es)
 TimeAgo.addLocale(en)
 
-
+import useTheme from '@context/ThemeContext'
 
 const Post = ({
   postId,
@@ -38,19 +38,24 @@ const Post = ({
     content.length > 70 ? content.substr(0, 70) + "..." : content;
   const substrTitle = title.length > 40 ? title.substr(0, 40) + "..." : title;
 
+  const {themeMode} = useTheme()
   return (
     <Card
       variant="outline"
       mb="5"
       mt="5"
-      className="hover:card__selected hover:shadow-2xl transition-all duration-300"
+      backgroundColor={themeMode === 'dark' ? '#1F2E35' : ''}
+      color={themeMode === 'dark' ? '#ccc' : ''}
+      className={`${themeMode === 'dark' ? ' hover:shadow-neutral-500 hover:shadow-lg' : 'hover:shadow-2xl '} hover:card__selected transition-all duration-300`}
     >
       <Flex direction={{ base: "column", md: "row" }}>
         <Image
           objectFit="cover"
-          maxW={{ base: "100%", md: "200px" }}
+          maxW={{ base: "100%", md: "150px" }}
+          
           src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${image}`}
           alt={title}
+          
         />
         <Stack ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} flex="1">
           <CardBody>
@@ -59,7 +64,7 @@ const Post = ({
 
               <Link
                 to={`/posts/location/${location}`}
-                className="bg-color-btn text-white py-2 px-4 rounded-md hover:bg-color-btnHover transition duration-300 hover:text-white"
+                className={`${themeMode === 'dark' ? 'bg-dark-primary hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
               >
                 {location}
               </Link>
@@ -71,7 +76,7 @@ const Post = ({
           <CardFooter className="flex justify-between items-center">
             <Link
               to={`/post/${postId}/detail`}
-              className="bg-color-btn text-white py-2 px-4 rounded-md hover:bg-color-btnHover transition duration-300 hover:text-white"
+              className={`${themeMode === 'dark' ? 'bg-dark-primary hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover '} text-white py-2 px-4 rounded-md transition duration-300 hover:text-white`}
             >
               Ver más
             </Link>

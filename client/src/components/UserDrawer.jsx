@@ -6,7 +6,11 @@ import { FaRegUser } from "react-icons/fa";
 
 import axios from "axios";
 
-import { PlusOutlined,EditOutlined } from "@ant-design/icons";
+import LOGO from "@images/logo/1.svg";
+import DARK_LOGO from "@images/logo/3.svg";
+import GOOGLE_ICON from "@images/googleIcon.svg";
+import GITHUB_ICON from "@images/githubIcon.svg";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -19,38 +23,18 @@ import {
   Select,
   Space,
 } from "antd";
-import { UserContext } from "@/context/userContext";
+import { UserContext } from "@/context/UserContext";
+import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
+import Yanimation from "./Animations/Yanimation/Yanimation";
+import useTheme from "@context/ThemeContext";
 // const { Option } = Select;
-const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
+const UserDrawer = ({ isRegistering, openButton, email }) => {
   const [open, setOpen] = useState(false);
-  // const [isLoading, setLoading] = useState("");
-  // const [username, setUsername] = useState(undefined);
-  // const [email, setEmail] = useState("");
-  // const [currentPassword, setCurrentPassword] = useState("");
-  // const [profileImage, setProfileImage] = useState("");
-  // const [newPassword, setNewPassword] = useState("");
-  // const [confirmNewPassword, setConfirmNewPassword] = useState("");
-
-  // const [registerUser, setRegisterUser] = useState({
-  //   username: "",
-  //   email: "",
-  //   password: "",
-  //   confirmPassword: "",
-  // });
-
-  // const [editUser, setEditUser] = useState({
-  //   username: "",
-  //   email: "",
-  //   currentPassword: "",
-  //   newPassword: "",
-  //   confirmNewPassword: "",
-  // });
-  // console.log("editUser antes de fetch", editUser);
 
   const [error, setError] = useState("Ha ocurrido un error");
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
-
+  const { themeMode } = useTheme();
   const navigate = useNavigate();
 
   const [messageApi, contextHolder] = message.useMessage();
@@ -63,43 +47,6 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
     newPassword: "",
     confirmNewPassword: "",
   });
-  
-  // useEffect(() => {
-  //   console.log("formData antes de fetchUser", formData);
-  // }, [formData]);
-
-  // useEffect(() => {
-  //   if (!isRegistering) {
-  //     const fetchUser = async () => {
-  //       try {
-  //         const res = await axios.get(
-  //           `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`,
-  //           {
-  //             withCredentials: true,
-  //             headers: { Authorization: `Bearer ${token}` },
-  //           }
-  //         );
-  //         const { username, email } = res.data;
-  //         setFormData((prevData) => ({
-  //           ...prevData,
-  //           username: capitalizeWords(username),
-  //           email: email,
-  //         }));
-  //         console.log('username', formData.username)
-  //         console.log('email', formData.email)
-  //         console.log("formData en el fetchUser", formData);
-  //       } catch (error) {
-  //         console.error("Error fetching user data:", error);
-  //       }
-  //     };
-
-  //     fetchUser();
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("formData tras fetchUser", formData);
-  // }, [formData]);
 
   // Función para manejar los cambios en el formulario
   const handleChange = (e) => {
@@ -108,9 +55,6 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
       ...prevData,
       [name]: value,
     }));
-    console.log('formData, handleChange', formData)
-    console.log('name handleCHange', name)
-    console.log('value handleCHange', value)
   };
 
   const showDrawer = () => {
@@ -122,7 +66,11 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
   const success = () => {
     messageApi.open({
       type: "success",
-      content: "Registro realizado con éxito",
+      content: `${
+        isRegistering
+          ? "Registro realizado con éxito"
+          : "Usuario actualizado con éxito"
+      }`,
     });
     onClose(); // Cierra el Drawer
   };
@@ -130,27 +78,23 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
   const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: error,
+      content: error || "Ha ocurrido un error",
     });
   };
 
   const register = async (values) => {
-    console.log(values);
     const { username, email, password, confirmPassword } = values;
 
-    console.log(register);
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_REACT_APP_URL}/users/register`,
         { username, email, password, confirmPassword }
       );
       const newUser = await response.data;
-      console.log(newUser);
       if (!newUser) {
         setError("No se pudo registrar el usuario");
       }
       success();
-      navigate("/login");
     } catch (err) {
       console.log(err.response.data.message);
       setError(err.response.data.message);
@@ -173,7 +117,6 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
       data.set("currentPassword", currentPassword);
       data.set("newPassword", newPassword);
       data.set("confirmNewPassword", confirmNewPassword);
-      console.log("ruta", `${import.meta.env.VITE_REACT_APP_URL}/users/edit`);
 
       const res = await axios.patch(
         `${import.meta.env.VITE_REACT_APP_URL}/users/edit`,
@@ -205,14 +148,37 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
     <>
       {contextHolder}
       <Button
-        className="  text-blue-400 hover:text-blue-500 hover:underline text-[.85rem] w-[13rem]"
+        type={`${themeMode === 'dark' ? 'primary' : 'default'}`}
+        className={`${themeMode !== 'dark' ? 'text-blue-400 hover:text-blue-500 hover:underline ' : ''} text-[.85rem] w-[13rem]`}
         onClick={showDrawer}
         icon={isRegistering ? <PlusOutlined /> : <EditOutlined />}
       >
         {openButton}
       </Button>
       <Drawer
-        title={`${isRegistering ? "Crear cuenta" : "Editar perfil"}`}
+       className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
+        title={
+          <Yanimation>
+            <div className="flex items-center mt-4">
+              {isRegistering
+                ? "Registrarse en Wander Whiskers"
+                : "Editar perfil"}
+              {themeMode === "light" ? (
+                <img
+                  src={LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              ) : (
+                <img
+                  src={DARK_LOGO}
+                  alt="wander whiskers logo"
+                  className="w-[4rem] h-auto"
+                />
+              )}
+            </div>
+          </Yanimation>
+        }
         width={720}
         onClose={onClose}
         open={open}
@@ -222,229 +188,267 @@ const UserDrawer = ({ isRegistering, openButton, userName, email }) => {
           },
         }}
       >
-        <Form
-          layout="vertical"
-          onFinish={isRegistering ? register : updateProfile}
-        >
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="username"
-                label="Nombre de usuario"
-                rules={[
-                  {
-                    required: true,
-                    message: "Por favor introduce tu nombre",
-                  },
-                ]}
-              >
-                <Input
-                  addonBefore={<FaRegUser />}
-                  placeholder="Por favor introduce tu nombre"
-                  value={`${!isRegistering && userName}`}
-                  onChange={(e) => {
-                    {
-                      handleChange(e);
-                    }
-                    handleSetError();
-                  }}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="email"
-                label="Email"
-                rules={[
-                  {
-                    type: "email",
-                    message: "Por favor introduce un email válido",
-                  },
-                  {
-                    required: true,
-                    message: "Por favor introduce tu email",
-                  },
-                ]}
-              >
-                <Input
-                  style={{
-                    width: "100%",
-                  }}
-                  addonBefore={<EmailIcon />}
-                  value={`${!isRegistering && email}`}
-                  onChange={(e) => {
-                    {
-                      handleChange(e);
-                    }
-                    handleSetError();
-                  }}
-                  placeholder="Por favor introduce tu email"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row gutter={16}>
-            <Col span={12}>
-              {isRegistering ? (
-                <Form.Item
-                  name="password"
-                  label="Contraseña"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Por favor introduce una contraseña",
-                    },
-                  ]}
-                >
-                  <Input.Password
-                    style={{
-                      width: "100%",
-                    }}
-                    addonBefore={<RiLockPasswordLine />}
-                    onChange={(e) => {
-                      handleChange(e);
-                      handleSetError();
-                    }}
-                    placeholder="Por favor introduce tu contraseña"
-                  />
-                </Form.Item>
-              ) : (
-                <Form.Item
-                  name="currentPassword"
-                  label="Contraseña actual"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Por favor introduce tu contraseña",
-                    },
-                  ]}
-                >
-                  <Input.Password
-                    style={{
-                      width: "100%",
-                    }}
-                    addonBefore={<RiLockPasswordLine />}
-                    value={formData.currentPassword}
-                    onChange={(e) => {
-                      handleChange(e);
-                      handleSetError();
-                    }}
-                    placeholder="Por favor introduce tu contraseña"
-                  />
-                </Form.Item>
-              )}
-            </Col>
-            <Col span={12}>
-              {isRegistering ? (
-                <Form.Item
-                  name="confirmPassword"
-                  label="Confirmar contraseña"
-                  dependencies={["password"]}
-                  rules={[
-                    {
-                      required: true,
-                      message: "Por favor confirma tu contraseña",
-                    },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (!value || getFieldValue("password") === value) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject("Las contraseñas no coinciden");
-                      },
-                    }),
-                  ]}
-                >
-                  <Input.Password
-                    style={{
-                      width: "100%",
-                    }}
-                    addonBefore={<RiLockPasswordLine />}
-                    onChange={(e) => {
-                      handleChange(e);
-                      handleSetError();
-                    }}
-                    placeholder="Por favor confirma tu contraseña"
-                  />
-                </Form.Item>
-              ) : (
-                <Form.Item
-                  name="newPassword"
-                  label="Nueva contraseña"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Por favor introduce tu nueva contraseña",
-                    },
-                  ]}
-                >
-                  <Input.Password
-                    style={{
-                      width: "100%",
-                    }}
-                    addonBefore={<RiLockPasswordLine />}
-                    value={formData.newPassword}
-                    onChange={(e) => {
-                      handleChange(e);
-                      handleSetError();
-                    }}
-                    placeholder="Por favor confirma tu contraseña"
-                  />
-                </Form.Item>
-              )}
-            </Col>
-          </Row>
-          <Row glutter={16}>
-            <Col span={24}>
-              {!isRegistering && (
-                <Form.Item
-                  name="confirmNewPassword"
-                  label="Confirma tu nueva contraseña"
-                  dependencies={["newPassword"]}
-                  rules={[
-                    {
-                      required: true,
-                      message:
-                        "Por favor vuelve a introducir tu nueva contraseña",
-                    },
-                    ({ getFieldValue }) => ({
-                      validator(_, value) {
-                        if (!value || getFieldValue("newPassword") === value) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject("Las contraseñas no coinciden");
-                      },
-                    }),
-                  ]}
-                >
-                  <Input.Password
-                    style={{
-                      width: "100%",
-                    }}
-                    addonBefore={<RiLockPasswordLine />}
-                    value={formData.confirmNewPassword}
-                    onChange={(e) => {
-                      handleChange(e);
-                      handleSetError();
-                    }}
-                    placeholder="Por favor confirma tu nueva contraseña"
-                  />
-                </Form.Item>
-              )}
-            </Col>
-          </Row>
-          <Form.Item>
-            <Space>
-              <Button onClick={onClose}>Cancelar</Button>
-              <button
-                type="submit"
-                className=" bg-color-btn  text-white px-3 py-1 rounded-md"
-              >
-                {isRegistering ? "Registrarse" : "Actualizar perfil"}
+        {isRegistering && (
+          <div>
+            <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
+              <button className="w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300">
+                <img src={GOOGLE_ICON} alt="" className="w-[1rem]" />
+                Google
               </button>
-            </Space>
-          </Form.Item>
-        </Form>
+
+              <button className="w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300">
+                <img src={GITHUB_ICON} alt="" className="w-[1rem]" />
+                GitHub
+              </button>
+            </div>
+            <div className="flex justify-center items-center mb-[1.5rem]">
+              <div className="border-t border-gray-400 w-full mr-4"></div>{" "}
+              <p className="font-bold text-md">O</p>
+              <div className="border-t border-gray-400 w-full ml-4"></div>{" "}
+            </div>
+          </div>
+        )}
+        <FadeAnimation>
+          <Form
+            layout="vertical"
+            onFinish={isRegistering ? register : updateProfile}
+          >
+            <Row gutter={16}>
+              <Col span={12}>
+                <Form.Item
+                  name="username"
+                  initialValue={`${!isRegistering ? currentUser.username : ""}`}
+                  label="Nombre de usuario"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Por favor introduce tu nombre",
+                    },
+                  ]}
+                >
+                  <Input
+                    addonBefore={<FaRegUser />}
+                    placeholder="Por favor introduce tu nombre"
+                    onChange={(e) => {
+                      {
+                        handleChange(e);
+                      }
+                      handleSetError();
+                    }}
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12}>
+                <Form.Item
+                  name="email"
+                  label="Email"
+                  initialValue={`${!isRegistering ? email : ""}`}
+                  rules={[
+                    {
+                      type: "email",
+                      message: "Por favor introduce un email válido",
+                    },
+                    {
+                      required: true,
+                      message: "Por favor introduce tu email",
+                    },
+                  ]}
+                >
+                  <Input
+                    style={{
+                      width: "100%",
+                    }}
+                    addonBefore={<EmailIcon />}
+                    onChange={(e) => {
+                      {
+                        handleChange(e);
+                      }
+                      handleSetError();
+                    }}
+                    placeholder="Por favor introduce tu email"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={16}>
+              <Col span={12}>
+                {isRegistering ? (
+                  <Form.Item
+                    name="password"
+                    label="Contraseña"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Por favor introduce una contraseña",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      style={{
+                        width: "100%",
+                      }}
+                      addonBefore={<RiLockPasswordLine />}
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSetError();
+                      }}
+                      placeholder="Por favor introduce tu contraseña"
+                    />
+                  </Form.Item>
+                ) : (
+                  <Form.Item
+                    name="currentPassword"
+                    label="Contraseña actual"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Por favor introduce tu contraseña",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      style={{
+                        width: "100%",
+                      }}
+                      addonBefore={<RiLockPasswordLine />}
+                      value={formData.currentPassword}
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSetError();
+                      }}
+                      placeholder="Por favor introduce tu contraseña"
+                    />
+                  </Form.Item>
+                )}
+              </Col>
+              <Col span={12}>
+                {isRegistering ? (
+                  <Form.Item
+                    name="confirmPassword"
+                    label="Confirmar contraseña"
+                    dependencies={["password"]}
+                    rules={[
+                      {
+                        required: true,
+                        message: "Por favor confirma tu contraseña",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (!value || getFieldValue("password") === value) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject("Las contraseñas no coinciden");
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      style={{
+                        width: "100%",
+                      }}
+                      addonBefore={<RiLockPasswordLine />}
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSetError();
+                      }}
+                      placeholder="Por favor confirma tu contraseña"
+                    />
+                  </Form.Item>
+                ) : (
+                  <Form.Item
+                    name="newPassword"
+                    label="Nueva contraseña"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Por favor introduce tu nueva contraseña",
+                      },
+                    ]}
+                  >
+                    <Input.Password
+                      style={{
+                        width: "100%",
+                      }}
+                      addonBefore={<RiLockPasswordLine />}
+                      value={formData.newPassword}
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSetError();
+                      }}
+                      placeholder="Por favor confirma tu contraseña"
+                    />
+                  </Form.Item>
+                )}
+              </Col>
+            </Row>
+            <Row glutter={16}>
+              <Col span={24}>
+                {!isRegistering && (
+                  <Form.Item
+                    name="confirmNewPassword"
+                    label="Confirma tu nueva contraseña"
+                    dependencies={["newPassword"]}
+                    rules={[
+                      {
+                        required: true,
+                        message:
+                          "Por favor vuelve a introducir tu nueva contraseña",
+                      },
+                      ({ getFieldValue }) => ({
+                        validator(_, value) {
+                          if (
+                            !value ||
+                            getFieldValue("newPassword") === value
+                          ) {
+                            return Promise.resolve();
+                          }
+                          return Promise.reject("Las contraseñas no coinciden");
+                        },
+                      }),
+                    ]}
+                  >
+                    <Input.Password
+                      style={{
+                        width: "100%",
+                      }}
+                      addonBefore={<RiLockPasswordLine />}
+                      value={formData.confirmNewPassword}
+                      onChange={(e) => {
+                        handleChange(e);
+                        handleSetError();
+                      }}
+                      placeholder="Por favor confirma tu nueva contraseña"
+                    />
+                  </Form.Item>
+                )}
+              </Col>
+            </Row>
+            <Form.Item>
+              <Space>
+                <button
+                  className={`${
+                    themeMode === "dark"
+                      ? " bg-gray-400 hover:bg-transparent text-white"
+                      : "text-color-dark"
+                  } border rounded-md py-1 px-3 transition-all duration-300`}
+                  onClick={onClose}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className={`${
+                    themeMode === "dark"
+                      ? "bg-dark-primary hover:bg-a-6"
+                      : "bg-color-btn hover:bg-color-btnHover"
+                  } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
+                >
+                  {isRegistering ? "Registrarse" : "Actualizar perfil"}
+                </button>
+              </Space>
+            </Form.Item>
+          </Form>
+        </FadeAnimation>
       </Drawer>
     </>
   );

@@ -8,9 +8,9 @@ const authenticate = (req, res, next) => {
         const token = Authorization.split(' ')[1]
         jwt.verify(token, process.env.SECRET_TOKEN, (err, userInfo) => {
             if(err) return next(new ErrorModel('No autorizado', 403))
-            console.log(userInfo.id)
+      
             req.user = userInfo
-            console.log(req.user.id)
+        
             next()
         })
     } else {

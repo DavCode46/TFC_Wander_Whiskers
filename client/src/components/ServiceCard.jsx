@@ -1,119 +1,167 @@
-import React, { useContext } from "react";
-import { servicesData } from "@/data/data";
+import React, { useContext, useEffect, useState } from "react";
 import { Button } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import { CartContext } from "@/context/CartContext";
+import axios from "axios";
+import { UserContext } from "@/context/UserContext";
+import { message } from "antd";
+import { useNavigate } from "react-router-dom";
+import { CircularProgress } from "@nextui-org/react";
+import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
+import useTheme from "@/context/ThemeContext";
 
 const ServiceCard = () => {
+  const [loading, setLoading] = useState("");
+  const { currentUser } = useContext(UserContext);
+  const [products, setProducts] = useState([]);
+  const [error, setError] = useState(
+    "Solo se puede seleccionar una suscripción, vacía tu carrito"
+  );
+  const [messageApi, contextHolder] = message.useMessage();
+  const {themeMode} = useTheme()
 
-  const [cart, setCart] = useContext(CartContext)
+  const navigate = useNavigate();
 
-  const addToCart = (service) => {
-    setCart((currentItems) => {
-      const isItemInCart = currentItems.find((item) => item.id === service.id)
-      if(isItemInCart) {
-        return currentItems.map((item) => item.id === service.id ? {...item, quantity: item.quantity + 1} : item)
-      } else {
-        return [...currentItems, {...service, quantity: 1}]
-        // return [...currentItems, {id, quantity: 1, price}]
+  useEffect(() => {
+    const fetchingProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_REACT_APP_URL}/products`
+        );
+        setProducts(res?.data);
+      } catch (err) {
+        console.log(err);
       }
-    })
-  }
+      setLoading(false);
+    };
+    fetchingProducts();
+  }, []);
 
-  const removeFromCart = (id) => {
-    setCart((currentItems) => {
-      // return currentItems.reduce((acc, item) => {
-      //   if(item.id === id) {
-      //     if(item.quantity === 1) return acc
-      //     return [...acc, {...item, quantity: item.quantity - 1}]
-      //   } else {
-      //     return [...acc, item]
-      //   }
-      // }, [])
+  const addToCart = async (service) => {
+    try {
+      const { _id, name, price, description } = service; // Extraer los campos necesarios del servicio
+      const data = {
+        productId: _id,
+        name,
+        description,
+        price,
+        quantity: 1, // Por defecto, agregamos una cantidad de 1 al carrito
+      };
 
-      if(currentItems.find((item) => item.id === id)?.quantity === 1) {
-        return currentItems.filter((item) => item.id !== id)
-      } else {
-        return currentItems.map((item) => {
-          if(item.id === id) {
-            return {...item, quantity: item.quantity - 1}
-          } else {
-            return item
-          }
-        })
-      }
-    })
-  }
+      const res = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_URL}/users/cart/add-product/${
+          currentUser.id
+        }`,
+        data
+      );
 
-  // const getQuantityByProduct = (id) => {
-  //   return cart.find((item) => item.id === id)?.quantity || 0
-  // }
+      success();
+      setTimeout(() => {
+        navigate("/cart");
+      }, 500);
+    } catch (err) {
+      setError(err.response.data.message);
+      errorMessage();
+      console.log(err);
+    }
+  };
 
-  // getQuantityByProduct(id)
-
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content: "Producto añadido al carrito",
+    });
+  };
+  const errorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: error,
+    });
+  };
+  if (loading)
+    return (
+      <CircularProgress
+        isIndeterminate
+        size="100px"
+        thickness="7px"
+        aria-label="cargando"
+        style={{
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      />
+    );
   return (
-    <div className="flex flex-col lg:flex-row sm:ml-[2rem] items-center justify-center gap-[2rem] lg:ml-[3rem]">
-      {servicesData.map((service) => (
-        <div
-          key={service.id}
-          className="w-[12rem] max-lg:w-full min-h-[38rem] px-6 border border-n-6 rounded-[2rem] lg:w-auto py-8 my-4 [&>h4]:odd:text-color-btn  [&>h4]:even:text-[#FFC876] mb-[3rem]"
-        >
-          <h4 className="text-[2rem] mb-4">{service.title}</h4>
+    <div className="flex flex-col lg:flex-row sm:ml-[2rem] items-center justify-center gap-[2rem] lg:ml-[3rem] lg:mr-[1rem]">
+      {contextHolder}
+      {products.map((product, index) => (
+        <ScrollFadeAnimation key={product._id} delay={index * 0.3}>
+          <div className={`${themeMode === 'dark' ? 'text-dark-white' : '[&>h4]:odd:text-color-btn  [&>h4]:even:text-[#FFC876] border-n-6'} w-[12rem] max-lg:w-full min-h-[38rem] px-6 border rounded-[2rem] lg:w-auto py-8 my-4 mb-[3rem] font-grotesk`}>
+            <h4 className={`${themeMode === 'dark' ? 'text-a-9' : ''} text-[2rem] mb-4`}>{product.name}</h4>
 
-          <p className="min-h-[3rem] text-[1.2rem] mb-3 text-color-dark">
-            {service.description}
-          </p>
+            <p className={`${themeMode === 'dark' ? 'text-dark-white' : 'text-color-dark'} min-h-[3rem] text-[1.2rem] mb-3`}>
+              {product.description}
+            </p>
 
-          <div className="flex items-center h-[5.5rem] mb-6">
-            {service.price && (
-              <div className="flex flex-col">
-                <div
-                  className={`${
-                    service.title == "Anual" &&
-                    "line-through text-[1.5rem] text-red-500 flex"
-                  } text-[4rem] leading-none font-bold flex items-center`}
+            <div className="flex items-center h-[5.5rem] mb-6">
+              {product.price && (
+                <div className="flex flex-col">
+                  <div
+                    className={`${
+                      product.name == "Anual"
+                        ? "line-through text-xl text-red-500 flex"
+                        : "text-[3rem] leading-none font-bold flex items-center"
+                    } `}
+                  >
+                    {product.price}
+                    <div className="text-xl">€</div>
+                  </div>
+
+                  <div>
+                    {product.discountPrice && (
+                      <div
+                        className={
+                          "text-[3rem] leading-none font-bold flex items-center"
+                        }
+                      >
+                        {product.discountPrice}
+                        <div className="text-xl">€</div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <Button
+              className={`${themeMode === 'dark' ? 'text-dark-white' : ''} w-full mb-6 font-montserrat`}
+              onClick={() => addToCart(product)}
+              disabled={!currentUser || currentUser.isSubscribed}
+            >
+              {!currentUser
+                ? "Debes iniciar sesión para poder suscribirte"
+                : currentUser.isSubscribed
+                ? "Ya estás suscrito"
+                : product.price
+                ? "Suscribirse"
+                : "Solicitar información"}
+            </Button>
+
+            <ul>
+              {product.features.map((feature) => (
+                <li
+                  key={crypto.randomUUID()}
+                  className={`${themeMode === 'dark' ? '' : 'border-n-6'} font-montserrat flex items-start py-5 border-t`}
                 >
-                  {service.price}
-                <div className="text-xl">€</div>
-                </div>
-
-                <div>
-                  {service.discountPrice && (
-                    <div
-                      className={
-                        "text-[4rem] leading-none font-bold flex items-center text-xl "
-                      }
-                    >
-                      {service.discountPrice}
-                      <div className="text-xl">€</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
+                  <CheckCircleOutlined className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn '} text-lg`} />
+                  <p className="body-2 ml-4">{feature}</p>
+                </li>
+              ))}
+            </ul>
           </div>
-
-          <Button
-            className="w-full mb-6"
-            // href={!service.price && "mailto:davidblanco1993@gmail.com"}
-            // white={!!service.price}
-            onClick={() => addToCart(service)}
-          >
-            {service.price ? "Subscribirse" : "Solicitar información"}
-          </Button>
-
-          <ul>
-            {service.features.map((feature, index) => (
-              <li
-                key={index}
-                className="flex items-start py-5 border-t border-n-6"
-              >
-                <CheckCircleOutlined />
-                <p className="body-2 ml-4">{feature}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
+        </ScrollFadeAnimation>
       ))}
     </div>
   );

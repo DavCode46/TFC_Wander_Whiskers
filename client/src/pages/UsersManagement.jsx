@@ -3,13 +3,16 @@ import { Button, Space, Table } from "antd";
 import axios from "axios";
 import DeleteUser from "./DeleteUser";
 import { Link } from "react-router-dom";
-
+import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+import Yanimation from "@/components/Animations/Yanimation/Yanimation";
+import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
+import useTheme from "@/context/ThemeContext";
 const UsersManagement = () => {
   const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-
+  const {themeMode} = useTheme()
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -32,7 +35,6 @@ const UsersManagement = () => {
   const uniqueCreatedAt = [...new Set(usersData.map((item) => item.createdAt))];
 
   const handleChange = (pagination, filters, sorter) => {
-    console.log("Various parameters", pagination, filters, sorter);
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
@@ -48,7 +50,7 @@ const UsersManagement = () => {
       render: (image) => (
         <img
           src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${image}`}
-          alt='Imagen de perfil'
+          alt="Imagen de perfil"
           className="w-20 h-20 object-cover rounded-full"
         />
       ),
@@ -63,7 +65,7 @@ const UsersManagement = () => {
       })),
       filterMode: "tree",
       filterSearch: true,
-      onFilter: (value, record) => record.username === value,
+      onFilter: (value, record) => record.username.includes(value),
       width: "40%",
     },
     {
@@ -74,7 +76,7 @@ const UsersManagement = () => {
         value: email,
       })),
       filterSearch: true,
-      onFilter: (value, record) => record.email === value,
+      onFilter: (value, record) => record.email.includes(value),
       width: "20%",
     },
     {
@@ -90,8 +92,7 @@ const UsersManagement = () => {
       dataIndex: "actions",
       render: (text, record) => (
         <Space size="middle">
-          
-          <DeleteUser userID={record._id} text='Eliminar'/>
+          <DeleteUser userID={record._id} text="Eliminar" />
         </Space>
       ),
       width: "20%",
@@ -99,27 +100,29 @@ const UsersManagement = () => {
   ];
 
   return (
-    <div className="grid items-center justify-center overflow-x-auto w-[80%] m-auto mb-[10rem] mt-[5rem] z-[-1000]">
-      <Space
-        style={{
-          marginBottom: 16,
-          marginTop: 16,
-        }}
-      >
-        <Button onClick={clearFilters}>Eliminar filtros</Button>
-        <Link to="/dashboard">
-          <Button>Administrar Publicaciones</Button>
-        </Link>
-      </Space>
-      <Table
-        className="table"
-        columns={columns}
-        dataSource={usersData}
-        loading={loading}
-        onChange={handleChange}
-        pagination={{ pageSize: 10 }}
-        rowKey={(record) => record._id}
-      />
+    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[10rem] mt-[5rem] z-[-1000]">
+      <FadeAnimation className={'overflow-x-auto'}>
+        <Space
+          style={{
+            marginBottom: 16,
+            marginTop: 16,
+          }}
+        >
+          <Link to="/dashboard">
+            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`}>Administrar Publicaciones</Button>
+          </Link>
+        </Space>
+
+        <Table
+          className="dark table"
+          columns={columns}
+          dataSource={usersData}
+          loading={loading}
+          onChange={handleChange}
+          pagination={{ pageSize: 10 }}
+          rowKey={(record) => record._id}
+        />
+      </FadeAnimation>
     </div>
   );
 };

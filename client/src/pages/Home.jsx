@@ -1,6 +1,7 @@
 import Hero from '@components/Hero';
 import HomeFound from '@components/HomeFound';
 import ServiceCard from '@/components/ServiceCard';
+
 const Home = () => {
   
 
@@ -9,6 +10,7 @@ const Home = () => {
       <Hero />
       <HomeFound />
       <ServiceCard />
+
     </div>
   )
 };

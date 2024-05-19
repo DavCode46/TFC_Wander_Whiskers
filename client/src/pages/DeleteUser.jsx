@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { UserContext } from "../context/userContext";
+import { UserContext } from "../context/UserContext";
 import axios from "axios";
-
+import useTheme from '@context/ThemeContext'
 import { CircularProgress } from "@chakra-ui/react";
 import { Button, message, Popconfirm, FloatButton } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
@@ -11,7 +11,7 @@ const DeleteUser = ({ userID: id, text, float }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-console.log('id',id)
+  const {themeMode} = useTheme()
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
@@ -93,7 +93,7 @@ console.log('id',id)
         {float ? (
           <FloatButton danger icon={<DeleteOutlined />}/>
         ) : (
-          <Button danger icon={<DeleteOutlined />}>
+          <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} danger icon={<DeleteOutlined />}>
             {text}
           </Button>
         )}

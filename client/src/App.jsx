@@ -1,77 +1,348 @@
-// import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Route,
+  RouterProvider,
+  useLocation,
+} from "react-router-dom";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ChakraProvider } from "@chakra-ui/react";
-
+import { AnimatePresence } from "framer-motion";
 import theme from "./theme/theme";
-
+import { ConfigProvider } from "antd";
 import CustomLayout from "./components/CustomLayout";
 import Home from "./pages/Home";
-import CreatePost from "./pages/CreatePost";
+
 import PostsPage from "./pages/PostsPage";
-import EditPost from "./pages/EditPost";
+
 import DeletePost from "./pages/DeletePost";
 import PostDetail from "./pages/PostDetail";
 import LocationPosts from "./pages/LocationPosts";
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import Creator from "./pages/Creator";
-import Register from "./pages/Register";
+
 import Logout from "./pages/Logout";
-import NotFoundPage from "./pages/NotFound";
+import Error404 from "./pages/Error404";
 import Contact from "./pages/Contact";
 import Help from "./pages/Help";
 import PostsBySpecie from "./pages/PostsBySpecie";
-
-import UserProvider from "./context/userContext"; // Importa UserProvider desde el archivo UserContext
-import PostCreator from "./components/PostCreator";
+import OrdersPage from "./pages/OrdersPage";
+import UserProvider from "./context/UserContext";
 import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
 import { CartProvider } from "./context/CartContext";
 import CartPage from "./pages/CartPage";
-// import ProfilePosts from "./components/ProfilePosts";
+import OrderPage from "./pages/OrdersPage";
+import CheckoutSuccess from "./pages/CheckoutSuccess";
+import CheckoutCancel from "./pages/CheckoutCancel";
+import { useEffect, useLayoutEffect, useState } from "react";
+import LegalPage from "./pages/LegalPage";
+import CookiesPage from "./pages/CookiesPage";
+import PrivacityPage from "./pages/PrivacityPage";
+import ForgetPassword from './pages/ForgetPassword'
+import { ThemeProvider } from "@/context/ThemeContext";
+import Error403 from "./pages/Error403";
+import Error500 from "./pages/Error500";
+import ResetPassword from "./pages/ResetPassword";
+
+const Wrapper = ({ children }) => {
+  const location = useLocation();
+  useLayoutEffect(() => {
+    document.documentElement.scrollTo(0, 0);
+  }, [location.pathname]);
+  return children;
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <ChakraProvider theme={theme}>
-        <UserProvider>
-          <CartProvider>
-            <CustomLayout />
-          </CartProvider>
-        </UserProvider>
-      </ChakraProvider>
+        <GoogleOAuthProvider clientId={`${import.meta.env.GOOGLE_ID_KEY}`}>
+          <ChakraProvider theme={theme}>
+            <AnimatePresence mode="wait">
+              <Wrapper>
+                <UserProvider>
+                  <CartProvider>
+                    <CustomLayout />
+                  </CartProvider>
+                </UserProvider>
+              </Wrapper>
+            </AnimatePresence>
+          </ChakraProvider>
+        </GoogleOAuthProvider>
     ),
-    errorElement: <NotFoundPage />,
+    errorElement: <Error404 />,
     children: [
-      { path: "/", element: <Home /> },
-      { path: "/create-post", element: <CreatePost /> },
-      { path: "/posts", element: <PostsPage /> },
-      { path: "/posts/:id/edit", element: <EditPost /> },
-      { path: "/posts/:id/delete", element: <DeletePost /> },
-      { path: "/post/:id/detail", element: <PostDetail /> },
-      { path: "/profile/:id", element: <Profile /> },
-      { path: "/posts/location/:location", element: <LocationPosts /> },
-      // { path: "/posts/creator/:id", element: <Creator /> },
-      { path: "/login", element: <Login /> },
-      { path: "/register", element: <Register /> },
-      { path: "/logout", element: <Logout /> },
-      { path: "/contact", element: <Contact /> },
-      { path: "/help", element: <Help /> },
-      { path: "posts/species/:specie", element: <PostsBySpecie /> },
-      { path: "posts/users/:id", element: <Creator /> },
-      { path: "/dashboard", element: <Dashboard /> },
-      { path: "/dashboard/users", element: <UsersManagement /> },
-      { path: "/cart", element: <CartPage /> },
-      // { path: "posts/users/:id", element: <ProfilePosts /> }
+      {
+        path: "/",
+        element: <Home />,
+        location: location,
+        key: location.pathname,
+      },
+      // {
+      //   path: "/create-post",
+      //   element: <CreatePost />,
+      //   location: location,
+      //   key: location.pathname,
+      // },
+      {
+        path: "/posts",
+        element: <PostsPage />,
+        location: location,
+        key: location.pathname,
+      },
+      // {
+      //   path: "/posts/:id/edit",
+      //   element: <EditPost />,
+      //   location: location,
+      //   key: location.pathname,
+      // },
+      {
+        path: "/posts/:id/delete",
+        element: <DeletePost />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/post/:id/detail",
+        element: <PostDetail />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/profile/:id",
+        element: <Profile />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/posts/location/:location",
+        element: <LocationPosts />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+        location: location,
+        key: location.pathname,
+      },
+      // {
+      //   path: "/register",
+      //   element: <Register />,
+      //   location: location,
+      //   key: location.pathname,
+      // },
+      {
+        path: "/logout",
+        element: <Logout />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/contact",
+        element: <Contact />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/help",
+        element: <Help />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "posts/species/:specie",
+        element: <PostsBySpecie />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "posts/users/:id",
+        element: <Creator />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/dashboard/users",
+        element: <UsersManagement />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/cart",
+        element: <CartPage />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/cart/order/:id",
+        element: <OrderPage />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/checkout/success",
+        element: <CheckoutSuccess />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/checkout/cancel",
+        element: <CheckoutCancel />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/orders/users/:id",
+        element: <OrdersPage />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/legal",
+        element: <LegalPage />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/privacity",
+        element: <PrivacityPage />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: "/cookies",
+        element: <CookiesPage />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: '/forgot-password',
+        element: <ForgetPassword />,
+        location: location,
+        key: location.pathname,
+      },
+      {
+        path: '/users/reset-password/:id/:token',
+        element: <ResetPassword />,
+        location: location,
+        key: location.pathname,
+      }
     ],
   },
 ]);
 
 function App() {
+  const [themeMode, setThemeMode] = useState("light");
+
+  const darkTheme = () => {
+    setThemeMode("dark");
+  };
+
+  const lightTheme = () => {
+    setThemeMode("light");
+  };
+
+  useEffect(() => {
+    document.querySelector("html").classList.remove("dark", "light");
+    document.querySelector("html").classList.add(themeMode);
+  }, [themeMode]);
+
   return (
     <>
-      <RouterProvider router={router} />
+      <ConfigProvider
+        theme={{
+          components: {
+            Select: {
+              optionActiveBg: themeMode === "dark" ? "#1890ff" : "",
+              optionSelectedBg: themeMode === "dark" ? "#1890ff" : "",
+              optionSelectedColor: themeMode === "dark" ? "#fff" : "",
+              selectorBg: themeMode === "dark" ? "#081C24" : "",
+              colorText: themeMode === "dark" ? "#ccc" : "",
+              colorPrimary: themeMode === "dark" ? "#ccc" : "",
+            },
+            Drawer: {
+              colorIcon: themeMode === "dark" ? "#fff" : "",
+              colorIconHover: themeMode === "dark" ? "#ccc" : "",
+              colorSplit: themeMode === "dark" ? "#fff" : "",
+              colorText: themeMode === "dark" ? "#fff" : "",
+            },
+            Upload: {
+              colorPrimary: themeMode === "dark" ? "#1890ff" : "",
+              colorPrimaryHover: themeMode === "dark" ? "#1890ff" : "",
+              colorText: themeMode === "dark" ? "#ccc" : "",
+            },
+            Input: {
+              activeBorderColor: themeMode === "dark" ? "#1890ff" : "",
+              addonBg: themeMode === "dark" ? "#2e2e2e" : "",
+              colorBgContainer: themeMode === "dark" ? "#081C24" : "",
+              colorTextPlaceholder: themeMode === "dark" ? "#fff" : "",
+              colorText: themeMode === "dark" ? "#fff" : "",
+            },
+            Form: {
+              labelColor: themeMode === "dark" ? "#fff" : "",
+            },
+            Button: {
+              colorTextDisabled: themeMode === "dark" ? "#ccc" : "",
+            },
+            Pagination: {
+              itemActiveBg: themeMode === "dark" ? "#00111A" : "",
+              itemBg: themeMode === "dark" ? "red" : "",
+              itemInputBg: themeMode === "dark" ? "red" : "",
+              itemActiveBgDisabled: themeMode === "dark" ? "red" : "",
+              colorText: themeMode === "dark" ? "white" : "",
+            },
+            Cascader: {
+              optionSelectedBg: themeMode === "dark" ? "#1890ff" : "",
+              colorPrimary: themeMode === "dark" ? "#1890ff" : "",
+              colorPrimaryBgHover: themeMode === "dark" ? "#3c9ae8" : "",
+              colorSplit: themeMode === "dark" ? "#3c9ae8" : "",
+              colorHighlight: themeMode === "dark" ? "#3c9ae8" : "",
+              controlItemBgHover: themeMode === "dark" ? "#00213f" : "",
+            },
+            Card: {
+              colorPrimary: themeMode === "dark" ? "#1F2E35" : "",
+            },
+            Table: {
+              filterDropdownBg: themeMode === "dark" ? "#1F2E35" : "",
+              filterDropdownMenuBg: themeMode === "dark" ? "#00213f" : "",
+              colorText: themeMode === "dark" ? "#ccc" : "",
+              expandIconBg: themeMode === "dark" ? "#ccc" : "",
+              colorBgContainer: themeMode === "dark" ? "#1F2E35" : "white",
+              rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              headerSplitColor: themeMode === "dark" ? "#ccc" : "#fafafa",
+              headerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              headerColor: themeMode === "dark" ? "#ccc" : "#212529",
+              footerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              bodySortBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+            },
+            Empty: {
+              colorText: themeMode === "dark" ? "#ccc" : "",
+            },
+            Popconfirm: {
+              colorText: themeMode === "dark" ? "#ccc" : "",
+              colorTextHeading: themeMode === "dark" ? "#cacaca" : "",
+            },
+            Result: {
+              colorText: themeMode === "dark" ? "#ccc" : "",
+            },
+            Menu: {
+              darkItemSelectedBg: themeMode === "dark" ? "transparent" : "",
+            }
+          },
+        }}
+      >
+        <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
+          <RouterProvider router={router} />
+        </ThemeProvider>
+      </ConfigProvider>
     </>
   );
 }

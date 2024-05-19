@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Post from "@components/Post";
 import FilterProvince from "@components/FilterProvince";
@@ -9,7 +9,12 @@ import { CircularProgress } from "@chakra-ui/react";
 import CustomSearch from "./CustomSearch";
 import { Link } from "react-router-dom";
 
-import CreatePostDrawer from "./CreatePostDrawer";
+import PostDrawer from "./PostDrawer";
+import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
+import Xanimation from "./Animations/Xanimation/Xanimation";
+import Yanimation from "./Animations/Yanimation/Yanimation";
+import { UserContext } from "@/context/UserContext";
+import useTheme from "@/context/ThemeContext";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -18,7 +23,10 @@ const Posts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const { currentUser } = useContext(UserContext);
+  const [isSubscribed, setIsSubscribed] = useState(false)
+  const {themeMode} = useTheme()
+  console.log("usuario actual", currentUser);
   useEffect(() => {
     const fetchingPosts = async () => {
       setLoading(true);
@@ -32,7 +40,17 @@ const Posts = () => {
       }
       setLoading(false);
     };
+    const fetchUser = async () => {
+      setLoading(true)
+      try {
+        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`)
+        setIsSubscribed(res.data.isSubscribed)
+      }catch(err) {
+        console.log(err)
+      }
+    }
     fetchingPosts();
+    fetchUser()
   }, []);
 
   if (loading)
@@ -52,7 +70,8 @@ const Posts = () => {
     );
 
   const handleFilterChange = (selectedOptions) => {
-    setSelectedOptions(selectedOptions);
+    const labels = selectedOptions.map((option) => option[1].label);
+    setSelectedOptions(labels);
     setCurrentPage(1); // Restablecer a la primera página cuando cambian las opciones
   };
 
@@ -63,9 +82,10 @@ const Posts = () => {
 
   const filteredPosts = selectedOptions.length
     ? posts.filter((post) =>
-        selectedOptions.some((option) => post.location === option[1].label)
+        selectedOptions.some((label) => Object.values(post).includes(label))
       )
     : posts;
+  console.log(selectedOptions);
 
   const onPageChange = (page) => {
     setCurrentPage(page);
@@ -92,21 +112,25 @@ const Posts = () => {
 
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
-      <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
-        <div className="md:order-1">
-          <CustomSearch onSearch={handleSearch} />
+      <Xanimation duration={0.8}>
+        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+          <div className="md:order-1">
+            <CustomSearch onSearch={handleSearch} />
+          </div>
+          <FilterProvince
+         
+            options={locationData.map(({ key, label }) => ({
+              label,
+              value: key,
+            }))}
+            onChange={(value, selectedOptions) =>
+              handleFilterChange(selectedOptions)
+            }
+          />
+          {/* {currentUser || isSubscribed && <PostDrawer />} */}
+          <PostDrawer />
         </div>
-        <FilterProvince
-          options={locationData.map(({ key, label }) => ({
-            label,
-            value: key,
-          }))}
-          onChange={(value, selectedOptions) =>
-            handleFilterChange(selectedOptions)
-          }
-        />
-        <CreatePostDrawer />
-      </div>
+      </Xanimation>
 
       <Divider />
       {paginatedPosts.length ? (
@@ -126,51 +150,54 @@ const Posts = () => {
               },
               index
             ) => (
-              <Post
-                key={index}
-                postId={postId}
-                image={image}
-                title={title}
-                content={content}
-                creatorId={creatorId}
-                createdAt={createdAt}
-                location={location}
-                specie={specie}
-                condition={condition}
-              />
+              <FadeAnimation delay={index * 0.3} key={crypto.randomUUID()}>
+                <Post
+                  postId={postId}
+                  image={image}
+                  title={title}
+                  content={content}
+                  creatorId={creatorId}
+                  createdAt={createdAt}
+                  location={location}
+                  specie={specie}
+                  condition={condition}
+                />
+              </FadeAnimation>
             )
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-screen">
-          <Empty
-            image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
-            imageStyle={{
-              height: 100,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginBottom: "1rem",
-            }}
-            description={
-              <div>
-                <span className="mt-[3rem]">
-                  No se han encontrado{" "}
-                  <span className="text-color-btn">anuncios</span>
-                </span>
-                <div className="mt-[3rem]">
-                  {" "}
-                  {/* Espaciado entre el texto y el botón */}
-                  <Link
-                    className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
-                    to="/create-post"
-                  >
-                    Publicar anuncio
-                  </Link>
+        <div className="flex items-center justify-center h-[50vh]">
+          <Yanimation>
+            <Empty
+              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              imageStyle={{
+                height: 100,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "1rem",
+              }}
+              description={
+                <div>
+                  <span className="mt-[3rem]">
+                    No se han encontrado{" "}
+                    <span className="text-color-btn">anuncios</span>
+                  </span>
+                  <div className="mt-[3rem]">
+                    {" "}
+                    {/* Espaciado entre el texto y el botón */}
+                    <Link
+                      className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+                      to="/create-post"
+                    >
+                      Publicar anuncio
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            }
-          />
+              }
+            />
+          </Yanimation>
         </div>
       )}
       <Pagination
@@ -182,6 +209,10 @@ const Posts = () => {
         pageSize={pageSize}
         pageSizeOptions={[1, 5, 10, 20, 30]}
         style={{ textAlign: "center", marginTop: "1rem" }}
+        dropdownStyle={{
+          backgroundColor: themeMode === "dark" ? "#001529" : "",
+          color: themeMode === "dark" ? "white !important" : "",
+        }}
       />
     </section>
   );
