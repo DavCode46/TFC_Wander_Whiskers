@@ -21,7 +21,7 @@ const CartPage = () => {
   const [error, setError] = useState("Error al procesar el pago");
   const [messageApi, contextHolder] = message.useMessage();
   const navigate = useNavigate();
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
 
   const { currentUser } = useContext(UserContext);
   const token = currentUser?.token;
@@ -84,21 +84,35 @@ const CartPage = () => {
   //   );
   // };
 
-  const handlePay = async () => {
+  const handlePay = () => {
+    console.log("cart", cart);
     setIsLoading(true);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${
-          currentUser.id
-        }`,
-        {
-          withCredentials: true,
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      success();
-      const paymentUrl = response.data.url; // Obtener la URL de pago de la respuesta
-      window.location.href = paymentUrl; // Redirigir al usuario a la página de pago de Stripe
+      axios
+        .post(
+          `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${
+            currentUser.id
+          }`,
+          {
+            cartItems: cart,
+          },
+          {
+            withCredentials: true,
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+        .then((res) => {
+          if (res.data.url) {
+            success();
+            window.location.href = res.data.url; // Obtener la URL de pago de la respuesta
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+      // success();
+      // const paymentUrl = response.data.url; // Obtener la URL de pago de la respuesta
+      // window.location.href = paymentUrl; // Redirigir al usuario a la página de pago de Stripe
     } catch (error) {
       console.error(error);
       setError(error.response.data.message);
@@ -124,14 +138,18 @@ const CartPage = () => {
     <div className="flex flex-col justify-start items-center w-full h-screen py-10">
       {contextHolder}
       <Xanimation>
-        <h1 className={`${themeMode === 'dark' ? 'text-white' : ''} text-center font-bold text-2xl mb-5`}>
+        <h1
+          className={`${
+            themeMode === "dark" ? "text-white" : ""
+          } text-center font-bold text-2xl mb-5`}
+        >
           Carrito de Compras
         </h1>
       </Xanimation>
       {productsCart.length ? (
         <div className="w-full md:w-3/4 lg:w-2/3">
-          <FadeAnimation>
-            {productsCart.map((item) => (
+          {productsCart.map((item) => (
+            <FadeAnimation key={crypto.randomUUID()}>
               <>
                 <div
                   key={crypto.randomUUID()}
@@ -139,9 +157,29 @@ const CartPage = () => {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h1 className={`${themeMode === 'dark' ? 'text-white' : ''} text-lg font-semibold`}>{item.name}</h1>
-                      <p className={`${themeMode === 'dark' ? 'text-gray-300' : 'text-gray-500'}`}>{item.description}</p>
-                      <p className={`${themeMode === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+                      <h1
+                        className={`${
+                          themeMode === "dark" ? "text-white" : ""
+                        } text-lg font-semibold`}
+                      >
+                        {item.name}
+                      </h1>
+                      <p
+                        className={`${
+                          themeMode === "dark"
+                            ? "text-gray-300"
+                            : "text-gray-500"
+                        }`}
+                      >
+                        {item.description}
+                      </p>
+                      <p
+                        className={`${
+                          themeMode === "dark"
+                            ? "text-gray-400"
+                            : "text-gray-600"
+                        }`}
+                      >
                         Precio:{" "}
                         {`${
                           item.name === "Anual"
@@ -178,8 +216,8 @@ const CartPage = () => {
                   </div>
                 </div>
               </>
-            ))}
-          </FadeAnimation>
+            </FadeAnimation>
+          ))}
         </div>
       ) : (
         <div className="flex items-center justify-center h-screen">
@@ -205,7 +243,11 @@ const CartPage = () => {
                     {" "}
                     {/* Espaciado entre el texto y el botón */}
                     <Link
-                      className={`${themeMode === 'dark' ? 'bg-a-6 hover:bg-a-7' : 'bg-color-btn hover:bg-color-btnHover'}  text-white px-3 py-2 rounded-md hover:text-white transition-all duration-300`}
+                      className={`${
+                        themeMode === "dark"
+                          ? "bg-a-6 hover:bg-a-7"
+                          : "bg-color-btn hover:bg-color-btnHover"
+                      }  text-white px-3 py-2 rounded-md hover:text-white transition-all duration-300`}
                       to="/"
                     >
                       Ir a inicio
@@ -220,7 +262,11 @@ const CartPage = () => {
       {productsCart.length > 0 && (
         <>
           <Xanimation>
-            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} className="mt-5" onClick={handlePay}>
+            <Button
+              type={`${themeMode === "dark" ? "primary" : "default"}`}
+              className="mt-5"
+              onClick={handlePay}
+            >
               Pagar pedido
             </Button>
           </Xanimation>

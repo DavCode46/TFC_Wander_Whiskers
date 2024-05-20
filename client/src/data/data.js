@@ -1,3 +1,6 @@
+import dog from '../images/bgdogmensual.jpg'
+import cat from '../images/bgcatanual.jpg'
+
 const locationData = [
   {
     label: "Especie",
@@ -275,17 +278,9 @@ const PET_TYPE = ["Perro", "Gato", "Otro"];
 const CONDITION = ["Encontrado", "Perdido", "En adopción"];
 
 const servicesData = [
+ 
   {
-    title: "Mensual",
-    description: "Suscripción mensual",
-    price: 20.99,
-    features: [
-      "Acceso a la base de datos de animales perdidos y encontrados",
-      "Notificaciones en tiempo real",
-      "Soporte prioritario",
-    ],
-  },
-  {
+    image: cat,
     title: "Anual",
     description: "Suscripción anual",
     price: 251.88,
@@ -298,6 +293,18 @@ const servicesData = [
     ],
   },
   {
+    image: dog,
+    title: "Mensual",
+    description: "Suscripción mensual",
+    price: 20.99,
+    features: [
+      "Acceso a la base de datos de animales perdidos y encontrados",
+      "Notificaciones en tiempo real",
+      "Soporte prioritario",
+    ],
+  },
+  {
+    image: dog,
     id: 2,
     title: "Protectoras",
     description: "Suscripción especial protectoras",   
