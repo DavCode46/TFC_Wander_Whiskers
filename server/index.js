@@ -14,7 +14,7 @@ import { notFound, errorHandler } from "./middleware/error.middleware.js";
 import Product from './models/Product.model.js'
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-
+import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -33,6 +33,13 @@ app.use('/api/orders', orderRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
+
+// Production script
+
+app.use(express.static('./client/build'))
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
+})
 
 connect(process.env.MONGO_URI)
   .then(
