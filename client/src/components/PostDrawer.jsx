@@ -1,4 +1,4 @@
-import {EditOutlined} from '@ant-design/icons'
+import { EditOutlined } from "@ant-design/icons";
 import { MdOutlinePets } from "react-icons/md";
 
 import { useState, useEffect, useContext } from "react";
@@ -46,14 +46,15 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
+  console.log('isSubscribed',currentUser.isSubscribed)
   const token = currentUser?.token;
   const navigate = useNavigate();
   const { id } = useParams();
   const { themeMode } = useTheme();
 
-  useEffect(() => {
-    if (!token) navigate("login");
-  }, []);
+  // useEffect(() => {
+  //   if (!token) navigate("login");
+  // }, []);
 
   const provinces = locationData[1].children;
   const handleProvinceChange = (value) => {
@@ -231,31 +232,36 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
     <>
       {contextHolder}
 
-      <Button
-        className={`${
-          themeMode === "dark"
-            ? "text-dark-white"
-            : "text-blue-400 hover:text-blue-500 "
-        } hover:underline text-[.8rem]`}
-        onClick={showDrawer}
-        icon={themeMode === 'dark' ? <PlusCircleOutlined /> : <EditOutlined />}
-        type={
-          homeButton && !themeMode === "dark"
-            ? "default"
-            : themeMode === "dark"
-            ? "primary"
-            : undefined
-        }
-      >
-        {!isEditing && !homeButton
-          ? "Publicar anuncio"
-          : homeButton
-          ? "Reportar mascota perdida"
-          : "Editar anuncio"}
-      </Button>
+      {currentUser && currentUser.isSubscribed ? (
+        <Button
+          className={`${
+            themeMode === "dark"
+              ? "text-dark-white"
+              : "text-blue-400 hover:text-blue-500 "
+          } hover:underline text-[.8rem]`}
+          onClick={showDrawer}
+          icon={
+            themeMode === "dark" ? <PlusCircleOutlined /> : <EditOutlined />
+          }
+          type={
+            homeButton && !themeMode === "dark"
+              ? "default"
+              : themeMode === "dark"
+              ? "primary"
+              : undefined
+          }
+        >
+          {!isEditing && !homeButton
+            ? "Publicar anuncio"
+            : homeButton
+            ? "Reportar mascota perdida"
+            : "Editar anuncio"}
+        </Button>
+      ) : (
+        ""
+      )}
 
       <Drawer
-      
         loading={true}
         className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={

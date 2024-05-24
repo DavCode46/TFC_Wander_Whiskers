@@ -283,8 +283,8 @@ function App() {
               activeBorderColor: themeMode === "dark" ? "#1890ff" : "",
               addonBg: themeMode === "dark" ? "#2e2e2e" : "",
               colorBgContainer: themeMode === "dark" ? "#081C24" : "",
-              colorTextPlaceholder: themeMode === "dark" ? "#fff" : "",
-              colorText: themeMode === "dark" ? "#fff" : "",
+              colorTextPlaceholder: themeMode === "dark" ? "red" : "",
+              colorText: themeMode === "dark" ? "red" : "",
             },
             Form: {
               labelColor: themeMode === "dark" ? "#fff" : "",

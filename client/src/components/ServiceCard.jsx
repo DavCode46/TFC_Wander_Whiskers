@@ -8,16 +8,18 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@nextui-org/react";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
 import useTheme from "@/context/ThemeContext";
+import dog from '../images/bgdogmensual.jpg'
+import cat from '../images/bgcatanual.jpg'
 
 const ServiceCard = () => {
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(false);
   const { currentUser } = useContext(UserContext);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(
     "Solo se puede seleccionar una suscripción, vacía tu carrito"
   );
   const [messageApi, contextHolder] = message.useMessage();
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
 
   const navigate = useNavigate();
 
@@ -39,13 +41,13 @@ const ServiceCard = () => {
 
   const addToCart = async (service) => {
     try {
-      const { _id, name, price, description } = service; // Extraer los campos necesarios del servicio
+      const { _id, name, price, description } = service;
       const data = {
         productId: _id,
         name,
         description,
         price,
-        quantity: 1, // Por defecto, agregamos una cantidad de 1 al carrito
+        quantity: 1,
       };
 
       const res = await axios.post(
@@ -72,13 +74,15 @@ const ServiceCard = () => {
       content: "Producto añadido al carrito",
     });
   };
+
   const errorMessage = () => {
     messageApi.open({
       type: "error",
       content: error,
     });
   };
-  if (loading)
+
+  if (loading) {
     return (
       <CircularProgress
         isIndeterminate
@@ -93,73 +97,113 @@ const ServiceCard = () => {
         }}
       />
     );
+  }
+
   return (
-    <div className="flex flex-col lg:flex-row sm:ml-[2rem] items-center justify-center gap-[2rem] lg:ml-[3rem] lg:mr-[1rem]">
+    <div className="flex flex-wrap justify-center gap-6 pb-20">
       {contextHolder}
       {products.map((product, index) => (
         <ScrollFadeAnimation key={product._id} delay={index * 0.3}>
-          <div className={`${themeMode === 'dark' ? 'text-dark-white' : '[&>h4]:odd:text-color-btn  [&>h4]:even:text-[#FFC876] border-n-6'} w-[12rem] max-lg:w-full min-h-[38rem] px-6 border rounded-[2rem] lg:w-auto py-8 my-4 mb-[3rem] font-grotesk`}>
-            <h4 className={`${themeMode === 'dark' ? 'text-a-9' : ''} text-[2rem] mb-4`}>{product.name}</h4>
+          <div
+            className={`${
+              themeMode === "dark" ? "bg-dark-card" : "bg-white"
+            } w-[24rem] p-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 flex flex-col justify-between`}
+          >
+            <div>
+              <img
+                src={product.name === 'Mensual' ? dog : cat}
+                alt={product.name}
+                className="w-full h-40 mb-4 object-cover rounded-lg"
+              />
+              <h4
+                className={`${
+                  themeMode === "dark" ? "text-dark-white" : "text-color-btn"
+                } text-2xl font-semibold mb-4`}
+              >
+                {product.name}
+              </h4>
 
-            <p className={`${themeMode === 'dark' ? 'text-dark-white' : 'text-color-dark'} min-h-[3rem] text-[1.2rem] mb-3`}>
-              {product.description}
-            </p>
+              <p
+                className={`${
+                  themeMode === "dark" ? "text-dark-white" : "text-color-dark"
+                } text-lg mb-4`}
+              >
+                {product.description}
+              </p>
 
-            <div className="flex items-center h-[5.5rem] mb-6">
-              {product.price && (
-                <div className="flex flex-col">
-                  <div
-                    className={`${
-                      product.name == "Anual"
-                        ? "line-through text-xl text-red-500 flex"
-                        : "text-[3rem] leading-none font-bold flex items-center"
-                    } `}
-                  >
-                    {product.price}
-                    <div className="text-xl">€</div>
-                  </div>
-
-                  <div>
-                    {product.discountPrice && (
-                      <div
-                        className={
-                          "text-[3rem] leading-none font-bold flex items-center"
-                        }
-                      >
-                        {product.discountPrice}
-                        <div className="text-xl">€</div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+              <ul>
+                {product.features.map((feature, i) => (
+                  <li key={i} className="flex items-center mb-2">
+                    <CheckCircleOutlined
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary"
+                          : "text-color-btn"
+                      } text-lg mr-2`}
+                    />
+                    <p
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-white"
+                          : "text-color-dark"
+                      } text-base`}
+                    >
+                      {feature}
+                    </p>
+                  </li>
+                ))}
+              </ul>
             </div>
 
-            <Button
-              className={`${themeMode === 'dark' ? 'text-dark-white' : ''} w-full mb-6 font-montserrat`}
-              onClick={() => addToCart(product)}
-              disabled={!currentUser || currentUser.isSubscribed}
-            >
-              {!currentUser
-                ? "Debes iniciar sesión para poder suscribirte"
-                : currentUser.isSubscribed
-                ? "Ya estás suscrito"
-                : product.price
-                ? "Suscribirse"
-                : "Solicitar información"}
-            </Button>
+            <div className="flex flex-col mt-auto">
+              <div className="flex items-center mb-2">
+                {product.price && (
+                  <p
+                    className={`${
+                      themeMode === "dark"
+                        ? "text-dark-white"
+                        : "text-color-dark"
+                    } text-base`}
+                  >
+                    Precio:
+                  </p>
+                )}
+                <div className="flex items-center ml-2">
+                  <p
+                    className={`${
+                      product.discountPrice ? "line-through mr-3" : ""
+                    } text-lg mr-1`}
+                  >
+                    {product.price}
+                  </p>
+                  {product.discountPrice && (
+                    <p
+                      className={`${
+                        themeMode === "dark" ? "text-dark-white" : ""
+                      } text-lg font-semibold`}
+                    >
+                      {product.discountPrice}
+                    </p>
+                  )}
+                </div>
+              </div>
 
-            <ul>
-              {product.features.map((feature) => (
-                <li
-                  key={crypto.randomUUID()}
-                  className={`${themeMode === 'dark' ? '' : 'border-n-6'} font-montserrat flex items-start py-5 border-t`}
-                >
-                  <CheckCircleOutlined className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn '} text-lg`} />
-                  <p className="body-2 ml-4">{feature}</p>
-                </li>
-              ))}
-            </ul>
+              <Button
+                className={`${
+                  themeMode === "dark" ? "bg-color-btn text-dark-white" : ""
+                } w-full font-semibold`}
+                onClick={() => addToCart(product)}
+                disabled={!currentUser || currentUser.isSubscribed}
+              >
+                {!currentUser
+                  ? "Iniciar sesión"
+                  : currentUser.isSubscribed
+                  ? "Ya suscrito"
+                  : product.price
+                  ? "Suscribirse"
+                  : "Más información"}
+              </Button>
+            </div>
           </div>
         </ScrollFadeAnimation>
       ))}

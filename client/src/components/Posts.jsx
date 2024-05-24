@@ -24,8 +24,8 @@ const Posts = () => {
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
   const { currentUser } = useContext(UserContext);
-  const [isSubscribed, setIsSubscribed] = useState(false)
-  const {themeMode} = useTheme()
+  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { themeMode } = useTheme();
   console.log("usuario actual", currentUser);
   useEffect(() => {
     const fetchingPosts = async () => {
@@ -40,17 +40,21 @@ const Posts = () => {
       }
       setLoading(false);
     };
-    const fetchUser = async () => {
-      setLoading(true)
-      try {
-        const res = await axios.get(`${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`)
-        setIsSubscribed(res.data.isSubscribed)
-      }catch(err) {
-        console.log(err)
-      }
+    if (currentUser) {
+      const fetchUser = async () => {
+        setLoading(true);
+        try {
+          const res = await axios.get(
+            `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`
+          );
+          setIsSubscribed(res.data.isSubscribed);
+        } catch (err) {
+          console.log(err);
+        }
+      };
+      fetchUser();
     }
     fetchingPosts();
-    fetchUser()
   }, []);
 
   if (loading)
@@ -118,7 +122,6 @@ const Posts = () => {
             <CustomSearch onSearch={handleSearch} />
           </div>
           <FilterProvince
-         
             options={locationData.map(({ key, label }) => ({
               label,
               value: key,

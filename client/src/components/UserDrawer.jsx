@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { EmailIcon } from "@chakra-ui/icons";
+
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaRegUser } from "react-icons/fa";
 
@@ -10,7 +10,8 @@ import LOGO from "@images/logo/1.svg";
 import DARK_LOGO from "@images/logo/3.svg";
 import GOOGLE_ICON from "@images/googleIcon.svg";
 import GITHUB_ICON from "@images/githubIcon.svg";
-import { PlusOutlined, EditOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined  } from "@ant-design/icons";
+import { MdOutlineEmail } from "react-icons/md";
 import {
   Button,
   Col,
@@ -27,6 +28,7 @@ import { UserContext } from "@/context/UserContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import useTheme from "@context/ThemeContext";
+import { FiGithub } from "react-icons/fi";
 // const { Option } = Select;
 const UserDrawer = ({ isRegistering, openButton, email }) => {
   const [open, setOpen] = useState(false);
@@ -159,7 +161,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
        className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-            <div className="flex items-center mt-4">
+            <div className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} flex items-center mt-4`}>
               {isRegistering
                 ? "Registrarse en Wander Whiskers"
                 : "Editar perfil"}
@@ -191,19 +193,31 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
         {isRegistering && (
           <div>
             <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
-              <button className="w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300">
-                <img src={GOOGLE_ICON} alt="" className="w-[1rem]" />
-                Google
-              </button>
+            <button
+              className={`${
+                themeMode === "dark"
+                  ? "text-white hover:bg-dark-greyBlue hover:text-white"
+                  : ""
+              } w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}
+            >
+              <img src={GOOGLE_ICON} alt="" className="w-[1rem]" />
+              Google
+            </button>
 
-              <button className="w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300">
-                <img src={GITHUB_ICON} alt="" className="w-[1rem]" />
-                GitHub
-              </button>
+            <button
+              className={`${
+                themeMode === "dark"
+                  ? "text-white hover:bg-dark-greyBlue hover:text-white"
+                  : ""
+              } w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}
+            >
+              <FiGithub />
+              GitHub
+            </button>
             </div>
             <div className="flex justify-center items-center mb-[1.5rem]">
               <div className="border-t border-gray-400 w-full mr-4"></div>{" "}
-              <p className="font-bold text-md">O</p>
+              <p className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} font-bold text-md`}>O</p>
               <div className="border-t border-gray-400 w-full ml-4"></div>{" "}
             </div>
           </div>
@@ -227,7 +241,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                   ]}
                 >
                   <Input
-                    addonBefore={<FaRegUser />}
+                    addonBefore={<FaRegUser className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                     placeholder="Por favor introduce tu nombre"
                     onChange={(e) => {
                       {
@@ -258,7 +272,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                     style={{
                       width: "100%",
                     }}
-                    addonBefore={<EmailIcon />}
+                    addonBefore={<MdOutlineEmail className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                     onChange={(e) => {
                       {
                         handleChange(e);
@@ -287,7 +301,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                       style={{
                         width: "100%",
                       }}
-                      addonBefore={<RiLockPasswordLine />}
+                      addonBefore={<RiLockPasswordLine  className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                       onChange={(e) => {
                         handleChange(e);
                         handleSetError();
@@ -310,7 +324,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                       style={{
                         width: "100%",
                       }}
-                      addonBefore={<RiLockPasswordLine />}
+                      addonBefore={<RiLockPasswordLine  className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                       value={formData.currentPassword}
                       onChange={(e) => {
                         handleChange(e);
@@ -346,7 +360,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                       style={{
                         width: "100%",
                       }}
-                      addonBefore={<RiLockPasswordLine />}
+                      addonBefore={<RiLockPasswordLine  className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                       onChange={(e) => {
                         handleChange(e);
                         handleSetError();
@@ -369,7 +383,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                       style={{
                         width: "100%",
                       }}
-                      addonBefore={<RiLockPasswordLine />}
+                      addonBefore={<RiLockPasswordLine  className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                       value={formData.newPassword}
                       onChange={(e) => {
                         handleChange(e);
@@ -411,7 +425,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
                       style={{
                         width: "100%",
                       }}
-                      addonBefore={<RiLockPasswordLine />}
+                      addonBefore={<RiLockPasswordLine  className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                       value={formData.confirmNewPassword}
                       onChange={(e) => {
                         handleChange(e);

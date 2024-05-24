@@ -31,6 +31,7 @@ import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import useTheme from "@context/ThemeContext";
 import UserDrawer from "./UserDrawer";
+import { MdOutlineEmail } from "react-icons/md";
 
 const LoginDrawer = () => {
   const [open, setOpen] = useState(false);
@@ -189,7 +190,7 @@ const LoginDrawer = () => {
           </div>
           <div className="flex justify-center items-center mb-[1.5rem]">
             <div className="border-t border-gray-400 w-full mr-4"></div>{" "}
-            <p className="font-bold text-md">O</p>
+            <p className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} font-bold text-md`}>O</p>
             <div className="border-t border-gray-400 w-full ml-4"></div>{" "}
           </div>
         </div>
@@ -217,7 +218,7 @@ const LoginDrawer = () => {
                       width: "100%",
                     }}
                     value={data.email}
-                    addonBefore={<EmailIcon className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
+                    addonBefore={<MdOutlineEmail className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                     onChange={(e) => {
                       changeHandler(e);
                       handleSetError();
@@ -242,7 +243,7 @@ const LoginDrawer = () => {
                     style={{
                       width: "100%",
                     }}
-                    addonBefore={<RiLockPasswordLine />}
+                    addonBefore={<RiLockPasswordLine className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
                     onChange={(e) => {
                       changeHandler(e);
                       handleSetError();

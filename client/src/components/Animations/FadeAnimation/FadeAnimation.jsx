@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-const FadeAnimation = ({ children, delay, className }) => {
+const FadeAnimation = ({ children, delay, className}) => {
   return (
     <motion.div
       className={className}
