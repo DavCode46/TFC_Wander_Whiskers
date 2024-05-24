@@ -12,7 +12,7 @@ import {
   InputRightElement,
   InputLeftAddon,
 } from "@chakra-ui/react";
-import { GoogleLogin } from "@react-oauth/google";
+// import { GoogleLogin } from "@react-oauth/google";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { message, Input, Divider } from "antd";
 import { UserContext } from "@/context/UserContext";
