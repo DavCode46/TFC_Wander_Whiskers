@@ -4,7 +4,7 @@ import {
   RouterProvider,
   useLocation,
 } from "react-router-dom";
-import { GoogleOAuthProvider } from "@react-oauth/google";
+// import { GoogleOAuthProvider } from "@react-oauth/google";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import theme from "./theme/theme";
@@ -57,7 +57,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-        <GoogleOAuthProvider clientId={`${import.meta.env.GOOGLE_ID_KEY}`}>
+       
           <ChakraProvider theme={theme}>
             <AnimatePresence mode="wait">
               <Wrapper>
@@ -69,7 +69,7 @@ const router = createBrowserRouter([
               </Wrapper>
             </AnimatePresence>
           </ChakraProvider>
-        </GoogleOAuthProvider>
+        
     ),
     errorElement: <Error404 />,
     children: [
