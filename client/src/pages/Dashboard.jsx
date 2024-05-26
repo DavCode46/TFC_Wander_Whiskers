@@ -146,7 +146,7 @@ const Dashboard = () => {
           loading={loading}
           onChange={handleChange}
           pagination={{ pageSize: 10 }}
-          className="table"
+          className={`${themeMode === 'dark' ? 'dark' : ''} table`}
           rowKey={(record) => record._id}
         />
       </FadeAnimation>

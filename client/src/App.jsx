@@ -316,7 +316,7 @@ function App() {
               colorText: themeMode === "dark" ? "#ccc" : "",
               expandIconBg: themeMode === "dark" ? "#ccc" : "",
               colorBgContainer: themeMode === "dark" ? "#1F2E35" : "white",
-              rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              // rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
               headerSplitColor: themeMode === "dark" ? "#ccc" : "#fafafa",
               headerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
               headerColor: themeMode === "dark" ? "#ccc" : "#212529",

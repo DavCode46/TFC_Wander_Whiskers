@@ -55,14 +55,14 @@ const PostDetail = () => {
     );
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-screen py-10 px-5 bg-gray-100 dark:bg-gray-900">
+    <section className={`${themeMode === 'dark' ? 'bg-dark-bg' : ''}" flex flex-col items-center justify-center min-h-screen py-10 px-5 bg-gray-100"`}>
       {error && (
         <p className="bg-red-500 text-white text-medium px-3 py-3 block mb-2">
           {error}
         </p>
       )}
       {post && (
-        <section className="w-full md:w-3/4 max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <section className={`${themeMode === 'dark' ? 'bg-[#1F2E35]' : ''} w-full md:w-3/4 max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden`}>
           <div className="relative">
             <FadeAnimation>
               <img
@@ -102,7 +102,7 @@ const PostDetail = () => {
               {post.title}
             </h1>
             <p
-              className={`text-lg font-grotesk ${
+              className={`text-md font-grotesk ${
                 themeMode === "dark" ? "text-gray-400" : "text-gray-700"
               } mb-5`}
             >

@@ -204,6 +204,7 @@ const Posts = () => {
         </div>
       )}
       <Pagination
+         className={`${themeMode === 'dark' ? 'dark' : ''}`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

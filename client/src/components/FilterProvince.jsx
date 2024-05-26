@@ -9,6 +9,7 @@ const FilterProvince = ({ onChange }) => {
   
   return (
     <Cascader
+      className={`${themeMode === 'dark' ? 'dark' : ''}`}
       options={locationData}
       placeholder="Filtros"
       onChange={onChange}

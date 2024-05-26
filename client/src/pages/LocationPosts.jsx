@@ -4,6 +4,7 @@ import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import CustomSearch from "@/components/CustomSearch";
 import FilterProvince from "@/components/FilterProvince";
 import Post from "@/components/Post";
+import useTheme from "@/context/ThemeContext";
 import { locationData } from "@/data/data";
 import { CircularProgress } from "@chakra-ui/react";
 import { Divider, Empty, Pagination } from "antd";
@@ -18,7 +19,7 @@ const LocationPosts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const {themeMode} = useTheme()
   const { location } = useParams();
 
   useEffect(() => {
@@ -177,6 +178,7 @@ const LocationPosts = () => {
         </div>
       )}
       <Pagination
+        className={`${themeMode === 'dark' ? 'dark' : ''}`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}
