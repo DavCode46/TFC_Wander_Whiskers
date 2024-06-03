@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@context/UserContext";
 import axios from "axios";
 import { Button, message, Popconfirm } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
-import useTheme from '@context/ThemeContext'
+import useTheme from "@context/ThemeContext";
 import { CircularProgress } from "@chakra-ui/react";
 
 const DeletePost = ({ postID: id }) => {
@@ -12,7 +12,7 @@ const DeletePost = ({ postID: id }) => {
   const [error, setError] = useState("Error al eliminar la publicación");
   const navigate = useNavigate();
   const location = useLocation();
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
@@ -83,6 +83,7 @@ const DeletePost = ({ postID: id }) => {
     <>
       {contextHolder}
       <Popconfirm
+        className={`${themeMode === "dark" ? "dark" : ""}`}
         title="Eliminar publicación"
         description="¿Estás seguro que deseas eliminar la publicación?"
         icon={
@@ -97,7 +98,11 @@ const DeletePost = ({ postID: id }) => {
         okType="danger"
         onConfirm={deletePost}
       >
-        <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} danger icon={<DeleteOutlined />}>
+        <Button
+          type={`${themeMode === "dark" ? "primary" : "default"}`}
+          danger
+          icon={<DeleteOutlined />}
+        >
           <div className="hidden md:inline">Eliminar</div>
         </Button>
       </Popconfirm>

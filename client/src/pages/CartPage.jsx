@@ -4,7 +4,7 @@ import { CartContext } from "@/context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "@/context/UserContext";
-import { v4 as uuid } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
@@ -84,35 +84,24 @@ const CartPage = () => {
   //   );
   // };
 
-  const handlePay = () => {
-    console.log("cart", cart);
+  const handlePay = async () => {
     setIsLoading(true);
     try {
-      axios
-        .post(
-          `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${
-            currentUser.id
-          }`,
-          {
-            cartItems: cart,
-          },
-          {
-            withCredentials: true,
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
-        .then((res) => {
-          if (res.data.url) {
-            success();
-            window.location.href = res.data.url; // Obtener la URL de pago de la respuesta
-          }
-        })
-        .catch((err) => {
-          console.log(err.message);
-        });
-      // success();
-      // const paymentUrl = response.data.url; // Obtener la URL de pago de la respuesta
-      // window.location.href = paymentUrl; // Redirigir al usuario a la página de pago de Stripe
+      const res = await axios.post(
+        `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${currentUser.id}`,
+        {
+          cartItems: cart,
+        },
+        {
+          withCredentials: true,
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      
+      if (res.data.url) {
+        success();
+        window.location.href = res.data.url; // Obtener la URL de pago de la respuesta
+      }
     } catch (error) {
       console.error(error);
       setError(error.response.data.message);
@@ -120,6 +109,7 @@ const CartPage = () => {
     }
     setIsLoading(false);
   };
+  
 
   const success = () => {
     messageApi.open({
@@ -135,7 +125,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-start items-center w-full h-screen py-10">
+    <div className="flex flex-col justify-start items-center w-full h-screen py-10 mt-10">
       {contextHolder}
       <Xanimation>
         <h1
@@ -149,10 +139,10 @@ const CartPage = () => {
       {productsCart.length ? (
         <div className="w-full md:w-3/4 lg:w-2/3">
           {productsCart.map((item) => (
-            <FadeAnimation key={crypto.randomUUID()}>
+            <FadeAnimation key={uuidv4()}>
               <>
                 <div
-                  key={crypto.randomUUID()}
+                  key={uuidv4()}
                   className="flex flex-col border border-gray-200 rounded-md p-5 mb-5"
                 >
                   <div className="flex items-center justify-between">
@@ -233,9 +223,9 @@ const CartPage = () => {
               }}
               description={
                 <div>
-                  <span className="mt-[3rem]">
+                  <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} mt-[3rem]`}>
                     No se han encontrado{" "}
-                    <span className="text-color-btn">
+                    <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'}`}>
                       productos en el carro
                     </span>
                   </span>

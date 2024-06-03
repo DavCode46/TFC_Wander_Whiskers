@@ -1,83 +1,64 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Empty } from "antd";
-import { CartContext } from "@/context/CartContext";
+import { UserContext } from "@/context/UserContext";
+import { Empty } from "antd";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { UserContext } from "@/context/UserContext";
-
-import DeleteFromCart from "./DeleteFromCart";
+import useTheme from "@/context/ThemeContext";
 
 const CheckoutSuccess = () => {
-  const [cart, setCart] = useContext(CartContext);
+  const [order, setOrder] = useState(null);
+  const [productDetails, setProductDetails] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [productsCart, setProductsCart] = useState([]);
-
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, updateSubscriptionStatus } = useContext(UserContext);
+  const { themeMode } = useTheme();
 
   useEffect(() => {
-    const fetchProductsCart = async () => {
+    const fetchLastOrder = async () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_REACT_APP_URL}/users/cart/${currentUser.id}`
+          `${import.meta.env.VITE_REACT_APP_URL}/orders/user/${currentUser.id}`
         );
 
-        // Obtener todos los identificadores de productos en el carrito
-        const productIds = response?.data.reduce((ids, cartItem) => {
-          return [...ids, ...cartItem.products];
-        }, []);
-     
-        // Consultar los detalles de cada producto en el carrito
-        const productDetailsPromises = productIds.map((productId) =>
-          axios.get(
-            `${import.meta.env.VITE_REACT_APP_URL}/products/${productId}`
-          )
-        );
-        const productDetailsResponses = await Promise.all(
-          productDetailsPromises
-        );
-        const productDetails = productDetailsResponses.map(
-          (response) => response.data
-        );
-        setProductsCart(productDetails);
-        setCart(productDetails);
-      
+        // Obtener el primer pedido (el más reciente) de la respuesta
+        const lastOrder = response.data.length ? response.data[0] : null;
+        if (lastOrder) {
+          setOrder(lastOrder);
+          // Obtener detalles de los productos
+          const productDetailsPromises = lastOrder.products.map(productId =>
+            axios.get(`${import.meta.env.VITE_REACT_APP_URL}/products/${productId}`)
+          );
+          const productDetailsResponses = await Promise.all(productDetailsPromises);
+          const productDetails = productDetailsResponses.map(res => res.data);
+          setProductDetails(productDetails);
+        }
+        updateSubscriptionStatus(true);
       } catch (err) {
         console.log(err);
       }
       setIsLoading(false);
     };
-    fetchProductsCart();
-  }, []);
+
+    fetchLastOrder();
+  }, [currentUser.id, updateSubscriptionStatus]);
 
   return (
-    <div className="flex flex-col justify-start items-center w-full h-screen py-10">
-      <h1 className="text-center font-bold text-2xl mb-5">
+    <div className="flex flex-col justify-start items-center h-screen py-10 mt-10 w-[90%] md:w-full m-auto">
+      <h1 className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} text-center font-bold text-2xl mb-5`}>
         Detalles de su pedido
       </h1>
-      {productsCart.length ? (
+      {order ? (
         <div className="w-full md:w-3/4 lg:w-2/3">
-          {productsCart.map((item) => (
-            <div
-              key={crypto.randomUUID()}
-              className="flex flex-col border border-gray-200 rounded-md p-5 mb-5"
-            >
+          {productDetails.map((item, index) => (
+            <div key={index} className="flex flex-col border border-gray-200 rounded-md p-5 mb-5">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-lg font-semibold">{item.name}</h1>
-                  <p className="text-gray-500">{item.description}</p>
-                  <p className="text-gray-600">
-                    Precio:{" "}
-                    {`${
-                      item.name === "Anual" ? item.discountPrice : item.price
-                    }`}{" "}
-                    €/ud Total:{" "}
-                    {`${
-                      item.name === "Anual"
-                        ? (item.discountPrice * item.quantity).toFixed(2)
-                        : (item.price * item.quantity).toFixed(2)
-                    }`}{" "}
-                    €
+                  <h1 className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-lg font-semibold`}>{item.name}</h1>
+                  <p className={`${themeMode === 'dark' ? 'text-gray-200' : 'text-gray-500'}`}>{item.description}</p>
+                  <p className={`${themeMode === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
+                    Precio: {item.price} €/ud 
+                    {/* Si tienes la cantidad del producto puedes mostrarlo */}
+                    {/* Total: {(item.price * item.quantity).toFixed(2)} € */}
                   </p>
                 </div>
               </div>
@@ -97,15 +78,11 @@ const CheckoutSuccess = () => {
             }}
             description={
               <div>
-                <span className="mt-[3rem]">
+                <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} mt-[3rem]`}>
                   No se ha encontrado{" "}
-                  <span className="text-color-btn">el pedido</span>
+                  <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'}`}>el pedido</span>
                 </span>
-                <div className="mt-[3rem]">
-                  {" "}
-                  {/* Espaciado entre el texto y el botón */}
-                  
-                </div>
+                <div className="mt-[3rem]"></div>
               </div>
             }
           />
@@ -113,7 +90,11 @@ const CheckoutSuccess = () => {
       )}
 
       <Link
-        className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
+        className={`${
+          themeMode === "dark"
+            ? "bg-a-6 hover:bg-a-7"
+            : "bg-color-btn hover:bg-color-btnHover"
+        }  text-white px-3 py-2 rounded-md hover:text-white transition-all duration-300`}
         to="/"
       >
         Ir a inicio

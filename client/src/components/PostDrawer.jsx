@@ -4,9 +4,9 @@ import { MdOutlinePets } from "react-icons/md";
 import { useState, useEffect, useContext } from "react";
 
 import axios from "axios";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@context/UserContext";
 import { useNavigate, useParams } from "react-router-dom";
-import { PET_TYPE, locationData, CONDITION } from "@/data/data.js";
+import { PET_TYPE, selectData, CONDITION } from "@/data/data.js";
 import { InboxOutlined, PlusCircleOutlined } from "@ant-design/icons";
 import {
   Col,
@@ -46,7 +46,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
-  console.log('isSubscribed',currentUser.isSubscribed)
+  // console.log('isSubscribed',currentUser.isSubscribed)
   const token = currentUser?.token;
   const navigate = useNavigate();
   const { id } = useParams();
@@ -56,7 +56,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   //   if (!token) navigate("login");
   // }, []);
 
-  const provinces = locationData[1].children;
+  const provinces = selectData[2].children;
   const handleProvinceChange = (value) => {
     const selectedProvinceValue = value;
     setSelectedProvince(selectedProvinceValue);
@@ -67,22 +67,22 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-        console.log("droppedFile", info.dataTransfer.files[0]);
+        // console.log(info.file, info.fileList);
+        // console.log("droppedFile", info.dataTransfer.files[0]);
         setImage(info.file);
       }
       if (status === "done") {
-        message.success(`${info.file.name} Imagen Subida satisfactoriamente.`);
+        // message.success(`${info.file.name} Imagen Subida satisfactoriamente.`);
         setImage(info.file);
       } else if (status === "error") {
         message.error(`${info.file.name} Error al subir la imagen.`);
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
     },
     onDrop(e) {
       const droppedFile = e.dataTransfer.files[0];
       setImage(droppedFile);
-      console.log("droppenFile", droppedFile);
+      // console.log("droppenFile", droppedFile);
     },
     // multiple: false,
     listType: "picture",
@@ -105,15 +105,15 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   };
   const create = async (values) => {
     const { title, content, province, specie, condition } = values;
-    console.log(image);
+    console.log("image", image);
     const post = new FormData();
     post.set("title", title);
     post.set("content", content);
     post.set("location", province);
     post.set("specie", specie);
     post.set("condition", condition);
-    post.append("image", image);
-    console.log(image);
+    post.set("image", image.originFileObj);
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_REACT_APP_URL}/posts`,
@@ -146,7 +146,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
           setSpecie(res.data.specie);
           setCondition(res.data.condition);
           setSelectedProvince(res.data.location);
-          console.log("res", res);
+          // console.log("res", res);
         } catch (err) {
           setError(err);
         }
@@ -163,7 +163,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
     post.set("location", province);
     post.set("specie", specie);
     post.set("condition", condition);
-    post.append("image", image);
+    post.set("image", image.originFileObj);
 
     try {
       const res = await axios.patch(
@@ -232,7 +232,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
     <>
       {contextHolder}
 
-      {currentUser && currentUser.isSubscribed ? (
+      {currentUser ? (
         <Button
           className={`${
             themeMode === "dark"
@@ -298,7 +298,11 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
         }}
       >
         <FadeAnimation>
-          <Form layout="vertical" onFinish={!isEditing ? create : edit}>
+          <Form
+            layout="vertical"
+            onFinish={!isEditing ? create : edit}
+            encType="multipart/form-data"
+          >
             <Row gutter={16}>
               <Col span={12}>
                 <Form.Item
@@ -351,8 +355,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                     size="sm"
                     fontSize="sm"
                     dropdownStyle={{
-                      backgroundColor: themeMode === "dark" ? "#001529" : "",
-                      color: themeMode === "dark" ? "white !important" : "",
+                      backgroundColor: themeMode === "dark" ? "#1F2E35" : "",
                     }}
                     _focus={{ outline: "none", border: "none" }}
                     onChange={(value) => {
@@ -362,7 +365,13 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                     placeholder="Estado de la mascota"
                   >
                     {CONDITION.map((petCondition) => (
-                      <Option key={petCondition} value={petCondition}>
+                      <Option
+                        className={`${
+                          themeMode === "dark" ? "text-[#ccc]" : ""
+                        }`}
+                        key={petCondition}
+                        value={petCondition}
+                      >
                         {petCondition}
                       </Option>
                     ))}
@@ -384,21 +393,29 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   ]}
                 >
                   <Select
+                    // listItemHeight={10}
+                    // listHeight={250}
+                    virtual={false}
                     size="sm"
                     onChange={(value) => {
                       handleProvinceChange(value);
                       handleSetError();
                     }}
                     dropdownStyle={{
-                      backgroundColor: themeMode === "dark" ? "#001529" : "",
-                      color: themeMode === "dark" ? "white !important" : "",
+                      backgroundColor: themeMode === "dark" ? "#1F2E35" : "",
                     }}
                     fontSize="sm"
-                    _focus={{ outline: "none", border: "none" }}
+                    // _focus={{ outline: "none", border: "none" }}
                     placeholder="Provincia"
                   >
                     {provinces.map((province) => (
-                      <Option key={province.value} value={province.value}>
+                      <Option
+                        className={`${
+                          themeMode === "dark" ? "text-[#ccc]" : ""
+                        }`}
+                        key={province.value}
+                        value={province.value}
+                      >
                         {province.label}
                       </Option>
                     ))}
@@ -421,7 +438,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                     size="sm"
                     fontSize="sm"
                     dropdownStyle={{
-                      backgroundColor: themeMode === "dark" ? "#001529" : "",
+                      backgroundColor: themeMode === "dark" ? "#1F2E35" : "",
                     }}
                     _focus={{ outline: "none", border: "none" }}
                     onChange={(value) => {
@@ -431,7 +448,13 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                     placeholder="Especie"
                   >
                     {PET_TYPE.map((pet) => (
-                      <Option key={pet} value={pet}>
+                      <Option
+                        className={`${
+                          themeMode === "dark" ? "text-[#ccc]" : ""
+                        }`}
+                        key={pet}
+                        value={pet}
+                      >
                         {pet}
                       </Option>
                     ))}

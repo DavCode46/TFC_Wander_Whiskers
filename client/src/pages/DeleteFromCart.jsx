@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@context/UserContext";
 import axios from "axios";
 import { Button, message, Popconfirm } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
@@ -12,7 +12,7 @@ const DeleteFromCart = ({ productId: id }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("Error al eliminar el producto");
   const navigate = useNavigate();
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -22,7 +22,6 @@ const DeleteFromCart = ({ productId: id }) => {
     if (!token) navigate("/login");
   }, []);
   const deleteProduct = async () => {
-    
     try {
       const res = await axios.delete(
         `${import.meta.env.VITE_REACT_APP_URL}/users/cart/${
@@ -78,6 +77,7 @@ const DeleteFromCart = ({ productId: id }) => {
     <>
       {contextHolder}
       <Popconfirm
+        className={`${themeMode === "dark" ? "dark" : ""}`}
         title="Eliminar producto"
         description="¿Estás seguro que deseas eliminar el producto?"
         icon={
@@ -92,7 +92,11 @@ const DeleteFromCart = ({ productId: id }) => {
         okType="danger"
         onConfirm={deleteProduct}
       >
-        <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} danger icon={<DeleteOutlined />}>
+        <Button
+          type={`${themeMode === "dark" ? "primary" : "default"}`}
+          danger
+          icon={<DeleteOutlined />}
+        >
           <div className="hidden md:inline">Eliminar</div>
         </Button>
       </Popconfirm>

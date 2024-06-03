@@ -4,13 +4,16 @@ import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import CustomSearch from "@/components/CustomSearch";
 import FilterProvince from "@/components/FilterProvince";
 import Post from "@/components/Post";
-import { locationData } from "@/data/data";
+import PostDrawer from "@/components/PostDrawer";
+import { selectData } from "@/data/data";
 import { CircularProgress } from "@chakra-ui/react";
+import useTheme from "@context/ThemeContext";
 import { Divider, Empty, Pagination } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
+import { v4 as uuidv4 } from "uuid";
+import { UserContext } from "@/context/UserContext";
 const PostsBySpecie = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -18,7 +21,9 @@ const PostsBySpecie = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
+  const { themeMode } = useTheme();
 
+  const { currentUser, isSubscribed } = useContext(UserContext);
   const { specie } = useParams();
 
   useEffect(() => {
@@ -101,7 +106,7 @@ const PostsBySpecie = () => {
             <CustomSearch onSearch={handleSearch} />
           </div>
           <FilterProvince
-            options={locationData.map(({ key, label }) => ({
+            options={selectData.map(({ key, label }) => ({
               label,
               value: key,
             }))}
@@ -109,6 +114,17 @@ const PostsBySpecie = () => {
               handleFilterChange(selectedOptions)
             }
           />
+          {isSubscribed ? (
+            <PostDrawer />
+          ) : (
+            <h2
+              className={`${
+                themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
+              } text-md`}
+            >
+              Subscríbete para publicar anuncios
+            </h2>
+          )}
         </div>
       </Xanimation>
 
@@ -130,7 +146,7 @@ const PostsBySpecie = () => {
               },
               index
             ) => (
-              <FadeAnimation delay={index * 0.3} key={crypto.randomUUID()}>
+              <FadeAnimation delay={index * 0.3} key={uuidv4()}>
                 <Post
                   postId={postId}
                   image={image}
@@ -160,19 +176,38 @@ const PostsBySpecie = () => {
               }}
               description={
                 <div>
-                  <span className="mt-[3rem]">
+                  <span
+                    className={`${
+                      themeMode === "dark" ? "text-[#ccc]" : ""
+                    } mt-[3rem]`}
+                  >
                     No se han encontrado{" "}
-                    <span className="text-color-btn">anuncios</span>
+                    <span
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary"
+                          : "text-color-btn"
+                      }`}
+                    >
+                      anuncios
+                    </span>
                   </span>
                   <div className="mt-[3rem]">
                     {" "}
                     {/* Espaciado entre el texto y el botón */}
-                    <Link
-                      className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
-                      to="/create-post"
-                    >
-                      Publicar anuncio
-                    </Link>
+                    {isSubscribed ? (
+                      <PostDrawer />
+                    ) : (
+                      <h2
+                        className={`${
+                          themeMode === "dark"
+                            ? "text-dark-primary"
+                            : "text-color-btn"
+                        } text-md`}
+                      >
+                        Subscríbete para publicar anuncios
+                      </h2>
+                    )}
                   </div>
                 </div>
               }
@@ -181,6 +216,7 @@ const PostsBySpecie = () => {
         </div>
       )}
       <Pagination
+        className={`${themeMode === "dark" ? "dark" : ""}`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

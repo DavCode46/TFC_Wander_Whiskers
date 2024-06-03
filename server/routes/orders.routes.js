@@ -5,6 +5,7 @@ import authenticate from '../middleware/auth.middleware.js';
 
 const router = Router()
 
-router.get('/users/:id', authenticate, ordersCtrl.getOrders)
+router.get('/user/:id', ordersCtrl.getOrders)
+router.get('/user/:id', ordersCtrl.getOrder)
 
 export default router

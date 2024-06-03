@@ -6,13 +6,13 @@ import { Link } from "react-router-dom";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@/context/ThemeContext";
+import useTheme from "@context/ThemeContext";
 const UsersManagement = () => {
   const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -100,8 +100,8 @@ const UsersManagement = () => {
   ];
 
   return (
-    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[10rem] mt-[5rem] z-[-1000]">
-      <FadeAnimation className={'overflow-x-auto'}>
+    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[15rem] h-screen z-[-1000]">
+      <FadeAnimation className={"overflow-x-auto"}>
         <Space
           style={{
             marginBottom: 16,
@@ -109,12 +109,14 @@ const UsersManagement = () => {
           }}
         >
           <Link to="/dashboard">
-            <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`}>Administrar Publicaciones</Button>
+            <Button className="ml-5" type={`${themeMode === "dark" ? "primary" : "default"}`}>
+              Administrar Publicaciones
+            </Button>
           </Link>
         </Space>
 
         <Table
-          className="dark table"
+          className={`${themeMode === "dark" ? "dark" : ""} table`}
           columns={columns}
           dataSource={usersData}
           loading={loading}

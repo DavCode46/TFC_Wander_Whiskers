@@ -15,26 +15,12 @@ import axios from "axios";
 import { UserContext } from "@/context/UserContext";
 import useTheme  from '@context/ThemeContext'
 const Hero = () => {
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  
   const [loading, setLoading] = useState(false);
   const { themeMode, lightTheme, darkTheme } = useTheme();
 
-  const { currentUser } = useContext(UserContext);
-  // useEffect(() => {
-  //   setLoading(true);
-  //   const fetchUser = async () => {
-  //     try {
-  //       const res = await axios.get(
-  //         `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`
-  //       );
-  //       setIsSubscribed(res.data.isSubscribed);
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
-  //   fetchUser();
-  //   setLoading(false);
-  // }, []);
+  const { currentUser, isSubscribed } = useContext(UserContext);
+  
   if (loading)
     return (
       <CircularProgress
@@ -56,9 +42,7 @@ const Hero = () => {
       className="min-h-screen flex items-center justify-center"
     >
       <div className="max-w-4xl mx-auto px-4 py-8">
-        {/* <h1 className="font-grotesk text-4xl md:text-6xl font-bold text-center mb-8">
-
-        </h1> */}
+      
         <Yanimation
           heading
           className={
@@ -76,7 +60,7 @@ const Hero = () => {
             </span>
           </ScrollYanimation>
         </Yanimation>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 md:ml-6 gap-8">
           <div className={`${themeMode === 'dark' ? 'bg-dark-card' : 'bg-gray-100 '} flex flex-col justify-center items-center p-8 rounded-lg`}>
             <ScrollFadeAnimation delay={0.2}>
               <div className="flex flex-col items-center justify-center">
@@ -128,11 +112,11 @@ const Hero = () => {
           <ScrollXAnimation>
             <div className="flex gap-2 items-center justify-center">
               <p className={`${themeMode === 'dark' ? 'text-dark-lightGrey' : 'text-gray-700'}`}>¿Has perdido a tu mascota?</p>
-              {/* {isSubscribed ? (
+              {isSubscribed ? (
                 <PostDrawer homeButton />
               ) : (
                 <h2 className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-md`}>Subscríbete para publicar anuncios</h2>
-              )} */}
+              )} 
               <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
               <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
               <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />

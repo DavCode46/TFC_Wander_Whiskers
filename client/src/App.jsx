@@ -1,10 +1,9 @@
 import {
   createBrowserRouter,
-  Route,
   RouterProvider,
   useLocation,
 } from "react-router-dom";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
+
 import { ChakraProvider } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import theme from "./theme/theme";
@@ -27,12 +26,11 @@ import Contact from "./pages/Contact";
 import Help from "./pages/Help";
 import PostsBySpecie from "./pages/PostsBySpecie";
 import OrdersPage from "./pages/OrdersPage";
-import UserProvider from "./context/UserContext";
+import UserProvider from "@context/UserContext";
 import Dashboard from "./pages/Dashboard";
 import UsersManagement from "./pages/UsersManagement";
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "@context/CartContext";
 import CartPage from "./pages/CartPage";
-import OrderPage from "./pages/OrdersPage";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import CheckoutCancel from "./pages/CheckoutCancel";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -40,9 +38,7 @@ import LegalPage from "./pages/LegalPage";
 import CookiesPage from "./pages/CookiesPage";
 import PrivacityPage from "./pages/PrivacityPage";
 import ForgetPassword from './pages/ForgetPassword'
-import { ThemeProvider } from "@/context/ThemeContext";
-import Error403 from "./pages/Error403";
-import Error500 from "./pages/Error500";
+import { ThemeProvider } from "@context/ThemeContext";
 import ResetPassword from "./pages/ResetPassword";
 
 const Wrapper = ({ children }) => {
@@ -79,24 +75,12 @@ const router = createBrowserRouter([
         location: location,
         key: location.pathname,
       },
-      // {
-      //   path: "/create-post",
-      //   element: <CreatePost />,
-      //   location: location,
-      //   key: location.pathname,
-      // },
       {
         path: "/posts",
         element: <PostsPage />,
         location: location,
         key: location.pathname,
       },
-      // {
-      //   path: "/posts/:id/edit",
-      //   element: <EditPost />,
-      //   location: location,
-      //   key: location.pathname,
-      // },
       {
         path: "/posts/:id/delete",
         element: <DeletePost />,
@@ -127,12 +111,6 @@ const router = createBrowserRouter([
         location: location,
         key: location.pathname,
       },
-      // {
-      //   path: "/register",
-      //   element: <Register />,
-      //   location: location,
-      //   key: location.pathname,
-      // },
       {
         path: "/logout",
         element: <Logout />,
@@ -182,12 +160,6 @@ const router = createBrowserRouter([
         key: location.pathname,
       },
       {
-        path: "/cart/order/:id",
-        element: <OrderPage />,
-        location: location,
-        key: location.pathname,
-      },
-      {
         path: "/checkout/success",
         element: <CheckoutSuccess />,
         location: location,
@@ -200,7 +172,7 @@ const router = createBrowserRouter([
         key: location.pathname,
       },
       {
-        path: "/orders/users/:id",
+        path: "/orders/user/:id",
         element: <OrdersPage />,
         location: location,
         key: location.pathname,
@@ -301,27 +273,27 @@ function App() {
             },
             Cascader: {
               optionSelectedBg: themeMode === "dark" ? "#1890ff" : "",
-              colorPrimary: themeMode === "dark" ? "#1890ff" : "",
-              colorPrimaryBgHover: themeMode === "dark" ? "#3c9ae8" : "",
-              colorSplit: themeMode === "dark" ? "#3c9ae8" : "",
-              colorHighlight: themeMode === "dark" ? "#3c9ae8" : "",
-              controlItemBgHover: themeMode === "dark" ? "#00213f" : "",
+              // colorPrimary: themeMode === "dark" ? "#1890ff" : "",
+              // colorPrimaryBgHover: themeMode === "dark" ? "#3c9ae8" : "",
+              // colorSplit: themeMode === "dark" ? "#3c9ae8" : "",
+              // colorHighlight: themeMode === "dark" ? "#3c9ae8" : "",
+              // controlItemBgHover: themeMode === "dark" ? "#00213f" : "",
             },
             Card: {
               colorPrimary: themeMode === "dark" ? "#1F2E35" : "",
             },
             Table: {
-              filterDropdownBg: themeMode === "dark" ? "#1F2E35" : "",
-              filterDropdownMenuBg: themeMode === "dark" ? "#00213f" : "",
-              colorText: themeMode === "dark" ? "#ccc" : "",
-              expandIconBg: themeMode === "dark" ? "#ccc" : "",
-              colorBgContainer: themeMode === "dark" ? "#1F2E35" : "white",
-              rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
-              headerSplitColor: themeMode === "dark" ? "#ccc" : "#fafafa",
-              headerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
-              headerColor: themeMode === "dark" ? "#ccc" : "#212529",
-              footerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
-              bodySortBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              // filterDropdownBg: themeMode === "dark" ? "#1F2E35" : "",
+              // filterDropdownMenuBg: themeMode === "dark" ? "#00213f" : "",
+              // colorText: themeMode === "dark" ? "#ccc" : "",
+              // expandIconBg: themeMode === "dark" ? "#ccc" : "",
+              // colorBgContainer: themeMode === "dark" ? "#1F2E35" : "white",
+              // rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              // headerSplitColor: themeMode === "dark" ? "#ccc" : "#fafafa",
+              // headerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              // headerColor: themeMode === "dark" ? "#ccc" : "#212529",
+              // footerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
+              // bodySortBg: themeMode === "dark" ? "#00213f" : "#fafafa",
             },
             Empty: {
               colorText: themeMode === "dark" ? "#ccc" : "",
@@ -334,8 +306,10 @@ function App() {
               colorText: themeMode === "dark" ? "#ccc" : "",
             },
             Menu: {
-              darkItemSelectedBg: themeMode === "dark" ? "transparent" : "",
-            }
+              darkItemSelectedBg: themeMode === "dark" ? "blue" : "",
+              itemActiveBg: themeMode === "dark" ? "blue" : "",
+            },
+           
           },
         }}
       >

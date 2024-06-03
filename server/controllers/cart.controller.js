@@ -8,6 +8,8 @@ import dotenv from "dotenv";
 dotenv.config();
 const {
   CLIENT_URL,
+  CLIENT_URL_SUCCESS,
+  CLIENT_URL_CANCEL,
   SECRET_STRIPE_KEY,
   STRIPE_MONTHLY_SUBSCRIPTION,
   STRIPE_ANNUAL_SUBSCRIPTION,
@@ -190,7 +192,7 @@ const deleteProductCart = async (req, res, next) => {
 //           const sessionId = session.id;
 
 //           // Verificar si la sesión de pago se ha cancelado
-//           if (!session.cancel_url) {
+         
 //             const cart = await Cart.findOne({ user: userId });
 //             await Cart.findByIdAndDelete(cart._id);
 //             user.cart = [];
@@ -201,9 +203,7 @@ const deleteProductCart = async (req, res, next) => {
 //               user: userId
 //             });
 //             res.status(200).json({ url: session.url });
-//           } else {
-//             res.status(400).json({ message: 'Pago cancelado' });
-//           }
+        
 //         } catch (error) {
 //           console.error("Error al procesar el producto:", error);
 //           // Manejar errores específicos aquí, si es necesario
@@ -219,77 +219,41 @@ const deleteProductCart = async (req, res, next) => {
 
 const checkout = async (req, res, next) => {
   const userId = req.params.id;
-
+  
   try {
     const user = await User.findById(userId).populate("cart");
-
+    
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
 
-    // Map the cart items to line items for the Stripe session
-    const lineItems = req.body.cartItems.map((item) => {
-      return {
-        price_data: {
-          currency: 'eur',
-          product_data: {
-            name: item.name,
-            images: [item.image],
-            description: item.description,
-            metadata: {
-              id: item.id,
-            },
-          },
-          unit_amount: item.discountPrice ? item.discountPrice * 100 : item.price * 100,
-          recurring: {
-            interval: item.name === "Mensual" ? "month" : "year",
-            interval_count: 1,
-          },
-        },
-        quantity: item.quantity,
-      };
-    });
-
-    // Create a Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card", "paypal"],
-      line_items: lineItems,
-      mode: "subscription",
-      success_url: `${CLIENT_URL}/checkout/success`,
-      cancel_url: `${CLIENT_URL}/cart`,
-    });
-
-    // Obtener el carrito del usuario
-    const cart = await Cart.findOne({ user: userId });
-
-    // Eliminar el carrito del usuario en la base de datos
-    await Cart.findByIdAndDelete(cart._id);
-
-    // Vaciar el carrito del usuario y marcarlo como suscrito
-    user.cart = [];
-    user.isSubscribed = true;
-
-    // Guardar los cambios en el usuario
-    await user.save();
-
-    // Crear el pedido
-    for (const cartItem of cart.products) {
-      const product = await Product.findById(cartItem.product);
-      await Order.create({
-        product: product,
-        user: userId,
-      });
+    const lineItems = [];
+    
+    for (const cartItem of user.cart) {
+      for (const productId of cartItem.products) {
+        const product = await Product.findById(productId);
+        lineItems.push({
+          price: product.name === "Mensual" ? STRIPE_MONTHLY_SUBSCRIPTION : STRIPE_ANNUAL_SUBSCRIPTION,
+          quantity: 1,
+        });
+      }
     }
 
-    // Responder con la URL de redirección a la página de pago de Stripe
-    res.send({ url: session.url });
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      mode: "subscription",
+      success_url: `${CLIENT_URL_SUCCESS}`,
+      cancel_url: `${CLIENT_URL_CANCEL}`,
+    });
+
+    res.status(200).json({ url: session.url });
 
   } catch (error) {
     console.error("Error al procesar el pago:", error);
-    return res.status(500).json({ message: "Error en el servidor" });
+    return next(new ErrorModel(error));
   }
 };
-
 
 
 export {

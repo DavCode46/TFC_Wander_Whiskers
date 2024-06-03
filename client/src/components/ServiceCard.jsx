@@ -7,13 +7,13 @@ import { message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@nextui-org/react";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
-import useTheme from "@/context/ThemeContext";
-import dog from '../images/bgdogmensual.jpg'
-import cat from '../images/bgcatanual.jpg'
+import useTheme from "@context/ThemeContext";
+import dog from "../images/bgdogmensual.jpg";
+import cat from "../images/bgcatanual.jpg";
 
 const ServiceCard = () => {
   const [loading, setLoading] = useState(false);
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, isSubscribed } = useContext(UserContext);
   const [products, setProducts] = useState([]);
   const [error, setError] = useState(
     "Solo se puede seleccionar una suscripción, vacía tu carrito"
@@ -107,17 +107,17 @@ const ServiceCard = () => {
           <div
             className={`${
               themeMode === "dark" ? "bg-dark-card" : "bg-white"
-            } w-[24rem] p-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 flex flex-col justify-between`}
+            } w-[20rem] md:w-[24rem] p-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 flex flex-col justify-between`}
           >
             <div>
               <img
-                src={product.name === 'Mensual' ? dog : cat}
+                src={product.name === "Mensual" ? dog : cat}
                 alt={product.name}
                 className="w-full h-40 mb-4 object-cover rounded-lg"
               />
               <h4
                 className={`${
-                  themeMode === "dark" ? "text-dark-white" : "text-color-btn"
+                  themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
                 } text-2xl font-semibold mb-4`}
               >
                 {product.name}
@@ -146,7 +146,7 @@ const ServiceCard = () => {
                         themeMode === "dark"
                           ? "text-dark-white"
                           : "text-color-dark"
-                      } text-base`}
+                      } text-md`}
                     >
                       {feature}
                     </p>
@@ -171,10 +171,15 @@ const ServiceCard = () => {
                 <div className="flex items-center ml-2">
                   <p
                     className={`${
-                      product.discountPrice ? "line-through mr-3" : ""
+                      product.discountPrice
+                        ? "line-through mr-3 text-red-500"
+                        : themeMode === "dark"
+                        ? "text-dark-white"
+                        : ""
                     } text-lg mr-1`}
                   >
                     {product.price}
+                    {product.price ? "€" : ""}
                   </p>
                   {product.discountPrice && (
                     <p
@@ -182,7 +187,7 @@ const ServiceCard = () => {
                         themeMode === "dark" ? "text-dark-white" : ""
                       } text-lg font-semibold`}
                     >
-                      {product.discountPrice}
+                      {product.discountPrice} €
                     </p>
                   )}
                 </div>
@@ -190,15 +195,17 @@ const ServiceCard = () => {
 
               <Button
                 className={`${
-                  themeMode === "dark" ? "bg-color-btn text-dark-white" : ""
+                  themeMode === "dark"
+                    ? "bg-dark-primary border-none text-dark-white"
+                    : ""
                 } w-full font-semibold`}
                 onClick={() => addToCart(product)}
-                disabled={!currentUser || currentUser.isSubscribed}
+                disabled={!currentUser || isSubscribed}
               >
                 {!currentUser
-                  ? "Iniciar sesión"
-                  : currentUser.isSubscribed
-                  ? "Ya suscrito"
+                  ? "Inicia sesión para subscribirte"
+                  : isSubscribed
+                  ? "Ya estás subscrito"
                   : product.price
                   ? "Suscribirse"
                   : "Más información"}

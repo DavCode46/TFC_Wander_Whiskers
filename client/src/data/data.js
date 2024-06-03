@@ -1,7 +1,7 @@
 import dog from '../images/bgdogmensual.jpg'
 import cat from '../images/bgcatanual.jpg'
 
-const locationData = [
+const selectData = [
   {
     label: "Especie",
     value: "specie",
@@ -33,7 +33,7 @@ const locationData = [
         value: "perdido",
       },
       {
-        label: "En adopción",
+        label: "Adopción",
         value: "enadopcion",
       },
     ],
@@ -275,7 +275,7 @@ const contactOptions = [
 
 const PET_TYPE = ["Perro", "Gato", "Otro"];
 
-const CONDITION = ["Encontrado", "Perdido", "En adopción"];
+const CONDITION = ["Encontrado", "Perdido", "Adopción"];
 
 const servicesData = [
  
@@ -317,4 +317,4 @@ const servicesData = [
   },
 ];
 
-export { locationData, accordionData, contactOptions, PET_TYPE, CONDITION, servicesData };
+export { selectData, accordionData, contactOptions, PET_TYPE, CONDITION, servicesData };

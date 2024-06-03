@@ -1,4 +1,4 @@
-import useTheme from "@/context/ThemeContext";
+import useTheme from "@context/ThemeContext";
 import { Button } from "@chakra-ui/react";
 
 import { FaRegPaperPlane } from "react-icons/fa";
@@ -16,7 +16,7 @@ const ShareButton = ({
         text: 'Tu futuro compañero te espera, mira el anuncio de este pequeño',
         url: url,
       });
-      console.log("Contenido compartido con éxito");
+      // console.log("Contenido compartido con éxito");
     } catch (error) {
       console.error("Error al compartir:", error);
     }

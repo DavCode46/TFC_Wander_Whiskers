@@ -6,7 +6,7 @@ import TimeAgo from 'javascript-time-ago'
 
 import es from 'javascript-time-ago/locale/es.json'
 import en from 'javascript-time-ago/locale/en.json'
-import useTheme from '@/context/ThemeContext';
+import useTheme from '@context/ThemeContext';
 
 TimeAgo.addDefaultLocale(es)
 TimeAgo.addLocale(en)
