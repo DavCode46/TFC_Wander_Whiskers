@@ -86,10 +86,6 @@
     color: #ccc;
   }
 
-  .table .ant-table-row:hover > td {
-    background: #000;
-  }
-
   .dark.table .anticon{
     color: #ccc;
   }
@@ -101,14 +97,20 @@
     color: #ccc;
   }
   
-  .dark .ant-tree-checkbox-checked .ant-tree-node-content-wrapper .ant-tree-node-content-wrapper-normal {
-    background: red;
-  }
 .dark .ant-table-column-sorter {
   background-color: transparent;
 }
 .dark .ant-table-column-sorter-inner {
   background-color: transparent;
+}
+
+.dark .ant-table-cell-row-hover {
+  background-color: #2A3B44 !important;
+}
+
+.dark .ant-table-column-has-sorters:hover,
+.dark .ant-table-column-has-sorters:focus {
+  background: #2A3B44!important;
 }
 .dark .ant-table-column-sorter-down,
 .dark .ant-table-column-sorter-up{
@@ -121,16 +123,17 @@
 .dark .ant-select-selection-placeholder {
   color: #cacaca;
 }
-.dark .ant-menu-submenu-selected {
-  background-color: #1890ff;
+
+
+.dark .ant-cascader-checkbox-checked .ant-cascader-checkbox-inner {
+  background-color: #1890ff !important; /* Color azul de Ant Design */
+  border-color: #1890ff !important;    /* Color azul de Ant Design */
 }
-.dark .ant-menu-item-selected {
-  background-color: #1890ff !important;
-}
-.dark .ant-select-dropdown {
+
+/* .dark .ant-select-dropdown {
   background-color: #0e182a;
   border: 1px solid #ccc;
-}
+} */
 .dark .ant-upload-list-item-name,
 .dark .ant-upload-list-item-actions,
 .ant-upload-list-item-actions .anticon-delete,
@@ -222,4 +225,35 @@
     color: #ccc;
   }
 
+  .dark  .ant-upload-list-item-name {
+    color: #ccc !important;
+  }
+
+  .ant-pagination.dark .ant-pagination-item-link svg {
+    color: #ccc;
+  }
+
+ .dark .ant-select-dropdown{
+    background: #081C24;
+    color: #ccc;
+  }
+
+  .dark .ant-select-dropdown .ant-select-item-option {
+    color: #ccc;
+  }
+  .dark .ant-select-item.ant-select-item-option.ant-select-item-option-active {
+    background: #74b9f9;
+  }
+
+  .dark .ant-select-item.ant-select-item-option.ant-select-item-option-selected {
+    background: #1890ff;
+  }
+
+  .ant-select-selection-search-input {
+    color: #ccc;
+  }
+
+  div .ant-table-filter-dropdown .ant-table-filter-dropdown-tree {
+    background: red !important;
+  }
 }

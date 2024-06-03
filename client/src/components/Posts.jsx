@@ -4,17 +4,18 @@ import Post from "@components/Post";
 import FilterProvince from "@components/FilterProvince";
 import { Button, Empty, Pagination } from "antd";
 import { Divider } from "antd";
-import { locationData } from "@/data/data.js";
+import { selectData } from "@/data/data.js";
 import { CircularProgress } from "@chakra-ui/react";
 import CustomSearch from "./CustomSearch";
 import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 import PostDrawer from "./PostDrawer";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
 import Xanimation from "./Animations/Xanimation/Xanimation";
 import Yanimation from "./Animations/Yanimation/Yanimation";
 import { UserContext } from "@/context/UserContext";
-import useTheme from "@/context/ThemeContext";
+import useTheme from "@context/ThemeContext";
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -23,10 +24,10 @@ const Posts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const { currentUser } = useContext(UserContext);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { currentUser, isSubscribed } = useContext(UserContext);
+
   const { themeMode } = useTheme();
-  console.log("usuario actual", currentUser);
+  // console.log("usuario actual", currentUser);
   useEffect(() => {
     const fetchingPosts = async () => {
       setLoading(true);
@@ -47,7 +48,6 @@ const Posts = () => {
           const res = await axios.get(
             `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`
           );
-          setIsSubscribed(res.data.isSubscribed);
         } catch (err) {
           console.log(err);
         }
@@ -74,14 +74,21 @@ const Posts = () => {
     );
 
   const handleFilterChange = (selectedOptions) => {
-    const labels = selectedOptions.map((option) => option[1].label);
-    setSelectedOptions(labels);
-    setCurrentPage(1); // Restablecer a la primera página cuando cambian las opciones
-  };
-
-  const handleSearch = (searchTerm) => {
-    setSearchTerm(searchTerm);
-    setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
+    const labels = selectedOptions.map((option) => {
+      if (option[1]) {
+        // Si la opción seleccionada tiene una etiqueta, la devolvemos
+        return option[1].label;
+      } else {
+        // Si la opción seleccionada es la categoría (padre), buscamos las etiquetas de las opciones hijas
+        const childrenLabels = selectData
+          .find((category) => category.value === option[0].value)
+          .children.map((child) => child.label);
+        return childrenLabels;
+      }
+    });
+  
+    setSelectedOptions(labels.flat()); // flat() para aplanar el array de arrays
+    setCurrentPage(1);
   };
 
   const filteredPosts = selectedOptions.length
@@ -91,6 +98,19 @@ const Posts = () => {
     : posts;
   console.log(selectedOptions);
 
+  const handleSearch = (searchTerm) => {
+    setSearchTerm(searchTerm);
+    setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
+  };
+
+  console.log("filteredPosts", filteredPosts);
+
+  const searchedPosts = searchTerm
+    ? filteredPosts.filter((post) =>
+        post.title.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : filteredPosts;
+
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
@@ -99,12 +119,6 @@ const Posts = () => {
     setPageSize(size);
     setCurrentPage(1); // Cambiar a la primera página cuando cambie el tamaño de la página
   };
-
-  const searchedPosts = searchTerm
-    ? filteredPosts.filter((post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : filteredPosts;
 
   // Calcula el índice de inicio y fin de las publicaciones para la página actual
   const startIndex = (currentPage - 1) * pageSize;
@@ -122,7 +136,7 @@ const Posts = () => {
             <CustomSearch onSearch={handleSearch} />
           </div>
           <FilterProvince
-            options={locationData.map(({ key, label }) => ({
+            options={selectData.map(({ key, label }) => ({
               label,
               value: key,
             }))}
@@ -130,8 +144,17 @@ const Posts = () => {
               handleFilterChange(selectedOptions)
             }
           />
-          {/* {currentUser || isSubscribed && <PostDrawer />} */}
-          <PostDrawer />
+          {isSubscribed ? (
+            <PostDrawer />
+          ) : (
+            <h2
+              className={`${
+                themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
+              } text-md`}
+            >
+              Subscríbete para publicar anuncios
+            </h2>
+          )}
         </div>
       </Xanimation>
 
@@ -153,7 +176,7 @@ const Posts = () => {
               },
               index
             ) => (
-              <FadeAnimation delay={index * 0.3} key={crypto.randomUUID()}>
+              <FadeAnimation delay={index * 0.3} key={uuidv4()}>
                 <Post
                   postId={postId}
                   image={image}
@@ -170,7 +193,7 @@ const Posts = () => {
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-[50vh]">
+        <div className="flex items-center justify-center h-[100vh]">
           <Yanimation>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
@@ -183,19 +206,38 @@ const Posts = () => {
               }}
               description={
                 <div>
-                  <span className="mt-[3rem]">
+                  <span
+                    className={`${
+                      themeMode === "dark" ? "text-[#ccc]" : ""
+                    } mt-[3rem]`}
+                  >
                     No se han encontrado{" "}
-                    <span className="text-color-btn">anuncios</span>
+                    <span
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary"
+                          : "text-color-btn"
+                      }`}
+                    >
+                      anuncios
+                    </span>
                   </span>
                   <div className="mt-[3rem]">
                     {" "}
                     {/* Espaciado entre el texto y el botón */}
-                    <Link
-                      className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
-                      to="/create-post"
-                    >
-                      Publicar anuncio
-                    </Link>
+                    {isSubscribed ? (
+                      <PostDrawer />
+                    ) : (
+                      <h2
+                        className={`${
+                          themeMode === "dark"
+                            ? "text-dark-primary"
+                            : "text-color-btn"
+                        } text-md`}
+                      >
+                        Subscríbete para publicar anuncios
+                      </h2>
+                    )}
                   </div>
                 </div>
               }
@@ -204,7 +246,7 @@ const Posts = () => {
         </div>
       )}
       <Pagination
-         className={`${themeMode === 'dark' ? 'dark' : ''}`}
+        className={`${themeMode === "dark" ? "dark" : ""}`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

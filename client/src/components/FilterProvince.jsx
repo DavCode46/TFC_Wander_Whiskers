@@ -1,5 +1,5 @@
 import { Cascader } from "antd";
-import { locationData } from "@/data/data.js";
+import { selectData } from "@/data/data.js";
 import useTheme from "@context/ThemeContext";
 import { ArrowRightOutlined, ArrowDownOutlined } from '@ant-design/icons';
 
@@ -10,7 +10,7 @@ const FilterProvince = ({ onChange }) => {
   return (
     <Cascader
       className={`${themeMode === 'dark' ? 'dark' : ''}`}
-      options={locationData}
+      options={selectData}
       placeholder="Filtros"
       onChange={onChange}
       multiple

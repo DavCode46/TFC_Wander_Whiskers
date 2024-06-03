@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@context/UserContext";
 import axios from "axios";
-import useTheme from '@context/ThemeContext'
+import useTheme from "@context/ThemeContext";
 import { CircularProgress } from "@chakra-ui/react";
 import { Button, message, Popconfirm, FloatButton } from "antd";
 import { DeleteOutlined, QuestionCircleOutlined } from "@ant-design/icons";
@@ -11,7 +11,7 @@ const DeleteUser = ({ userID: id, text, float }) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
@@ -32,7 +32,7 @@ const DeleteUser = ({ userID: id, text, float }) => {
         success();
         if (location.pathname === "/dashboard/users") window.location.reload();
         setTimeout(() => {
-          navigate('/logout')
+          navigate("/logout");
         }, 1000);
       }
       setLoading(false);
@@ -76,6 +76,7 @@ const DeleteUser = ({ userID: id, text, float }) => {
     <>
       {contextHolder}
       <Popconfirm
+        className={`${themeMode === "dark" ? "dark" : ""}`}
         title="Eliminar usuario"
         description="¿Estás seguro que deseas eliminar el usuario?"
         icon={
@@ -91,9 +92,13 @@ const DeleteUser = ({ userID: id, text, float }) => {
         onConfirm={deleteUser}
       >
         {float ? (
-          <FloatButton danger icon={<DeleteOutlined />}/>
+          <FloatButton danger icon={<DeleteOutlined />} />
         ) : (
-          <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`} danger icon={<DeleteOutlined />}>
+          <Button
+            type={`${themeMode === "dark" ? "primary" : "default"}`}
+            danger
+            icon={<DeleteOutlined />}
+          >
             {text}
           </Button>
         )}

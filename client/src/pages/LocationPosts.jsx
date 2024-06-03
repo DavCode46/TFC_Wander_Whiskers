@@ -4,14 +4,16 @@ import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import CustomSearch from "@/components/CustomSearch";
 import FilterProvince from "@/components/FilterProvince";
 import Post from "@/components/Post";
-import useTheme from "@/context/ThemeContext";
-import { locationData } from "@/data/data";
+import useTheme from "@context/ThemeContext";
+import { selectData } from "@/data/data";
 import { CircularProgress } from "@chakra-ui/react";
 import { Divider, Empty, Pagination } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-
+import { v4 as uuidv4 } from "uuid";
+import PostDrawer from "@/components/PostDrawer";
+import { UserContext } from "@/context/UserContext";
 const LocationPosts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -19,9 +21,9 @@ const LocationPosts = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [searchTerm, setSearchTerm] = useState("");
-  const {themeMode} = useTheme()
+  const { themeMode } = useTheme();
   const { location } = useParams();
-
+  const { currentUser, isSubscribed } = useContext(UserContext);
   useEffect(() => {
     const fetchingPosts = async () => {
       setLoading(true);
@@ -98,7 +100,7 @@ const LocationPosts = () => {
             <CustomSearch onSearch={handleSearch} />
           </div>
           <FilterProvince
-            options={locationData.map(({ key, label }) => ({
+            options={selectData.map(({ key, label }) => ({
               label,
               value: key,
             }))}
@@ -106,6 +108,17 @@ const LocationPosts = () => {
               handleFilterChange(selectedOptions)
             }
           />
+          {isSubscribed ? (
+            <PostDrawer />
+          ) : (
+            <h2
+              className={`${
+                themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
+              } text-md`}
+            >
+              Subscríbete para publicar anuncios
+            </h2>
+          )}
         </div>
       </Xanimation>
 
@@ -127,7 +140,7 @@ const LocationPosts = () => {
               },
               index
             ) => (
-              <FadeAnimation delay={index * 0.3} key={crypto.randomUUID()}>
+              <FadeAnimation delay={index * 0.3} key={uuidv4()}>
                 <Post
                   postId={postId}
                   image={image}
@@ -157,19 +170,38 @@ const LocationPosts = () => {
               }}
               description={
                 <div>
-                  <span className="mt-[3rem]">
+                  <span
+                    className={`${
+                      themeMode === "dark" ? "text-[#ccc]" : ""
+                    } mt-[3rem]`}
+                  >
                     No se han encontrado{" "}
-                    <span className="text-color-btn">anuncios</span>
+                    <span
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary"
+                          : "text-color-btn"
+                      }`}
+                    >
+                      anuncios
+                    </span>
                   </span>
                   <div className="mt-[3rem]">
                     {" "}
                     {/* Espaciado entre el texto y el botón */}
-                    <Link
-                      className="bg-color-btn text-white px-3 py-2 rounded-md hover:bg-color-btnHover hover:text-white transition-all duration-300"
-                      to="/create-post"
-                    >
-                      Publicar anuncio
-                    </Link>
+                    {isSubscribed ? (
+                      <PostDrawer />
+                    ) : (
+                      <h2
+                        className={`${
+                          themeMode === "dark"
+                            ? "text-dark-primary"
+                            : "text-color-btn"
+                        } text-md`}
+                      >
+                        Subscríbete para publicar anuncios
+                      </h2>
+                    )}
                   </div>
                 </div>
               }
@@ -178,7 +210,7 @@ const LocationPosts = () => {
         </div>
       )}
       <Pagination
-        className={`${themeMode === 'dark' ? 'dark' : ''}`}
+        className={`${themeMode === "dark" ? "dark" : ""}`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

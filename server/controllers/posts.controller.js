@@ -21,6 +21,7 @@ const createPost = async (req, res, next) => {
   try {
     let { title, content, specie, location, condition } = req.body;
     console.log(title, content, specie, location, condition, req.files)
+    console.log('req.files' ,req.files)
     if (!title || !content || !specie || !location || !condition || !req.files) {
       return next(
         new ErrorModel("Todos los campos son obligatorios", 422)
@@ -257,7 +258,7 @@ const deletePost = async (req, res, next) => {
     const imageName = post?.image;
     const user = await User.findById(req.user.id)
    
-    if (req.user.id !== post.author && user.role != 'admin') return next(new ErrorModel("No tienes permisos para eliminar este post", 403));
+    if (req.user.id != post.author && user.role != 'admin') return next(new ErrorModel("No tienes permisos para eliminar este post", 403));
       fs.unlink(
         path.join(__dirname, "..", "uploads", imageName),
         async (err) => {

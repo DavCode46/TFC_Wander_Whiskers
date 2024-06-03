@@ -151,7 +151,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
       {contextHolder}
       <Button
         type={`${themeMode === 'dark' ? 'primary' : 'default'}`}
-        className={`${themeMode !== 'dark' ? 'text-blue-400 hover:text-blue-500 hover:underline ' : ''} text-[.85rem] w-[13rem]`}
+        className={`${themeMode !== 'dark' ? 'text-blue-400 hover:text-blue-500 hover:underline ' : ''} text-[.85rem] ${isRegistering ? 'w-[12rem]' : 'w-[13rem]'}`}
         onClick={showDrawer}
         icon={isRegistering ? <PlusOutlined /> : <EditOutlined />}
       >
@@ -190,7 +190,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
           },
         }}
       >
-        {isRegistering && (
+        {/* {isRegistering && (
           <div>
             <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
             <button
@@ -221,7 +221,7 @@ const UserDrawer = ({ isRegistering, openButton, email }) => {
               <div className="border-t border-gray-400 w-full ml-4"></div>{" "}
             </div>
           </div>
-        )}
+        )} */}
         <FadeAnimation>
           <Form
             layout="vertical"

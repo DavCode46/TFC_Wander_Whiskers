@@ -22,7 +22,7 @@ const postSchema = new Schema({
   condition: {
     type: String,
     required: true,
-    enum: ["Perdido", "Encontrado", "En adopción"]
+    enum: ["Perdido", "Encontrado", "Adopción"]
   },
   // image: {
   //   type: String,

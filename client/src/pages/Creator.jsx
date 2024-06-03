@@ -1,12 +1,17 @@
 import FilterProvince from "@/components/FilterProvince";
 import Post from "@/components/Post";
-import useTheme from "@/context/ThemeContext";
-import { locationData } from "@/data/data";
+import useTheme from "@context/ThemeContext";
+import { selectData } from "@/data/data";
 import { CircularProgress } from "@chakra-ui/react";
-import { Divider, Pagination } from "antd";
+import { Divider, Empty, Pagination } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
+import CustomSearch from "@/components/CustomSearch";
+import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+import PostDrawer from "@/components/PostDrawer";
+import Yanimation from "@/components/Animations/Yanimation/Yanimation";
+import { UserContext } from "@/context/UserContext";
 
 const Creator = () => {
   const [posts, setPosts] = useState([]);
@@ -16,6 +21,8 @@ const Creator = () => {
   const [pageSize, setPageSize] = useState(10);
   const { themeMode } = useTheme();
   const { id } = useParams();
+
+  const { currentUser, isSubscribed } = useContext(UserContext);
 
   useEffect(() => {
     const fetchingPosts = async () => {
@@ -77,17 +84,33 @@ const Creator = () => {
 
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
-      <div>
-        <FilterProvince
-          options={locationData.map(({ key, label }) => ({
-            label,
-            value: key,
-          }))}
-          onChange={(value, selectedOptions) =>
-            handleFilterChange(selectedOptions)
-          }
-        />
-      </div>
+      <Xanimation duration={0.8}>
+        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+          <div className="md:order-1">
+            <CustomSearch onSearch={handleSearch} />
+          </div>
+          <FilterProvince
+            options={selectData.map(({ key, label }) => ({
+              label,
+              value: key,
+            }))}
+            onChange={(value, selectedOptions) =>
+              handleFilterChange(selectedOptions)
+            }
+          />
+          {isSubscribed ? (
+            <PostDrawer />
+          ) : (
+            <h2
+              className={`${
+                themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
+              } text-md`}
+            >
+              Subscríbete para publicar anuncios
+            </h2>
+          )}
+        </div>
+      </Xanimation>
       <Divider />
       {paginatedPosts.length ? (
         <div className="card-container grid md:grid-cols-1 xl:grid-cols-2 lg:gap-4">
@@ -122,7 +145,57 @@ const Creator = () => {
           )}
         </div>
       ) : (
-        <h1 className="text-center">No se encontraron publicaciones</h1>
+        <div className="flex items-center justify-center h-[50vh]">
+          <Yanimation>
+            <Empty
+              image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+              imageStyle={{
+                height: 100,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginBottom: "1rem",
+              }}
+              description={
+                <div>
+                  <span
+                    className={`${
+                      themeMode === "dark" ? "text-[#ccc]" : ""
+                    } mt-[3rem]`}
+                  >
+                    No se han encontrado{" "}
+                    <span
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary"
+                          : "text-color-btn"
+                      }`}
+                    >
+                      anuncios
+                    </span>
+                  </span>
+                  <div className="mt-[3rem]">
+                    {" "}
+                    {/* Espaciado entre el texto y el botón */}
+                    {isSubscribed ? (
+                      <PostDrawer homeButton />
+                    ) : (
+                      <h2
+                        className={`${
+                          themeMode === "dark"
+                            ? "text-dark-primary"
+                            : "text-color-btn"
+                        } text-md`}
+                      >
+                        Subscríbete para publicar anuncios
+                      </h2>
+                    )}
+                  </div>
+                </div>
+              }
+            />
+          </Yanimation>
+        </div>
       )}
       <Pagination
         className={`${themeMode === "dark" ? "dark" : ""}`}

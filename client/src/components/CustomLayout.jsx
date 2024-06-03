@@ -42,7 +42,7 @@ import { ImProfile } from "react-icons/im";
 const { Sider, Content } = Layout;
 const { SubMenu } = Menu;
 import ContactDrawer from "./ContactDrawer";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "@context/UserContext";
 import axios from "axios";
 import { CartContext } from "@/context/CartContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
@@ -79,7 +79,7 @@ const CustomLayout = () => {
           const { profileImage } = res.data;
           setProfileImage(profileImage);
         } else {
-          console.log("currentUser is null");
+          // console.log("currentUser is null");
         }
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -94,24 +94,24 @@ const CustomLayout = () => {
       key: "toggleBtn",
       icon: <MenuOutlined />,
       children: [
-        // {
-        //   key: "login",
-        //   icon: <LoginOutlined />,
-        //   label: <ContactDrawer />,
-        //   hidden: currentUser,
-        // },
+        {
+          key: "login",
+          // icon: <LoginOutlined />,
+          label: <LoginDrawer text={'Login'} isMobile/> ,
+          hidden: currentUser || !isMobile,
+        },
         // {
         //   key: "register",
         //   icon: <GiArchiveRegister />,
         //   label: <Link to="/register">Registrarse</Link>,
-        //   hidden: currentUser,
+        //   hidden: currentUser || !isMobile,
         // },
-        // {
-        //   key: "logout",
-        //   icon: <LogoutOutlined />,
-        //   label: <Link to="/logout">Logout</Link>,
-        //   hidden: !currentUser,
-        // },
+        {
+          key: "logout",
+          icon: <LogoutOutlined />,
+          label: <Link to="/logout">Logout</Link>,
+          hidden: !currentUser || !isMobile,
+        },
         {
           key: "home",
           icon: <HomeOutlined />,

@@ -7,7 +7,7 @@ import DeletePost from "./DeletePost";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import useTheme from "@/context/ThemeContext";
+import useTheme from "@context/ThemeContext";
 const Dashboard = () => {
   const [postData, setPostData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -126,7 +126,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[10rem] z-[-1000]">
+    <div className="grid place-content-center w-[80%] m-auto mb-[15rem] z-[-1000]">
      <FadeAnimation className={'overflow-x-auto'}>
         <Space
           style={{
@@ -147,6 +147,10 @@ const Dashboard = () => {
           onChange={handleChange}
           pagination={{ pageSize: 10 }}
           className={`${themeMode === 'dark' ? 'dark' : ''} table`}
+          filterDropdownStyle={{
+            backgroundColor: themeMode === 'dark' ? '#333' : '#fff',
+            color: themeMode === 'dark' ? '#fff' : '#333',
+          }}
           rowKey={(record) => record._id}
         />
       </FadeAnimation>

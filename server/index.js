@@ -10,6 +10,7 @@ import postsRoutes from "./routes/posts.routes.js";
 import cartRoutes from './routes/cart.routes.js'
 import productRoutes from './routes/products.routes.js'
 import orderRoutes from './routes/orders.routes.js'
+import stripeRoutes from './routes/stripe.routes.js';
 import { notFound, errorHandler } from "./middleware/error.middleware.js";
 import Product from './models/Product.model.js'
 import { fileURLToPath } from 'url';
@@ -17,34 +18,44 @@ import { dirname } from 'path';
 import path from "path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
+const _dirname = path.dirname('')
+const buildPath = path.join(_dirname, '../client/dist')
 const app = express();
 app.use(express.json({ extended: true }));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ credentials: true, origin: "http://localhost:5173" }));
+app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
 app.use(upload());
 app.use("/uploads", express.static(__dirname + "/uploads"));
+app.use(express.static(buildPath));
+
+app.get('/*', (req, res) => {
+  res.sendFile(
+    path.join(_dirname, '../client/dist/index.html'),
+    (err) => {
+      if(err) res.status(500).send(err)
+    }
+  )
+})
 
 app.use("/api/users", userRoutes);
 app.use("/api/posts", postsRoutes);
 app.use('/api/users/cart', cartRoutes)
 app.use('/api/products', productRoutes)
 app.use('/api/orders', orderRoutes)
+app.use('/api/stripe', stripeRoutes); // Ruta para los webhooks de Stripe
+
 
 app.use(notFound)
 app.use(errorHandler)
 
-// Production script
 
-app.use(express.static('./client/dist'))
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'dist', 'index.html'))
-})
+// Production script
 
 connect(process.env.MONGO_URI)
   .then(
     app.listen(process.env.PORT, () => {
       console.log(`Server is running on port ${process.env.PORT}`);
+      console.log('Mongo uri', process.env.MONGO_URI)
     })
   )
   .catch((error) => console.error(error));
@@ -100,3 +111,5 @@ connect(process.env.MONGO_URI)
 // }
 
 // insertProducts(servicesData);
+
+export {app}

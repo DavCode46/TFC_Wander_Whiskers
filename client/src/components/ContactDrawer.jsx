@@ -52,24 +52,7 @@ const ContactDrawer = () => {
   const handleSetError = () => {
     setError("");
   };
-  //   const success = () => {
-  //     messageApi.open({
-  //       type: "success",
-  //       content: "Mensaje enviado con éxito",
-  //     });
-  //     onClose(); // Cierra el Drawer
-  //   };
-
-  //   const errorMessage = () => {
-  //     messageApi.open({
-  //       type: "error",
-  //       content: error,
-  //     });
-  //   };
-
-  //   const handleSetError = () => {
-  //     setError("");
-  //   };
+  
 
   const handleSubmit = () => {
     // e.preventDefault();
@@ -84,12 +67,12 @@ const ContactDrawer = () => {
       contact_number: phone,
       to_name: "Wander Whiskers",
       message: message,
+      
     };
 
     emailjs
       .send(serviceId, templateId, templateEmailParams, publicKey)
       .then(() => {
-        console.log("Email successfully sent!");
         setName("");
         setEmail("");
         setMessage("");
@@ -107,12 +90,23 @@ const ContactDrawer = () => {
   return (
     <>
       {/* {contextHolder} */}
-      <FloatButton type={`${themeMode === 'dark' ? 'primary' : ''}`} onClick={showDrawer} icon={<QuestionOutlined />} />
+
+      <FloatButton
+        type={`${themeMode === "dark" ? "primary" : ""}`}
+        onClick={showDrawer}
+        icon={<QuestionOutlined />}
+        shape="square"
+      />
+
       <Drawer
         className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-            <div className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} flex items-center mt-4`}>
+            <div
+              className={`${
+                themeMode === "dark" ? "text-[#ccc]" : ""
+              } flex items-center mt-4`}
+            >
               Formulario de contacto
               {themeMode === "light" ? (
                 <img
@@ -277,8 +271,20 @@ const ContactDrawer = () => {
               <h3 className="text-green-500 text-xl font-bold mb-4">
                 ¡Mensaje enviado con éxito!
               </h3>
-              <p className={`${themeMode === 'dark' ? 'text-dark-white' : ''} mb-5`}>¡Gracias por contactarnos!</p>
-              <p className={`${themeMode === 'dark' ? 'text-dark-white' : ''} mb-5`}>Responderemos a la mayor brevedad posible</p>
+              <p
+                className={`${
+                  themeMode === "dark" ? "text-dark-white" : ""
+                } mb-5`}
+              >
+                ¡Gracias por contactarnos!
+              </p>
+              <p
+                className={`${
+                  themeMode === "dark" ? "text-dark-white" : ""
+                } mb-5`}
+              >
+                Responderemos a la mayor brevedad posible
+              </p>
               <Button
                 className={`${
                   themeMode === "dark"

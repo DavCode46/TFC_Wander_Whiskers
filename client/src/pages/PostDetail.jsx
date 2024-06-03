@@ -19,7 +19,7 @@ const PostDetail = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const { currentUser } = useContext(UserContext);
+  const { currentUser, isSubscribed } = useContext(UserContext);
   const { themeMode } = useTheme();
 
   useEffect(() => {
@@ -55,14 +55,22 @@ const PostDetail = () => {
     );
 
   return (
-    <section className={`${themeMode === 'dark' ? 'bg-dark-bg' : ''}" flex flex-col items-center justify-center min-h-screen py-10 px-5 bg-gray-100"`}>
+    <section
+      className={`${
+        themeMode === "dark" ? "bg-dark-bg" : ""
+      }" flex flex-col items-center justify-center min-h-screen py-10 px-5 bg-gray-100"`}
+    >
       {error && (
         <p className="bg-red-500 text-white text-medium px-3 py-3 block mb-2">
           {error}
         </p>
       )}
       {post && (
-        <section className={`${themeMode === 'dark' ? 'bg-[#1F2E35]' : ''} w-full md:w-3/4 max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden`}>
+        <section
+          className={`${
+            themeMode === "dark" ? "bg-dark-card" : "bg-white "
+          } w-full md:w-3/4 max-w-4xl rounded-lg shadow-lg overflow-hidden`}
+        >
           <div className="relative">
             <FadeAnimation>
               <img
@@ -120,8 +128,12 @@ const PostDetail = () => {
             </div>
             {currentUser?.id === post.author && (
               <div className="flex items-center justify-end space-x-3">
-                <PostDrawer isEditing postId={post._id} />
-                <DeletePost postID={post._id} />
+                {currentUser && isSubscribed && (
+                  <>
+                    <PostDrawer isEditing postId={post._id} />
+                    <DeletePost postID={post._id} />
+                  </>
+                )}
               </div>
             )}
           </div>

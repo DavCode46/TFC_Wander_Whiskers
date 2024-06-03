@@ -33,7 +33,7 @@ import useTheme from "@context/ThemeContext";
 import UserDrawer from "./UserDrawer";
 import { MdOutlineEmail } from "react-icons/md";
 
-const LoginDrawer = () => {
+const LoginDrawer = ({ text, isMobile }) => {
   const [open, setOpen] = useState(false);
   const [show, setShow] = useState(true);
   const [loginSuccess, setLoginSuccess] = useState(false);
@@ -80,7 +80,7 @@ const LoginDrawer = () => {
         data
       );
       const user = await response.data;
-      console.log("login response", response);
+      // console.log("login response", response);
 
       setCurrentUser(user);
       success();
@@ -114,30 +114,32 @@ const LoginDrawer = () => {
   return (
     <>
       {contextHolder}
-      <FloatButton
-        shape="square"
-        type={`${themeMode === "dark" ? "primary" : "default"}`}
-        onClick={showDrawer}
-        icon={<LoginOutlined />}
-      />
-      {/* <FloatButton
-      shape="circle"
-        type={`${themeMode === 'dark' ? 'primary' : 'default'}`}
-        className={`${
-          themeMode === "dark"
-            ? "bg-dark-primary hover:bg-a-6"
-            : "bg-color-btn hover:bg-color-btnHover"
-        } transition-all duration-300  text-white px-3 py-1 rounded-md mt-5'`}
-        onClick={showDrawer}
-        icon={<LoginOutlined />}
-      >
-        Login
-      </FloatButton> */}
+      {!isMobile ? (
+        <FloatButton
+          shape="square"
+          type={`${themeMode === "dark" ? "primary" : "default"}`}
+          onClick={showDrawer}
+          icon={<LoginOutlined />}
+        />
+      ) : (
+        <Button
+          type={`${themeMode === "dark" ? "primary" : ""}`}
+          onClick={showDrawer}
+          icon={<LoginOutlined />}
+        >
+          {text}{" "}
+        </Button>
+      )}
+
       <Drawer
         className={`${themeMode === "dark" ? "darkMode" : "lightMode"}`}
         title={
           <Yanimation>
-            <div className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} flex items-center mt-4`}>
+            <div
+              className={`${
+                themeMode === "dark" ? "text-[#ccc]" : ""
+              } flex items-center mt-4`}
+            >
               Iniciar sesión en Wander Whiskers
               {themeMode === "light" ? (
                 <img
@@ -164,7 +166,7 @@ const LoginDrawer = () => {
           },
         }}
       >
-        <div>
+        {/* <div>
           <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
             <button
               className={`${
@@ -190,10 +192,16 @@ const LoginDrawer = () => {
           </div>
           <div className="flex justify-center items-center mb-[1.5rem]">
             <div className="border-t border-gray-400 w-full mr-4"></div>{" "}
-            <p className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} font-bold text-md`}>O</p>
+            <p
+              className={`${
+                themeMode === "dark" ? "text-[#ccc]" : ""
+              } font-bold text-md`}
+            >
+              O
+            </p>
             <div className="border-t border-gray-400 w-full ml-4"></div>{" "}
           </div>
-        </div>
+        </div> */}
 
         <FadeAnimation>
           <Form layout="vertical" onFinish={login}>
@@ -218,7 +226,13 @@ const LoginDrawer = () => {
                       width: "100%",
                     }}
                     value={data.email}
-                    addonBefore={<MdOutlineEmail className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
+                    addonBefore={
+                      <MdOutlineEmail
+                        className={`${
+                          themeMode === "dark" ? "text-white" : ""
+                        }`}
+                      />
+                    }
                     onChange={(e) => {
                       changeHandler(e);
                       handleSetError();
@@ -243,7 +257,13 @@ const LoginDrawer = () => {
                     style={{
                       width: "100%",
                     }}
-                    addonBefore={<RiLockPasswordLine className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>}
+                    addonBefore={
+                      <RiLockPasswordLine
+                        className={`${
+                          themeMode === "dark" ? "text-white" : ""
+                        }`}
+                      />
+                    }
                     onChange={(e) => {
                       changeHandler(e);
                       handleSetError();
@@ -257,12 +277,25 @@ const LoginDrawer = () => {
             </Row>
             <Form.Item>
               <p className="flex gap-2">
-                <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''}`}>¿Has olvidado tu contraseña?</span>
-                <Link to='/forgot-password' className={`${themeMode === 'dark' ? 'text-dark-primary hover:text-a-7' : 'text-color-btn hover:text-color-btnHover'}`}>Recuperar contraseña</Link>
+                <span
+                  className={`${themeMode === "dark" ? "text-[#ccc]" : ""}`}
+                >
+                  ¿Has olvidado tu contraseña?
+                </span>
+                <Link
+                  to="/forgot-password"
+                  className={`${
+                    themeMode === "dark"
+                      ? "text-dark-primary hover:text-a-7"
+                      : "text-color-btn hover:text-color-btnHover"
+                  }`}
+                >
+                  Recuperar contraseña
+                </Link>
               </p>
             </Form.Item>
             <Form.Item>
-              <Space>
+              <Space className="mb-3">
                 <button
                   className={`${
                     themeMode === "dark"
@@ -283,8 +316,20 @@ const LoginDrawer = () => {
                 >
                   Iniciar sesión
                 </button>
-                <UserDrawer openButton={'Registrarse'} isRegistering />
               </Space>
+              <div>
+                <div>
+                  <small
+                    className={`${
+                      themeMode === "dark" ? "text-[#ccc]" : ""
+                    } text-sm block mb-3 mt-3`}
+                  >
+                    ¿Aún no tienes cuenta?
+                  </small>
+                 
+                </div>
+                <UserDrawer openButton={"Registrarse"} isRegistering />
+              </div>
             </Form.Item>
           </Form>
         </FadeAnimation>
