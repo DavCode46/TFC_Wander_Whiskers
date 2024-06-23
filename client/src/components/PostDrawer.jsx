@@ -36,25 +36,20 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [specie, setSpecie] = useState("");
-  // const [files, setFiles] = useState([]);
+
   const [image, setImage] = useState([]);
   const [condition, setCondition] = useState("");
   const [selectedProvince, setSelectedProvince] = useState("");
   const [error, setError] = useState("Error al crear la publicación");
-  const [imageUrl, setImageUrl] = useState("");
 
   const [messageApi, contextHolder] = message.useMessage();
 
   const { currentUser } = useContext(UserContext);
-  // console.log('isSubscribed',currentUser.isSubscribed)
+
   const token = currentUser?.token;
   const navigate = useNavigate();
-  const { id } = useParams();
-  const { themeMode } = useTheme();
 
-  // useEffect(() => {
-  //   if (!token) navigate("login");
-  // }, []);
+  const { themeMode } = useTheme();
 
   const provinces = selectData[2].children;
   const handleProvinceChange = (value) => {
@@ -67,24 +62,19 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        // console.log(info.file, info.fileList);
-        // console.log("droppedFile", info.dataTransfer.files[0]);
         setImage(info.file);
       }
       if (status === "done") {
-        // message.success(`${info.file.name} Imagen Subida satisfactoriamente.`);
+        message.success(`${info.file.name} Imagen Subida satisfactoriamente.`);
         setImage(info.file);
       } else if (status === "error") {
         message.error(`${info.file.name} Error al subir la imagen.`);
-        // console.log(info.file, info.fileList);
       }
     },
     onDrop(e) {
       const droppedFile = e.dataTransfer.files[0];
       setImage(droppedFile);
-      // console.log("droppenFile", droppedFile);
     },
-    // multiple: false,
     listType: "picture",
     showUploadList: { showRemoveIcon: true },
 
@@ -105,7 +95,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
   };
   const create = async (values) => {
     const { title, content, province, specie, condition } = values;
-    console.log("image", image);
+   
     const post = new FormData();
     post.set("title", title);
     post.set("content", content);
@@ -123,12 +113,16 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
       if (res.status === 201) {
         success();
         setTimeout(() => {
-          window.location.reload();
+          if (window.location.pathname === "/posts") {
+            window.location.reload();
+          } else {
+            navigate("/posts");
+          }
         }, 1000);
       }
       setImage([]);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       setError(err.response.data.message);
       errorMessage();
     }
@@ -146,41 +140,44 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
           setSpecie(res.data.specie);
           setCondition(res.data.condition);
           setSelectedProvince(res.data.location);
-          // console.log("res", res);
         } catch (err) {
           setError(err);
         }
       };
       fetchPost();
     }
-  }, []);
+  }, [isEditing, postId]);
   const edit = async (values) => {
     const { title, content, province, specie, condition } = values;
-
+   
     const post = new FormData();
     post.set("title", title);
     post.set("content", content);
     post.set("location", province);
     post.set("specie", specie);
     post.set("condition", condition);
-    post.set("image", image.originFileObj);
-
+    // Verificar si hay una nueva imagen seleccionada
+    if (image.originFileObj) {
+      post.set("image", image.originFileObj);
+    }
+    
     try {
       const res = await axios.patch(
         `${import.meta.env.VITE_REACT_APP_URL}/posts/${postId}`,
         post,
         { withCredentials: true, headers: { Authorization: `Bearer ${token}` } }
       );
-
+     
       if (res.status === 200) {
         success();
         setTimeout(() => {
-          return navigate("/posts");
+          navigate("/posts");
+          onClose();
         }, 1000);
       }
     } catch (err) {
-      console.log(err);
-      setError(err.response.data.message);
+      // console.log(err);
+      setError(err);
       errorMessage();
     }
   };
@@ -214,6 +211,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
           : "Publicación actualizada con éxito"
       }`,
     });
+    onClose();
   };
   const errorMessage = () => {
     messageApi.open({
@@ -304,7 +302,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
             encType="multipart/form-data"
           >
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   name="title"
                   initialValue={`${isEditing ? title : ""}`}
@@ -337,7 +335,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   name="condition"
                   initialValue={`${
@@ -380,7 +378,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
               </Col>
             </Row>
             <Row gutter={16}>
-              <Col span={12}>
+            <Col xs={24} sm={12}>
                 <Form.Item
                   name="province"
                   label="Provincia"
@@ -393,8 +391,6 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   ]}
                 >
                   <Select
-                    // listItemHeight={10}
-                    // listHeight={250}
                     virtual={false}
                     size="sm"
                     onChange={(value) => {
@@ -405,7 +401,6 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                       backgroundColor: themeMode === "dark" ? "#1F2E35" : "",
                     }}
                     fontSize="sm"
-                    // _focus={{ outline: "none", border: "none" }}
                     placeholder="Provincia"
                   >
                     {provinces.map((province) => (
@@ -422,7 +417,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   name="specie"
                   initialValue={`${isEditing ? specie : "Especie"}`}
@@ -497,7 +492,7 @@ const PostDrawer = ({ isEditing, postId, homeButton }) => {
                   label="Imagen"
                   rules={[
                     {
-                      required: true,
+                      required: isEditing ? false : true,
                       message: "Por favor introduzca una imagen",
                     },
                   ]}

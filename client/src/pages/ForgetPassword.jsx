@@ -1,31 +1,39 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import { LockOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import useTheme from "@context/ThemeContext";
 import axios from "axios";
-import { UserContext } from "@/context/UserContext";
 import { MdOutlineEmail } from "react-icons/md";
+
+
 const ForgetPassword = () => {
-  const [error, setError] = useState();
-  const [email, setEmail] = useState()
+  const [error, setError] = useState("");
+  const [email, setEmail] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [isSent, setIsSent] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
   const { themeMode } = useTheme();
-  const navigate = useNavigate();
-  const {currentUser} = useContext(UserContext)
+  
+
   const onFinish = async () => {
-   
+    setIsSending(true);
+
     try {
-      console.log(email)
       await axios.post(
         `${import.meta.env.VITE_REACT_APP_URL}/users/forget-password`,
-        {email}
+        { email }
       );
+
       success();
+      setTimeout(() => {
+        setIsSent(true);
+      }, 500);
     } catch (error) {
       console.error("Error al enviar el correo de recuperación:", error);
-      setError(error.response.data.message);
+      setError(error.response?.data?.message || "Ha ocurrido un error");
       errorMessage();
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -35,12 +43,14 @@ const ForgetPassword = () => {
       content: "Correo enviado con éxito, revisa tu bandeja de entrada",
     });
   };
+
   const errorMessage = () => {
     messageApi.open({
       type: "error",
       content: error || "Ha ocurrido un error",
     });
   };
+
   return (
     <>
       {contextHolder}
@@ -48,62 +58,62 @@ const ForgetPassword = () => {
         <div
           className={`${
             themeMode === "dark" ? "bg-dark-card" : "bg-white "
-          } p-8 rounded-lg shadow-md max-w-md w-full`}
+          } p-8 rounded-lg shadow-md max-w-md w-[90%] m-auto`}
         >
           <h2
             className={`${
-              themeMode === "dark" ? "text-[#ccc]" : ""
+              themeMode === "dark" ? "text-[#ccc]" : "text-dark-grey"
             } text-2xl font-semibold text-center mb-6`}
           >
-            Recuperar Contraseña
+            {!isSent ? "Recuperar Contraseña" : "¡Mensaje enviado con éxito!"}
           </h2>
-          <p className="text-center text-gray-600 mb-4">
-            Ingrese su dirección de correo electrónico para restablecer su
-            contraseña.
-          </p>
-          <Form
-            name="forgot_password"
-            initialValues={{ remember: true }}
-            onFinish={onFinish}
-            className="space-y-4"
-          >
-            <Form.Item
-              name="email"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor ingrese su correo electrónico.",
-                },
-              ]}
+          {isSent ? (
+            <div className="text-center mb-4">
+              <p>Revisa tu bandeja de entrada y sigue las instrucciones</p>
+            </div>
+          ) : (
+            <Form
+              name="forgot_password"
+              initialValues={{ remember: true }}
+              onFinish={onFinish}
+              className="space-y-4"
             >
-              <Input
-                onChange={(e) => setEmail(e.target.value)}
-                prefix={
-                  <MdOutlineEmail
-                    className={`${
-                      themeMode === "dark" ? "text-[#ccc]" : "text-gray-400"
-                    } `}
-                  />
-                }
-                className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''}`}
-                placeholder="Correo Electrónico"
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                className={`w-full ${
-                  themeMode === "light"
-                    ? "bg-color-btn hover:bg-color-btnHover"
-                    : ""
-                }`}
-                htmlType="submit"
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    required: true,
+                    message: "Por favor ingrese su correo electrónico.",
+                  },
+                  {
+                    type: "email",
+                    message: "Por favor ingrese un correo electrónico válido.",
+                  },
+                ]}
               >
-                Enviar Correo de Recuperación
-              </Button>
-            </Form.Item>
-          </Form>
+                <Input
+                  onChange={(e) => setEmail(e.target.value)}
+                  prefix={<MdOutlineEmail />}
+                  placeholder="Correo Electrónico"
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Button
+                  type="primary"
+                  className={`w-full ${
+                    themeMode === "light"
+                      ? "bg-color-btn hover:bg-color-btnHover"
+                      : ""
+                  }`}
+                  htmlType="submit"
+                  loading={isSending}
+                >
+                  Enviar Correo de Recuperación
+                </Button>
+              </Form.Item>
+            </Form>
+          )}
           <div className="text-center mt-5">
             <Link to="/" className="text-blue-500 hover:underline">
               Volver al inicio

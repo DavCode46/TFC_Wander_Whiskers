@@ -1,8 +1,8 @@
-import cat2 from "@images/cat2.jpg";
-import cat3 from "@images/cat3.jpg";
-import husky from "@images/husky.jpg";
-import bulldog from "@images/bulldog.jpg";
-import haru3 from "@images/haru3.jpg";
+import cat2 from "@images/cat2.webp";
+import cat3 from "@images/cat3.webp";
+import husky from "@images/husky.webp";
+import bulldog from "@images/bulldog.webp";
+import haru3 from "@images/haru3.webp";
 import { RiCheckboxBlankCircleFill } from "react-icons/ri";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
 import ScrollXAnimation from "./Animations/Xanimation/ScrollXAnimation";
@@ -13,7 +13,7 @@ const HomeFound = () => {
   const {themeMode} = useTheme()
 
   return (
-    <div id="aboutUs" className="p-8 xl:p-20 ml-10">
+    <div id="aboutUs" className="p-8 xl:p-20 md:ml-10">
       <div className="mb-8 font-grotesk">
         <ScrollYAnimation>
           <h2 className={`${themeMode === 'dark' ? 'text-dark-heading' : 'font-black'} text-[40px]`}>

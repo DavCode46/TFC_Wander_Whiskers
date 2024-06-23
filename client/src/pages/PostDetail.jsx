@@ -7,7 +7,6 @@ import { UserContext } from "@/context/UserContext";
 import axios from "axios";
 import { CircularProgress } from "@nextui-org/react";
 import DeletePost from "./DeletePost";
-import Xanimation from "@/components/Animations/Xanimation/Xanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import useTheme from "@context/ThemeContext";

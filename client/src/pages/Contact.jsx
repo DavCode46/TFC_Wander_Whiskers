@@ -3,11 +3,10 @@ import { PhoneIcon, EmailIcon } from "@chakra-ui/icons";
 import emailjs from "@emailjs/browser";
 import Confetti from "react-confetti";
 import {
-  Select,
+
   Input,
   InputGroup,
   Stack,
-  Button,
   FormControl,
   Box,
   Textarea,
@@ -25,7 +24,7 @@ const Contact = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [isSent, setIsSent] = useState(false);
-  const form = useRef();
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -45,7 +44,6 @@ const Contact = () => {
     emailjs
       .send(serviceId, templateId, templateEmailParams, publicKey)
       .then(() => {
-        console.log("Email successfully sent!");
         setName("");
         setEmail("");
         setMessage("");
@@ -56,13 +54,13 @@ const Contact = () => {
         }, 6000);
       })
       .catch((err) => {
-        console.log("Error sending email:", err);
+        // console.log("Error sending email:", err);
       });
   };
 
   return (
     <section className="relative flex justify-center items-center h-screen">
-      {/* <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-color-primary to-color-secondary clip-triangle" /> */}
+     
       <Box className="w-full md:w-3/5 lg:w-2/4 xl:w-1/3 z-10">
         <FadeAnimation>
           <section className="bg-color-form rounded-2xl shadow-lg px-8 py-10">
@@ -108,18 +106,7 @@ const Contact = () => {
                         onChange={(e) => setName(e.target.value)}
                         className="rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-color-primary"
                       />
-                      {/* <Select
-                     size="sm"
-                     name=""
-                     className="rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-color-primary"
-                   >
-                     <option value="consulta">Motivo de consulta</option>
-                     {contactOptions.map((option, index) => (
-                       <option key={index} value={option.value}>
-                         {option.label}
-                       </option>
-                     ))}
-                   </Select> */}
+                    
                     </InputGroup>
                     <InputGroup size="sm">
                       <InputLeftAddon>

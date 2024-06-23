@@ -9,10 +9,6 @@ export default {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        dog: "url('../images/bgdogmensual.jpg')",
-        cat: "url('../images/bgcatanual.webp')",
-      },
       boxShadow: {
         dark: "0 4px 6px rgba(255, 255, 255, 0.5)",
         light: "0 4px 6px rgba(0, 0, 0, 0.1)",

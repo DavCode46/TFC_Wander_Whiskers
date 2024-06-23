@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { CircularProgress } from "@nextui-org/react";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
 import useTheme from "@context/ThemeContext";
-import dog from "../images/bgdogmensual.jpg";
-import cat from "../images/bgcatanual.jpg";
+import dog from "../images/dog2.webp";
+import cat from '../images/catservice.webp'
+import rabbit from '../images/rabbit.webp'
 
 const ServiceCard = () => {
   const [loading, setLoading] = useState(false);
@@ -32,7 +33,7 @@ const ServiceCard = () => {
         );
         setProducts(res?.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setLoading(false);
     };
@@ -40,6 +41,14 @@ const ServiceCard = () => {
   }, []);
 
   const addToCart = async (service) => {
+    if (!service.price) {
+      // Mostrar mensaje si el precio es nulo o está vacío
+      messageApi.open({
+        type: "info",
+        content: "Este producto no está disponible para suscripción. Por favor, póngase en contacto para más información.",
+      });
+      return;
+    }
     try {
       const { _id, name, price, description } = service;
       const data = {
@@ -50,7 +59,7 @@ const ServiceCard = () => {
         quantity: 1,
       };
 
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_REACT_APP_URL}/users/cart/add-product/${
           currentUser.id
         }`,
@@ -64,7 +73,7 @@ const ServiceCard = () => {
     } catch (err) {
       setError(err.response.data.message);
       errorMessage();
-      console.log(err);
+      // console.log(err);
     }
   };
 
@@ -107,11 +116,11 @@ const ServiceCard = () => {
           <div
             className={`${
               themeMode === "dark" ? "bg-dark-card" : "bg-white"
-            } w-[20rem] md:w-[24rem] p-8 rounded-lg shadow-lg transition duration-300 transform hover:scale-105 flex flex-col justify-between`}
+            } w-[20rem] md:w-[24rem] p-8 rounded-lg shadow-lg transition duration-300 min-h-[36rem] transform hover:scale-105 flex flex-col justify-between`}
           >
             <div>
               <img
-                src={product.name === "Mensual" ? dog : cat}
+                src={product.name === "Mensual" ? dog : (product.name === 'Anual' ? cat : rabbit)}
                 alt={product.name}
                 className="w-full h-40 mb-4 object-cover rounded-lg"
               />

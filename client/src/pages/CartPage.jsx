@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Empty, List, Skeleton, message } from "antd";
+import { Button, Empty, message } from "antd";
 import { CartContext } from "@/context/CartContext";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,20 +7,18 @@ import { UserContext } from "@/context/UserContext";
 import { v4 as uuidv4 } from "uuid";
 import DeleteFromCart from "./DeleteFromCart";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
-import Yanimation from "@/components/Animations/Yanimation/Yanimation";
+
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import useTheme from "@context/ThemeContext";
 
 const CartPage = () => {
   const [cart, setCart] = useContext(CartContext);
-  const [initLoading, setInitLoading] = useState(true);
-  const [data, setData] = useState([]);
-  const [list, setList] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [productsCart, setProductsCart] = useState([]);
   const [error, setError] = useState("Error al procesar el pago");
   const [messageApi, contextHolder] = message.useMessage();
-  const navigate = useNavigate();
+
   const { themeMode } = useTheme();
 
   const { currentUser } = useContext(UserContext);
@@ -53,42 +51,20 @@ const CartPage = () => {
         setProductsCart(productDetails);
         setCart(productDetails);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setIsLoading(false);
     };
     fetchProductsCart();
   }, []);
 
-  // const handleIncrement = (productId) => {
-  //   // Incrementa la cantidad del producto en el carrito
-  //   setCart((prevCart) =>
-  //     prevCart.map((item) => {
-  //       if (item.id === productId) {
-  //         return { ...item, quantity: item.quantity + 1 };
-  //       }
-  //       return item;
-  //     })
-  //   );
-  // };
-
-  // const handleDecrement = (productId) => {
-  //   // Decrementa la cantidad del producto en el carrito, evita que sea menor que 1
-  //   setCart((prevCart) =>
-  //     prevCart.map((item) => {
-  //       if (item.id === productId && item.quantity > 1) {
-  //         return { ...item, quantity: item.quantity - 1 };
-  //       }
-  //       return item;
-  //     })
-  //   );
-  // };
-
   const handlePay = async () => {
     setIsLoading(true);
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${currentUser.id}`,
+        `${import.meta.env.VITE_REACT_APP_URL}/users/cart/checkout/${
+          currentUser.id
+        }`,
         {
           cartItems: cart,
         },
@@ -97,7 +73,7 @@ const CartPage = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
+
       if (res.data.url) {
         success();
         window.location.href = res.data.url; // Obtener la URL de pago de la respuesta
@@ -109,7 +85,6 @@ const CartPage = () => {
     }
     setIsLoading(false);
   };
-  
 
   const success = () => {
     messageApi.open({
@@ -125,7 +100,7 @@ const CartPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-start items-center w-full h-screen py-10 mt-10">
+    <div className="flex flex-col justify-start items-center w-[90%] m-auto h-screen py-10 mt-10">
       {contextHolder}
       <Xanimation>
         <h1
@@ -186,21 +161,6 @@ const CartPage = () => {
                       </p>
                     </div>
                     <div className="flex items-center gap-3">
-                      {/* <Button
-                    type="default"
-                    size="small"
-                    onClick={() => handleDecrement(item.id)}
-                  >
-                    -
-                  </Button>
-                  <span>{item.quantity}</span>
-                  <Button
-                    type="default"
-                    size="small"
-                    onClick={() => handleIncrement(item.id)}
-                  >
-                    +
-                  </Button> */}
                       <DeleteFromCart productId={item._id} />
                     </div>
                   </div>
@@ -210,7 +170,7 @@ const CartPage = () => {
           ))}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center min-h-[50vh] lg:h-[70vh]">
           <FadeAnimation delay={0.5}>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
@@ -223,9 +183,19 @@ const CartPage = () => {
               }}
               description={
                 <div>
-                  <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} mt-[3rem]`}>
+                  <span
+                    className={`${
+                      themeMode === "dark" ? "text-[#ccc]" : ""
+                    } mt-[3rem]`}
+                  >
                     No se han encontrado{" "}
-                    <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'}`}>
+                    <span
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary"
+                          : "text-color-btn"
+                      }`}
+                    >
                       productos en el carro
                     </span>
                   </span>

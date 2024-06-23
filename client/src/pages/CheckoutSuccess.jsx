@@ -12,53 +12,83 @@ const CheckoutSuccess = () => {
   const { currentUser, updateSubscriptionStatus } = useContext(UserContext);
   const { themeMode } = useTheme();
 
-  useEffect(() => {
+ useEffect(() => {
     const fetchLastOrder = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_REACT_APP_URL}/orders/user/${currentUser.id}`
-        );
+        if (!currentUser || !currentUser.id) {
+      
+          return;
+        }
 
-        // Obtener el primer pedido (el más reciente) de la respuesta
-        const lastOrder = response.data.length ? response.data[0] : null;
+  
+
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_URL}/orders/user/order/${currentUser.id}`);
+
+        const lastOrder = response.data;
         if (lastOrder) {
+      
           setOrder(lastOrder);
-          // Obtener detalles de los productos
-          const productDetailsPromises = lastOrder.products.map(productId =>
-            axios.get(`${import.meta.env.VITE_REACT_APP_URL}/products/${productId}`)
+
+          const productDetailsPromises = lastOrder.products.map(product => 
+            axios.get(`${import.meta.env.VITE_REACT_APP_URL}/products/${product._id}`)
           );
           const productDetailsResponses = await Promise.all(productDetailsPromises);
           const productDetails = productDetailsResponses.map(res => res.data);
           setProductDetails(productDetails);
+          updateSubscriptionStatus(true);
         }
-        updateSubscriptionStatus(true);
       } catch (err) {
-        console.log(err);
+        console.error('Error fetching last order:', err.message);
       }
       setIsLoading(false);
     };
 
     fetchLastOrder();
-  }, [currentUser.id, updateSubscriptionStatus]);
+  }, [currentUser, updateSubscriptionStatus]);
 
+  
   return (
     <div className="flex flex-col justify-start items-center h-screen py-10 mt-10 w-[90%] md:w-full m-auto">
-      <h1 className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} text-center font-bold text-2xl mb-5`}>
+      <h1
+        className={`${
+          themeMode === "dark" ? "text-[#ccc]" : ""
+        } text-center font-bold text-2xl mb-5`}
+      >
         Detalles de su pedido
       </h1>
       {order ? (
         <div className="w-full md:w-3/4 lg:w-2/3">
           {productDetails.map((item, index) => (
-            <div key={index} className="flex flex-col border border-gray-200 rounded-md p-5 mb-5">
+            <div
+              key={index}
+              className="flex flex-col border border-gray-200 rounded-md p-5 mb-5"
+            >
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-lg font-semibold`}>{item.name}</h1>
-                  <p className={`${themeMode === 'dark' ? 'text-gray-200' : 'text-gray-500'}`}>{item.description}</p>
-                  <p className={`${themeMode === 'dark' ? 'text-gray-300' : 'text-gray-600'}`}>
-                    Precio: {item.price} €/ud 
-                    {/* Si tienes la cantidad del producto puedes mostrarlo */}
-                    {/* Total: {(item.price * item.quantity).toFixed(2)} € */}
+                  <h1
+                    className={`${
+                      themeMode === "dark"
+                        ? "text-dark-primary"
+                        : "text-color-btn"
+                    } text-lg font-semibold`}
+                  >
+                    {item.name}
+                  </h1>
+                  <p
+                    className={`${
+                      themeMode === "dark" ? "text-gray-200" : "text-gray-500"
+                    }`}
+                  >
+                    {item.description}
+                  </p>
+                  <p
+                    className={`${
+                      themeMode === "dark" ? "text-gray-300" : "text-gray-600"
+                    }`}
+                  >
+                    Precio: {item.discountPrice ? item.discountPrice : item.price} €/ud
+                  
                   </p>
                 </div>
               </div>
@@ -66,7 +96,7 @@ const CheckoutSuccess = () => {
           ))}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center min-h-[50vh] lg:h-[70vh]">
           <Empty
             image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
             imageStyle={{
@@ -78,11 +108,23 @@ const CheckoutSuccess = () => {
             }}
             description={
               <div>
-                <span className={`${themeMode === 'dark' ? 'text-[#ccc]' : ''} mt-[3rem]`}>
+                <span
+                  className={`${
+                    themeMode === "dark" ? "text-[#ccc]" : ""
+                  } mt-[1rem]`}
+                >
                   No se ha encontrado{" "}
-                  <span className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'}`}>el pedido</span>
+                  <span
+                    className={`${
+                      themeMode === "dark"
+                        ? "text-dark-primary"
+                        : "text-color-btn"
+                    }`}
+                  >
+                    el pedido
+                  </span>
                 </span>
-                <div className="mt-[3rem]"></div>
+                
               </div>
             }
           />

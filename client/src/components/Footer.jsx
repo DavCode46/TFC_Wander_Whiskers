@@ -11,9 +11,11 @@ const Footer = () => {
   const { themeMode } = useTheme()
 
   return (
+    
     <FadeAnimation>
       <footer className={`${themeMode === 'dark' ? 'bg-dark-footer text-dark-lightGrey' : 'bg-[rgba(45,45,63,255)] text-[#d5deef]'} font-grotesk grid md:justify-items-center lg:grid-cols-3`}>
         <div className="p-5 lg:col-span-1">
+
           <h2 className="text-xl mb-3 ml-3">Sobre nosotros</h2>
           <ul className=" list-disc ml-3">
             <li>¿Quiénes somos?</li>

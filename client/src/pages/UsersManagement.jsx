@@ -1,18 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Space, Table } from "antd";
 import axios from "axios";
 import DeleteUser from "./DeleteUser";
-import { Link } from "react-router-dom";
-import Xanimation from "@/components/Animations/Xanimation/Xanimation";
-import Yanimation from "@/components/Animations/Yanimation/Yanimation";
+import { Link, useNavigate } from "react-router-dom";
+
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import useTheme from "@context/ThemeContext";
+import { UserContext } from "@/context/UserContext";
 const UsersManagement = () => {
   const [usersData, setUsersData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const { themeMode } = useTheme();
+
+  const { currentUser } = useContext(UserContext);
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(currentUser.role !== 'admin') {
+      navigate('/')
+    }
+  })
+
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -22,7 +34,7 @@ const UsersManagement = () => {
         );
         setUsersData(res?.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       } finally {
         setLoading(false);
       }
@@ -32,17 +44,14 @@ const UsersManagement = () => {
 
   const uniqueUsersname = [...new Set(usersData.map((item) => item.username))];
   const uniqueEmail = [...new Set(usersData.map((item) => item.email))];
-  const uniqueCreatedAt = [...new Set(usersData.map((item) => item.createdAt))];
 
-  const handleChange = (pagination, filters, sorter) => {
+
+  const handleChange = (filters, sorter) => {
     setFilteredInfo(filters);
     setSortedInfo(sorter);
   };
 
-  const clearFilters = () => {
-    setFilteredInfo({});
-  };
-
+ 
   const columns = [
     {
       title: "Imagen de perfil",
@@ -100,7 +109,7 @@ const UsersManagement = () => {
   ];
 
   return (
-    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[15rem] h-screen z-[-1000]">
+    <div className="grid place-content-center overflow-x-auto w-[80%] m-auto mb-[15rem] h-screen z-[-1000] lg:h-screen">
       <FadeAnimation className={"overflow-x-auto"}>
         <Space
           style={{
@@ -121,7 +130,7 @@ const UsersManagement = () => {
           dataSource={usersData}
           loading={loading}
           onChange={handleChange}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 7 }}
           rowKey={(record) => record._id}
         />
       </FadeAnimation>

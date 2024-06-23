@@ -1,30 +1,24 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { EmailIcon } from "@chakra-ui/icons";
+import { useContext, useState } from "react";
+
 import { RiLockPasswordLine } from "react-icons/ri";
-import { FaRegUser } from "react-icons/fa";
 
 import axios from "axios";
 
 import LOGO from "@images/logo/1.svg";
 import DARK_LOGO from "@images/logo/3.svg";
-import GOOGLE_ICON from "@images/googleIcon.svg";
-import GITHUB_ICON from "@images/githubIcon.svg";
-import { FiGithub } from "react-icons/fi";
-import { PlusOutlined, EditOutlined, LoginOutlined } from "@ant-design/icons";
+
+import { LoginOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
-  DatePicker,
   Drawer,
   Form,
   message,
   Input,
   Row,
-  Select,
   Space,
   FloatButton,
-  Anchor,
 } from "antd";
 import { UserContext } from "@/context/UserContext";
 import FadeAnimation from "./Animations/FadeAnimation/FadeAnimation";
@@ -33,23 +27,20 @@ import useTheme from "@context/ThemeContext";
 import UserDrawer from "./UserDrawer";
 import { MdOutlineEmail } from "react-icons/md";
 
-const LoginDrawer = ({ text, isMobile }) => {
+const LoginDrawer = ({ text, isMobile, isReseting }) => {
   const [open, setOpen] = useState(false);
-  const [show, setShow] = useState(true);
-  const [loginSuccess, setLoginSuccess] = useState(false);
   const [data, setData] = useState({
     email: "",
     password: "",
   });
-  const { themeMode, lightTheme, darkTheme } = useTheme();
+  const { themeMode } = useTheme();
 
   const [error, setError] = useState("Error al iniciar sesión");
   const navigate = useNavigate();
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  const { setCurrentUser } = useContext(UserContext);
-  const handleClick = () => setShow(!show);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
 
   const showDrawer = () => {
     setOpen(true);
@@ -80,7 +71,6 @@ const LoginDrawer = ({ text, isMobile }) => {
         data
       );
       const user = await response.data;
-      // console.log("login response", response);
 
       setCurrentUser(user);
       success();
@@ -92,10 +82,15 @@ const LoginDrawer = ({ text, isMobile }) => {
 
       setTimeout(() => {
         onClose();
+        if (isReseting) {
+          navigate("/");
+        }
       }, 1000);
     } catch (err) {
+      // console.log(err)
       setError(err.response.data.message);
       errorMessage();
+      // No mostrar el error en la consola
     }
   };
 
@@ -108,7 +103,7 @@ const LoginDrawer = ({ text, isMobile }) => {
   const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: error || "Ha ocurrido un error",
+      content: error || "Credenciales incorrectas",
     });
   };
   return (
@@ -166,47 +161,10 @@ const LoginDrawer = ({ text, isMobile }) => {
           },
         }}
       >
-        {/* <div>
-          <div className="w-full flex justify-between items-center gap-[.5rem] mb-[1.5rem]">
-            <button
-              className={`${
-                themeMode === "dark"
-                  ? "text-white hover:bg-dark-greyBlue hover:text-white"
-                  : ""
-              } w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}
-            >
-              <img src={GOOGLE_ICON} alt="" className="w-[1rem]" />
-              Google
-            </button>
-
-            <button
-              className={`${
-                themeMode === "dark"
-                  ? "text-white hover:bg-dark-greyBlue hover:text-white"
-                  : ""
-              } w-full px-3 py-1 border rounded-md flex items-center justify-center gap-3 hover:bg-gray-200 hover:text-gray-800 transition-all duration-300`}
-            >
-              <FiGithub />
-              GitHub
-            </button>
-          </div>
-          <div className="flex justify-center items-center mb-[1.5rem]">
-            <div className="border-t border-gray-400 w-full mr-4"></div>{" "}
-            <p
-              className={`${
-                themeMode === "dark" ? "text-[#ccc]" : ""
-              } font-bold text-md`}
-            >
-              O
-            </p>
-            <div className="border-t border-gray-400 w-full ml-4"></div>{" "}
-          </div>
-        </div> */}
-
         <FadeAnimation>
           <Form layout="vertical" onFinish={login}>
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   name="email"
                   label="Email"
@@ -242,7 +200,7 @@ const LoginDrawer = ({ text, isMobile }) => {
                   />
                 </Form.Item>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Form.Item
                   name="password"
                   label="Contraseña"
@@ -275,25 +233,33 @@ const LoginDrawer = ({ text, isMobile }) => {
                 </Form.Item>
               </Col>
             </Row>
-            <Form.Item>
-              <p className="flex gap-2">
-                <span
-                  className={`${themeMode === "dark" ? "text-[#ccc]" : ""}`}
-                >
-                  ¿Has olvidado tu contraseña?
-                </span>
-                <Link
-                  to="/forgot-password"
-                  className={`${
-                    themeMode === "dark"
-                      ? "text-dark-primary hover:text-a-7"
-                      : "text-color-btn hover:text-color-btnHover"
-                  }`}
-                >
-                  Recuperar contraseña
-                </Link>
-              </p>
-            </Form.Item>
+            {!currentUser ? (
+              <Form.Item>
+                <div className="flex flex-col gap-2 md:flex-row">
+                  <span
+                    className={`${themeMode === "dark" ? "text-[#ccc]" : ""}`}
+                  >
+                    ¿Has olvidado tu contraseña?
+                  </span>
+                  <div>
+                    <Link
+                      to="/forgot-password"
+                      className={`${
+                        themeMode === "dark"
+                          ? "text-dark-primary hover:text-a-7"
+                          : "text-color-btn hover:text-color-btnHover"
+                      }`}
+                      onClick={onClose}
+                    >
+                      Recuperar contraseña
+                    </Link>
+                  </div>
+                </div>
+              </Form.Item>
+            ) : (
+              ""
+            )}
+
             <Form.Item>
               <Space className="mb-3">
                 <button
@@ -326,7 +292,6 @@ const LoginDrawer = ({ text, isMobile }) => {
                   >
                     ¿Aún no tienes cuenta?
                   </small>
-                 
                 </div>
                 <UserDrawer openButton={"Registrarse"} isRegistering />
               </div>

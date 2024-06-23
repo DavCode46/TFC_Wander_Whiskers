@@ -6,8 +6,8 @@ import { v4 as uuid } from "uuid";
 import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import dotenv from 'dotenv'
-dotenv.config()
+import dotenv from "dotenv";
+dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
@@ -49,12 +49,8 @@ const register = async (req, res, next) => {
     if (!passwordPattern.test(password.trim()))
       return next(
         new ErrorModel(
-          `<ul>
-                <li>Al menos 8 caracteres de longitud</li>
-                <li>Al menos una letra mayúscula</li>
-                <li>Al menos una letra minúscula</li>
-                <li>Al menos un caracter especial</li>
-          </ul>`,
+          `La contraseña debe constar al menos de 8 caracteres de longitud, una letra mayúscula, una letra minúscula y un carácter especial
+          `,
           400
         )
       );
@@ -73,7 +69,7 @@ const register = async (req, res, next) => {
         role: "admin",
       });
       await user.save();
-      res.status(201).json(`Usuario ${user.email} registrado con éxito`);
+      return res.status(201).json(`Usuario ${user.email} registrado con éxito`);
     } else {
       const user = new User({
         username,
@@ -137,14 +133,14 @@ const register = async (req, res, next) => {
                 <p>Gracias por registrarte. Te has registrado exitosamente en Wander Whiskers.</p>
                 <p>Por favor, haz clic en el botón a continuación para iniciar sesión:</p>
                 <div style="text-align: center;">
-                    <a class="button" style="color: white;" href="http://localhost:5173/">Iniciar sesión</a>
+                    <a class="button" style="color: white;" href=${process.env.CLIENT_URL}>Iniciar sesión</a>
                 </div>
             </div>
         </body>
         </html>
         `,
       });
-      res.status(201).json(`Usuario ${user.email} registrado con éxito`);
+      return res.status(201).json(`Usuario ${user.email} registrado con éxito`);
     }
   } catch (err) {
     return next(new ErrorModel("Registro fallido", 422));
@@ -172,7 +168,7 @@ const login = async (req, res, next) => {
 
     const comparePassword = await bcrypt.compare(password, user.password);
     if (!comparePassword)
-      return next(new ErrorModel("Credenciales inválidas", 400));
+      return next(new ErrorModel("Credenciales incorrectas", 400));
 
     const { _id: id, username } = user;
 
@@ -180,7 +176,7 @@ const login = async (req, res, next) => {
       expiresIn: "1d",
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       token,
       id,
       username,
@@ -206,7 +202,7 @@ const getUser = async (req, res, next) => {
     const user = await User.findById(id).select("-password");
     if (!user) return next(new ErrorModel("Usuario no encontrado", 404));
 
-    res.status(200).json(user);
+    return res.status(200).json(user);
   } catch (err) {
     return next(new ErrorModel("Error al obtener el perfil del usuario", 422));
   }
@@ -223,7 +219,7 @@ const getUsers = async (req, res, next) => {
     const users = await User.find().select("-password");
     if (!users) return next(new ErrorModel("No se encontraron usuarios", 404));
 
-    res.status(200).json(users);
+    return res.status(200).json(users);
   } catch (err) {
     return next(new ErrorModel("Error al obtener los usuarios", 422));
   }
@@ -248,7 +244,7 @@ const changeImage = async (req, res, next) => {
         path.join(__dirname, "..", "uploads", user.profileImage),
         (err) => {
           if (err) {
-            return next(new ErrorModel(err));
+            console.error("Error deleting old profile image:", err);
           }
         }
       );
@@ -258,44 +254,48 @@ const changeImage = async (req, res, next) => {
 
     if (profileImage.size > 2000000) {
       return next(
-        new ErrorModel("La imagen de perfil no puede superar los 2Mb")
+        new ErrorModel("La imagen de perfil no puede superar los 2Mb", 422)
       );
     }
 
-    let fileName;
-    fileName = profileImage.name;
-    let splittedFilename = fileName.split(".");
-    let newFilename =
+    const fileName = profileImage.name;
+    const splittedFilename = fileName.split(".");
+    const newFilename =
       splittedFilename[0] +
       uuid() +
       "." +
       splittedFilename[splittedFilename.length - 1];
+
     profileImage.mv(
       path.join(__dirname, "..", "uploads", newFilename),
       async (err) => {
         if (err) {
-          return next(new ErrorModel(err));
+          return next(new ErrorModel(err, 500));
         }
 
-        const updatedprofileImage = await User.findByIdAndUpdate(
-          req.user.id,
-          { profileImage: newFilename },
-          { new: true }
-        );
-
-        if (!updatedprofileImage) {
-          return next(
-            new ErrorModel("Error al cambiar la imagen de perfil", 422)
+        try {
+          const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            { profileImage: newFilename },
+            { new: true }
           );
+
+          if (!updatedUser) {
+            return next(
+              new ErrorModel("Error al cambiar la imagen de perfil", 422)
+            );
+          }
+
+          return res.status(200).json(updatedUser);
+        } catch (updateError) {
+          return next(new ErrorModel(updateError, 500));
         }
-        res.status(200).json(updatedprofileImage);
       }
     );
   } catch (error) {
-    return next(new ErrorModel(error));
+    return next(new ErrorModel(error, 500));
   }
 };
-
 /* 
     EDIT USER PROFILE
     POST: api/users/edit
@@ -329,6 +329,14 @@ const editUser = async (req, res, next) => {
     if (!validatePassword)
       return next(new ErrorModel("Credenciales incorrectas", 400));
 
+    const samePassword = await bcrypt.compare(
+      newPassword,
+      user.password
+    )
+
+    if(samePassword)
+      return next(new ErrorModel("La nueva contraseña no puede ser igual a la anterior", 400));
+
     if (newPassword !== confirmNewPassword)
       return next(new ErrorModel("Las contraseñas no coinciden", 400));
 
@@ -360,23 +368,8 @@ const editUser = async (req, res, next) => {
 const deleteUser = async (req, res, next) => {
   try {
     const userId = req.params.id;
-    const posts = await Post.find({ author: userId });
-    const cart = await Cart.findOne({ user: userId });
-    await Cart.findByIdAndDelete(cart);
-    posts.forEach(async (post) => {
-      if (post.image) {
-        const imagePath = path.join(__dirname, "..", "uploads", post.image);
-        fs.unlink(imagePath, (err) => {
-          if (err) {
-            return next(new ErrorModel(err));
-          }
-        });
-      }
-    });
-    await Post.deleteMany({ author: userId });
-    const userToDelete = await User.findById(userId);
 
-    const user = await User.findById(req.user.id);
+    const userToDelete = await User.findById(userId);
     if (!userToDelete) {
       return next(new ErrorModel("Usuario no encontrado", 404));
     }
@@ -388,30 +381,47 @@ const deleteUser = async (req, res, next) => {
       );
     }
 
+    // Encontrar y eliminar todos los posts del usuario
+    const posts = await Post.find({ author: userId });
+
+    // Eliminar imágenes de los posts en paralelo
+    const deletePostImagesPromises = posts.map(async (post) => {
+      if (post.image) {
+        const imagePath = path.join(__dirname, "..", "uploads", post.image);
+        fs.unlink(imagePath, (err) => {
+          if (err) {
+            console.error(err); // Log the error instead of sending it directly
+          }
+        });
+      }
+    });
+    await Promise.all(deletePostImagesPromises);
+
+    // Eliminar todos los posts del usuario
+    await Post.deleteMany({ author: userId });
+
+    // Eliminar el carrito del usuario si existe
+    await Cart.findOneAndDelete({ user: userId });
+
     // Eliminar la imagen de perfil asociada si existe
     if (userToDelete.profileImage) {
-      const profileImageName = userToDelete.profileImage;
-      fs.unlink(
-        path.join(__dirname, "..", "uploads", profileImageName),
-        async (err) => {
-          if (err) {
-            return next(new ErrorModel(err));
-          } else {
-            try {
-              // Eliminar el usuario de la base de datos
-              await User.findByIdAndDelete(req.params.id);
-              res.status(200).json({ msg: "Usuario eliminado" });
-            } catch (error) {
-              return next(new ErrorModel(error));
-            }
-          }
-        }
+      const profileImagePath = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        userToDelete.profileImage
       );
-    } else {
-      // Si el usuario no tiene imagen de perfil, solo elimina el usuario de la base de datos
-      await User.findByIdAndDelete(req.params.id);
-      res.status(200).json({ msg: "Usuario eliminado" });
+      fs.unlink(profileImagePath, (err) => {
+        if (err) {
+          console.error(err); // Log the error instead of sending it directly
+        }
+      });
     }
+
+    // Eliminar el usuario de la base de datos
+    await User.findByIdAndDelete(userId);
+
+    return res.status(200).json({ msg: "Usuario eliminado" });
   } catch (err) {
     next(new ErrorModel(err));
   }
@@ -419,7 +429,7 @@ const deleteUser = async (req, res, next) => {
 
 const forgetPassword = async (req, res, next) => {
   const { email } = req.body;
-  const lowerEmail = email.toLowerCase()
+  const lowerEmail = email.toLowerCase();
   try {
     if (!email) {
       return next(new ErrorModel("Correo electrónico no proporcionado"));
@@ -428,7 +438,7 @@ const forgetPassword = async (req, res, next) => {
     // Validar si el correo electrónico es válido usando una expresión regular
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return next(new ErrorModel("Correo electrónico inválido"));
+      return next(new ErrorModel("Correo electrónico incorrecto"));
     }
 
     const user = await User.findOne({ email: lowerEmail });
@@ -501,13 +511,16 @@ const forgetPassword = async (req, res, next) => {
           <p>Hemos recibido una solicitud para restablecer tu contraseña en Wander Whiskers.</p>
           <p>Por favor, haz clic en el botón a continuación para restablecer tu contraseña:</p>
           <div style="text-align: center;">
-            <a class="button" style="color: white;" href="${link}">Restablecer Contraseña</a>
+            <a class="button" style="color: white;" href=${link}>Restablecer Contraseña</a>
           </div>
         </div>
       </body>
       </html>
       `,
     });
+    return res
+      .status(200)
+      .json({ message: "Correo de recuperación enviado exitosamente" });
   } catch (err) {
     return next(new ErrorModel(err));
   }
@@ -515,27 +528,27 @@ const forgetPassword = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
   const { id, token } = req.params;
-  console.log('id', id)
-  console.log('token', token)
+
   try {
     const user = await User.findById(id);
-    console.log('user', user)
+
     if (!user) {
       return next(new ErrorModel("Usuario no encontrado", 404));
     }
 
     const secret = process.env.SECRET_TOKEN + user.password;
-    console.log('secret', secret)
+
     try {
       // Verificar el token y asegurarse de que sea válido y correspondiente al usuario
       const decoded = jwt.verify(token, secret);
-      console.log('decoded', decoded.id)
-      console.log('decoded user.id', user._id)
+
       if (decoded.id == user._id) {
         const { newPassword, confirmNewPassword } = req.body;
-        console.log('password', newPassword)
+
         if (!newPassword || !confirmNewPassword) {
-          return next(new ErrorModel("Por favor, rellene todos los campos", 400));
+          return next(
+            new ErrorModel("Por favor, rellene todos los campos", 400)
+          );
         }
 
         if (newPassword !== confirmNewPassword) {
@@ -560,9 +573,9 @@ const resetPassword = async (req, res, next) => {
 
         const salt = await bcrypt.genSalt(12);
         const hashedPassword = await bcrypt.hash(newPassword, salt);
-        console.log('hashedPassword', hashedPassword)
+
         const updatedUser = await User.findByIdAndUpdate(
-          {_id: id},
+          { _id: id },
           { password: hashedPassword },
           { new: true }
         );
@@ -576,7 +589,6 @@ const resetPassword = async (req, res, next) => {
     return next(new ErrorModel(err));
   }
 };
-
 
 export {
   register,

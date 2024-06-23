@@ -47,7 +47,7 @@ const OrdersPage = () => {
         );
         setOrders(ordersWithProductDetails);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setIsLoading(false);
     };
@@ -79,7 +79,7 @@ const OrdersPage = () => {
         </h1>
       </Xanimation>
       {paginatedOrders.length ? (
-        <div className="w-full md:w-3/4 lg:w-2/3">
+        <div className="w-full md:w-3/4 lg:w-2/3 mb-4">
           <FadeAnimation>
             {paginatedOrders.map((order) => (
               <div
@@ -91,15 +91,21 @@ const OrdersPage = () => {
                     <div>
                       <h1
                         className={`${
-                          themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
+                          themeMode === "dark"
+                            ? "text-dark-primary"
+                            : "text-color-btn"
                         } text-lg font-semibold`}
                       >
-                        {order.productDetails.map((product) => product.name).join(', ')}
+                        {order.productDetails
+                          .map((product) => product.name)
+                          .join(", ")}
                       </h1>
                       <div className="flex flex-col">
                         <small
                           className={`${
-                            themeMode === "dark" ? "text-gray-200" : "text-gray-500"
+                            themeMode === "dark"
+                              ? "text-gray-200"
+                              : "text-gray-500"
                           }`}
                         >
                           Fecha pedido:{" "}
@@ -107,23 +113,27 @@ const OrdersPage = () => {
                         </small>
                         <small
                           className={`${
-                            themeMode === "dark" ? "text-gray-200" : "text-gray-500"
+                            themeMode === "dark"
+                              ? "text-gray-200"
+                              : "text-gray-500"
                           }`}
                         >
                           Fecha renovación:{" "}
-                          {order.productDetails.map((product) => 
-                            product.name === "Mensual"
-                              ? format(
-                                  addMonths(new Date(order.createdAt), 1),
-                                  "dd/MM/yyyy"
-                                )
-                              : product.name === "Anual"
-                              ? format(
-                                  addYears(new Date(order.createdAt), 1),
-                                  "dd/MM/yyyy"
-                                )
-                              : "N/A"
-                          ).join(', ')}
+                          {order.productDetails
+                            .map((product) =>
+                              product.name === "Mensual"
+                                ? format(
+                                    addMonths(new Date(order.createdAt), 1),
+                                    "dd/MM/yyyy"
+                                  )
+                                : product.name === "Anual"
+                                ? format(
+                                    addYears(new Date(order.createdAt), 1),
+                                    "dd/MM/yyyy"
+                                  )
+                                : "N/A"
+                            )
+                            .join(", ")}
                         </small>
                       </div>
                     </div>
@@ -142,14 +152,26 @@ const OrdersPage = () => {
                       }`}
                     >
                       Precio:{" "}
-                      {order.productDetails
-                        .map((product) => `${product.price} €/ud`)
-                        .join(", ")}{" "}
+                      {order.productDetails.map((product, index) => (
+                        
+                        <span key={index}>
+                          {product.discountPrice
+                            ? `${product.discountPrice} €/ud`
+                            : `${product.price} €/ud`}
+                          {index !== order.productDetails.length - 1
+                            ? ", "
+                            : ""}
+                        </span>
+                      ))}{" "}
                       Total:{" "}
                       {order.productDetails
                         .reduce(
                           (total, product) =>
-                            total + product.price * product.quantity,
+                            total +
+                            (product.discountPrice
+                              ? product.discountPrice
+                              : product.price) *
+                              product.quantity,
                           0
                         )
                         .toFixed(2)}{" "}
@@ -162,7 +184,7 @@ const OrdersPage = () => {
           </FadeAnimation>
         </div>
       ) : (
-        <div className="flex items-center justify-center h-screen">
+        <div className="flex items-center justify-center min-h-[50vh] lg:h-[70vh]">
           <FadeAnimation delay={0.5}>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"

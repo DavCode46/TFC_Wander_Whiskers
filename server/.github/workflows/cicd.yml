@@ -33,6 +33,9 @@ jobs:
           --build-arg STRIPE_MONTHLY_SUBSCRIPTION=${{ secrets.STRIPE_MONTHLY_SUBSCRIPTION }} \
           --build-arg CLIENT_URL=${{ secrets.CLIENT_URL }} \
           --build-arg APP_RESET_PASSWORD_URL=${{ secrets.APP_RESET_PASSWORD_URL }} \
+          --build-arg ENDPOINT_SECRET=${{ secrets.ENDPOINT_SECRET }} \
+          --build-arg CLIENT_URL_SUCCESS=${{ secrets.CLIENT_URL_SUCCESS }} \
+          --build-arg CLIENT_URL_CANCEL=${{ secrets.CLIENT_URL_CANCEL }} \
           -t davcode46/wander-whiskers-server .
       
     - name: Publish Image to Docker Hub

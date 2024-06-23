@@ -5,8 +5,7 @@ import { FaRegPaperPlane } from "react-icons/fa";
 
 const ShareButton = ({
   title,
-  url,
-  size
+  url
 }) => {
   const {themeMode} = useTheme()
   const shareContent = async () => {
@@ -16,7 +15,6 @@ const ShareButton = ({
         text: 'Tu futuro compañero te espera, mira el anuncio de este pequeño',
         url: url,
       });
-      // console.log("Contenido compartido con éxito");
     } catch (error) {
       console.error("Error al compartir:", error);
     }
@@ -27,7 +25,6 @@ const ShareButton = ({
       shareContent();
     } else {
       alert("Compartir no es compatible en este navegador.");
-      // Aquí puedes proporcionar una alternativa personalizada
     }
   };
 

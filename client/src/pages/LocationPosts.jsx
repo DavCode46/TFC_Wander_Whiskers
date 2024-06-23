@@ -10,7 +10,7 @@ import { CircularProgress } from "@chakra-ui/react";
 import { Divider, Empty, Pagination } from "antd";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import PostDrawer from "@/components/PostDrawer";
 import { UserContext } from "@/context/UserContext";
@@ -23,7 +23,7 @@ const LocationPosts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { themeMode } = useTheme();
   const { location } = useParams();
-  const { currentUser, isSubscribed } = useContext(UserContext);
+  const { isSubscribed } = useContext(UserContext);
   useEffect(() => {
     const fetchingPosts = async () => {
       setLoading(true);
@@ -33,7 +33,7 @@ const LocationPosts = () => {
         );
         setPosts(res?.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setLoading(false);
     };
@@ -55,34 +55,47 @@ const LocationPosts = () => {
       />
     );
 
-  const handleFilterChange = (selectedOptions) => {
-    setSelectedOptions(selectedOptions);
-    setCurrentPage(1); // Restablecer a la primera página cuando cambian las opciones
-  };
-
-  const filteredPosts = selectedOptions.length
-    ? posts.filter((post) =>
-        selectedOptions.some((option) => post.location === option[1].label)
-      )
-    : posts;
-
+    const handleFilterChange = (selectedOptions) => {
+      const labels = selectedOptions.map((option) => {
+        if (option[1]) {
+          // Si la opción seleccionada tiene una etiqueta, la devolvemos
+          return option[1].label;
+        } else {
+          // Si la opción seleccionada es la categoría (padre), buscamos las etiquetas de las opciones hijas
+          const childrenLabels = selectData
+            .find((category) => category.value === option[0].value)
+            .children.map((child) => child.label);
+          return childrenLabels;
+        }
+      });
+  
+      setSelectedOptions(labels.flat()); // flat() para aplanar el array de arrays
+      setCurrentPage(1);
+    };
+  
+    const filteredPosts = selectedOptions.length
+      ? posts.filter((post) =>
+          selectedOptions.some((label) => Object.values(post).includes(label))
+        )
+      : posts;
+  
+    const handleSearch = (searchTerm) => {
+      setSearchTerm(searchTerm);
+      setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
+    };
+  
+    const searchedPosts = searchTerm
+      ? filteredPosts.filter((post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : filteredPosts;
   const onPageChange = (page) => {
     setCurrentPage(page);
   };
-  const handleSearch = (searchTerm) => {
-    setSearchTerm(searchTerm);
-    setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
-  };
-
   const onShowSizeChange = (current, size) => {
     setPageSize(size);
     setCurrentPage(1); // Cambiar a la primera página cuando cambie el tamaño de la página
   };
-  const searchedPosts = searchTerm
-    ? filteredPosts.filter((post) =>
-        post.title.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : filteredPosts;
 
   // Calcula el índice de inicio y fin de las publicaciones para la página actual
   const startIndex = (currentPage - 1) * pageSize;
@@ -95,7 +108,7 @@ const LocationPosts = () => {
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
       <Xanimation duration={0.8}>
-        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-2 items-center justify-between md:ml-3">
           <div className="md:order-1">
             <CustomSearch onSearch={handleSearch} />
           </div>
@@ -114,7 +127,7 @@ const LocationPosts = () => {
             <h2
               className={`${
                 themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
-              } text-md`}
+              } text-md text-center`}
             >
               Subscríbete para publicar anuncios
             </h2>
@@ -157,7 +170,7 @@ const LocationPosts = () => {
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-[50vh]">
+        <div className="flex items-center justify-center min-h-[50vh] lg:h-[70vh]">
           <Yanimation>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
@@ -197,7 +210,7 @@ const LocationPosts = () => {
                           themeMode === "dark"
                             ? "text-dark-primary"
                             : "text-color-btn"
-                        } text-md`}
+                        } text-md text-center`}
                       >
                         Subscríbete para publicar anuncios
                       </h2>
@@ -210,7 +223,7 @@ const LocationPosts = () => {
         </div>
       )}
       <Pagination
-        className={`${themeMode === "dark" ? "dark" : ""}`}
+        className={`${themeMode === "dark" ? "dark" : ""} mb-5`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

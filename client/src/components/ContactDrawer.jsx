@@ -1,10 +1,8 @@
-import { useState, useRef, useContext } from "react";
-import { PhoneIcon, EmailIcon } from "@chakra-ui/icons";
+import { useState } from "react";
 import LOGO from "@images/logo/1.svg";
 import DARK_LOGO from "@images/logo/3.svg";
 import emailjs from "@emailjs/browser";
 import Confetti from "react-confetti";
-import { UserContext } from "@/context/UserContext";
 import { FaRegUser } from "react-icons/fa";
 import { MdOutlineMail } from "react-icons/md";
 import { FaPhone } from "react-icons/fa";
@@ -12,7 +10,6 @@ import useTheme from "@context/ThemeContext";
 
 import Yanimation from "@/components/Animations/Yanimation/Yanimation";
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
-import { useNavigate } from "react-router-dom";
 import {
   Form,
   Button,
@@ -22,6 +19,7 @@ import {
   FloatButton,
   Row,
   Space,
+  message
 } from "antd";
 import { QuestionOutlined } from "@ant-design/icons";
 
@@ -30,17 +28,12 @@ const ContactDrawer = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+  const [contactMessage, setContactMessage] = useState("");
   const [isSent, setIsSent] = useState(false);
-  const form = useRef();
   const [error, setError] = useState("Ha ocurrido un error");
-  const { currentUser } = useContext(UserContext);
-  const token = currentUser?.token;
-  const { themeMode, lightTheme, darkTheme } = useTheme();
+  const { themeMode } = useTheme();
 
-  const navigate = useNavigate();
-
-  //   const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
 
   const showDrawer = () => {
     setOpen(true);
@@ -49,15 +42,26 @@ const ContactDrawer = () => {
     setOpen(false);
     if (isSent) setIsSent(false);
   };
-  const handleSetError = () => {
-    setError("");
+
+  const success = () => {
+    messageApi.open({
+      type: "success",
+      content:
+        "Mensaje enviado con éxito, responderemos a la mayor brevedad posible",
+    });
+    onClose();
   };
-  
+
+  const errorMessage = () => {
+    messageApi.open({
+      type: "error",
+      content: error || "Ha ocurrido un error al enviar el mensaje",
+    });
+  };
 
   const handleSubmit = () => {
-    // e.preventDefault();
-
     const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+
     const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
@@ -66,8 +70,7 @@ const ContactDrawer = () => {
       from_email: email,
       contact_number: phone,
       to_name: "Wander Whiskers",
-      message: message,
-      
+      message: contactMessage,
     };
 
     emailjs
@@ -75,21 +78,20 @@ const ContactDrawer = () => {
       .then(() => {
         setName("");
         setEmail("");
-        setMessage("");
+        setContactMessage("");
         setPhone("");
         setIsSent(true);
-        // setTimeout(() => {
-        //   setIsSent(false);
-        // }, 6000);
-      })
-      .catch((err) => {
-        console.log("Error sending email:", err);
       });
+    success().catch((err) => {
+      // console.log("Error sending email:", err);
+      setError("Ha ocurrido un error al enviar el mensaje");
+      errorMessage();
+    });
   };
 
   return (
     <>
-      {/* {contextHolder} */}
+      {contextHolder}
 
       <FloatButton
         type={`${themeMode === "dark" ? "primary" : ""}`}
@@ -137,14 +139,14 @@ const ContactDrawer = () => {
           {!isSent ? (
             <Form layout="vertical" onFinish={handleSubmit}>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="username"
                     label="Tu nombre completo"
                     rules={[
                       {
                         required: true,
-                        message: "Por favor introduce tu nombre",
+                        message: "Introduce tu nombre",
                       },
                     ]}
                   >
@@ -156,12 +158,12 @@ const ContactDrawer = () => {
                           }`}
                         />
                       }
-                      placeholder="Por favor introduce tu nombre"
+                      placeholder="Introduce tu nombre"
                       onChange={(e) => setName(e.target.value)}
                     />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="phone"
                     label="Teléfono"
@@ -184,7 +186,7 @@ const ContactDrawer = () => {
                           } text-md`}
                         />
                       }
-                      placeholder="Por favor introduce tu teléfono"
+                      placeholder="Introduce tu teléfono"
                       onChange={(e) => setPhone(e.target.value)}
                     />
                   </Form.Item>
@@ -214,7 +216,7 @@ const ContactDrawer = () => {
                           } text-lg`}
                         />
                       }
-                      placeholder="Por favor introduce tu email"
+                      placeholder="Introduce tu email"
                       onChange={(e) => setEmail(e.target.value)}
                     />
                   </Form.Item>
@@ -235,7 +237,7 @@ const ContactDrawer = () => {
                       resize="none"
                       rows={6}
                       value={message}
-                      onChange={(e) => setMessage(e.target.value)}
+                      onChange={(e) => setContactMessage(e.target.value)}
                     />
                   </Form.Item>
                 </Col>

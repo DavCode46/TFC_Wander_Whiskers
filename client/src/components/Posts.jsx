@@ -2,12 +2,12 @@ import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import Post from "@components/Post";
 import FilterProvince from "@components/FilterProvince";
-import { Button, Empty, Pagination } from "antd";
+import {  Empty, Pagination } from "antd";
 import { Divider } from "antd";
 import { selectData } from "@/data/data.js";
 import { CircularProgress } from "@chakra-ui/react";
 import CustomSearch from "./CustomSearch";
-import { Link } from "react-router-dom";
+
 import { v4 as uuidv4 } from "uuid";
 
 import PostDrawer from "./PostDrawer";
@@ -27,7 +27,6 @@ const Posts = () => {
   const { currentUser, isSubscribed } = useContext(UserContext);
 
   const { themeMode } = useTheme();
-  // console.log("usuario actual", currentUser);
   useEffect(() => {
     const fetchingPosts = async () => {
       setLoading(true);
@@ -35,9 +34,10 @@ const Posts = () => {
         const res = await axios.get(
           `${import.meta.env.VITE_REACT_APP_URL}/posts`
         );
+
         setPosts(res?.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setLoading(false);
     };
@@ -45,17 +45,17 @@ const Posts = () => {
       const fetchUser = async () => {
         setLoading(true);
         try {
-          const res = await axios.get(
+          await axios.get(
             `${import.meta.env.VITE_REACT_APP_URL}/users/${currentUser.id}`
           );
         } catch (err) {
-          console.log(err);
+          // console.log(err);
         }
       };
       fetchUser();
     }
     fetchingPosts();
-  }, []);
+  }, [currentUser]);
 
   if (loading)
     return (
@@ -86,7 +86,7 @@ const Posts = () => {
         return childrenLabels;
       }
     });
-  
+
     setSelectedOptions(labels.flat()); // flat() para aplanar el array de arrays
     setCurrentPage(1);
   };
@@ -96,14 +96,11 @@ const Posts = () => {
         selectedOptions.some((label) => Object.values(post).includes(label))
       )
     : posts;
-  console.log(selectedOptions);
 
   const handleSearch = (searchTerm) => {
     setSearchTerm(searchTerm);
     setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
   };
-
-  console.log("filteredPosts", filteredPosts);
 
   const searchedPosts = searchTerm
     ? filteredPosts.filter((post) =>
@@ -131,7 +128,7 @@ const Posts = () => {
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
       <Xanimation duration={0.8}>
-        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-2 items-center justify-between md:ml-3">
           <div className="md:order-1">
             <CustomSearch onSearch={handleSearch} />
           </div>
@@ -150,7 +147,7 @@ const Posts = () => {
             <h2
               className={`${
                 themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
-              } text-md`}
+              } text-md text-center`}
             >
               Subscríbete para publicar anuncios
             </h2>
@@ -193,7 +190,7 @@ const Posts = () => {
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-[100vh]">
+        <div className="flex items-center justify-center min-h-[50vh] lg:h-[70vh]">
           <Yanimation>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
@@ -233,7 +230,7 @@ const Posts = () => {
                           themeMode === "dark"
                             ? "text-dark-primary"
                             : "text-color-btn"
-                        } text-md`}
+                        } text-md text-center`}
                       >
                         Subscríbete para publicar anuncios
                       </h2>
@@ -246,7 +243,7 @@ const Posts = () => {
         </div>
       )}
       <Pagination
-        className={`${themeMode === "dark" ? "dark" : ""}`}
+        className={`${themeMode === "dark" ? "dark" : ""} mb-5`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

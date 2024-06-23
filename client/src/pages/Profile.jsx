@@ -1,20 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Button, Empty, FloatButton, Upload, message } from "antd";
+import { Button, Empty, Upload, message } from "antd";
 import { UserContext } from "@/context/UserContext";
 import axios from "axios";
 import DeleteUser from "./DeleteUser";
 import UserDrawer from "@components/UserDrawer";
-import {
-  CheckOutlined,
-  UploadOutlined,
-  EditOutlined,
-  EyeOutlined,
-  DownOutlined,
-  UserOutlined,
-  ProfileOutlined,
-} from "@ant-design/icons";
+import { UploadOutlined, EyeOutlined } from "@ant-design/icons";
 import { CircularProgress } from "@chakra-ui/react";
 import DeletePost from "./DeletePost";
 import Xanimation from "@/components/Animations/Xanimation/Xanimation";
@@ -22,9 +14,6 @@ import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import PostDrawer from "@/components/PostDrawer";
 import useTheme from "@context/ThemeContext";
 const Profile = () => {
-  const [showCurrentPassword, setShowCurrentPassword] = useState(true);
-  const [showNewPassword, setShowNewPassword] = useState(true);
-  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(true);
   const [posts, setPosts] = useState([]);
   const [isLoading, setLoading] = useState("");
   const [profileImage, setProfileImage] = useState("");
@@ -66,8 +55,6 @@ const Profile = () => {
       const { username, email, profileImage } = res.data;
 
       const formattedUsername = capitalizeWords(username);
-      console.log(username);
-      console.log(formattedUsername);
       setUsername(formattedUsername);
       setEmail(email);
       setProfileImage(profileImage);
@@ -91,13 +78,13 @@ const Profile = () => {
 
         setPosts(response.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setLoading(false);
     };
 
     fetchPosts();
-  }, [id]);
+  }, [id, token]);
 
   if (isLoading)
     return (
@@ -115,21 +102,11 @@ const Profile = () => {
       />
     );
 
-  const handleClickCurrentPassword = () =>
-    setShowCurrentPassword(!showCurrentPassword);
-  const handleClickNewPassword = () => setShowNewPassword(!showNewPassword);
-  const handleClickConfirmNewPassword = () =>
-    setShowConfirmNewPassword(!showConfirmNewPassword);
-
   const capitalizeWords = (str) => {
     return str
       .split(" ")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
-  };
-
-  const handleSetError = () => {
-    setError("");
   };
 
   const handleUpload = async (e) => {
@@ -154,12 +131,14 @@ const Profile = () => {
         }
       );
       setProfileImageTouched(res?.data.profileImage);
-      message.success("¡Carga exitosa!");
+      success();
       setFileList([]);
       setImageUploaded(true);
     } catch (err) {
-      console.log(err);
-      message.error("¡Error al cargar la imagen!");
+      // console.log(err);
+      setError(err.response.data.message);
+
+      errorMessage();
     } finally {
       // Desactivar la carga
       setUploading(false);
@@ -185,20 +164,20 @@ const Profile = () => {
   const success = () => {
     messageApi.open({
       type: "success",
-      content: "Perfil editado con éxito",
+      content: "Usuario actualizado con éxito",
     });
   };
   const errorMessage = () => {
     messageApi.open({
       type: "error",
-      content: error,
+      content: error || "Ha ocurrido un error",
     });
   };
 
   return (
     <section className="w-full p-10 m-auto">
-      {/* <ChakraTab /> */}
-      <div className="w-full h-[22rem] relative mx-auto font-grotesk">
+      {contextHolder}
+      <div className="w-full min-h-[22rem] relative mx-auto font-grotesk mb-5">
         <div className="flex flex-col justify-between items-center gap-7">
           <Xanimation>
             <img
@@ -208,12 +187,12 @@ const Profile = () => {
               }/uploads/${profileImage}`}
             />
           </Xanimation>
-          <Link to={`/orders/user/${currentUser.id}`} className=" px-3 py-1 border border-color-btn bg-color-btn hover:bg-color-btnHover hover:text-white text-white rounded-md transition-all duration-300">Mis pedidos</Link>
-
-          {/* <Link to={`/orders/users/${currentUser.id}`}>
-            {" "}
-            <FloatButton icon={<ProfileOutlined />} />
-          </Link> */}
+          <Link
+            to={`/orders/user/${currentUser.id}`}
+            className=" px-3 py-1 border border-color-btn bg-color-btn hover:bg-color-btnHover hover:text-white text-white rounded-md transition-all duration-300"
+          >
+            Mis pedidos
+          </Link>
 
           <div className="flex flex-col md:flex-row items-center justify-center gap-2">
             <FadeAnimation delay={0.2}>
@@ -264,7 +243,7 @@ const Profile = () => {
         <div
           className={`${
             themeMode === "dark" ? "text-[#ccc]" : ""
-          } text-lg text-center font-semibold mt-4 w-full`}
+          } text-lg text-center font-semibold mt-4 w-full mb-5`}
         >
           <Xanimation duration={1}>{username}</Xanimation>
         </div>
@@ -305,14 +284,7 @@ const Profile = () => {
                               <div className="hidden md:inline">Ver</div>
                             </Button>
                           </Link>
-                          {/* <Link to={`/posts/${post._id}/edit`}>
-                            <Button
-                              icon={<EditOutlined />}
-                              className="text-color-btn hover:text-color-btnHover"
-                            >
-                              <div className="hidden md:inline">Editar</div>
-                            </Button>
-                          </Link> */}
+
                           {currentUser && isSubscribed && (
                             <>
                               <PostDrawer isEditing postId={post._id} />
@@ -367,7 +339,7 @@ const Profile = () => {
                               themeMode === "dark"
                                 ? "text-dark-primary"
                                 : "text-color-btn"
-                            } text-md`}
+                            } text-md text-center`}
                           >
                             Subscríbete para publicar anuncios
                           </h2>
@@ -381,18 +353,6 @@ const Profile = () => {
           )}
         </FadeAnimation>
       </section>
-      {/* <motion.div
-        className="slide"
-        initial={{ y: "-100%" }}
-        animate={{ y: "100%" }}
-        transition={{ duration: 3, ease: [0.2, 1, 0.2, 1] }}
-      /> */}
-      {/* <motion.div
-        className="circle"
-        animate={{ width: 0, height: 0, borderRadius: "100%" }}
-        exit={{ width: "100%", height: "100%", borderRadius: 0 }}
-        transition={{ duration: 0.5, ease: 'easeInOut' }}
-      /> */}
     </section>
   );
 };
