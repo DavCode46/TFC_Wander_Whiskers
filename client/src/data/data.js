@@ -1,5 +1,3 @@
-import dog from '../images/bgdogmensual.jpg'
-import cat from '../images/bgcatanual.jpg'
 
 const selectData = [
   {
@@ -9,6 +7,7 @@ const selectData = [
       {
         label: "Perro",
         value: "perro",
+        
       },
       {
         label: "Gato",
@@ -280,7 +279,6 @@ const CONDITION = ["Encontrado", "Perdido", "Adopción"];
 const servicesData = [
  
   {
-    image: cat,
     title: "Anual",
     description: "Suscripción anual",
     price: 251.88,
@@ -293,7 +291,6 @@ const servicesData = [
     ],
   },
   {
-    image: dog,
     title: "Mensual",
     description: "Suscripción mensual",
     price: 20.99,
@@ -304,7 +301,6 @@ const servicesData = [
     ],
   },
   {
-    image: dog,
     id: 2,
     title: "Protectoras",
     description: "Suscripción especial protectoras",   

@@ -8,7 +8,7 @@ const PrivacyPage = () => {
   return (
     <FadeAnimation>
       <div className={`${themeMode === 'dark' ? '' : 'bg-gray-100 '} min-h-screen py-12`}>
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 mt-7">
           <Xanimation>
             <h1 className="text-3xl font-bold text-color-dark mb-6">
               Política de Privacidad

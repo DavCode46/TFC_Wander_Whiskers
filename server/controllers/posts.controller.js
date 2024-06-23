@@ -5,8 +5,8 @@ import fs from "fs";
 import { v4 as uuid } from "uuid";
 import ErrorModel from "../models/Error.model.js";
 
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,12 +20,16 @@ const __dirname = dirname(__filename);
 const createPost = async (req, res, next) => {
   try {
     let { title, content, specie, location, condition } = req.body;
-    console.log(title, content, specie, location, condition, req.files)
-    console.log('req.files' ,req.files)
-    if (!title || !content || !specie || !location || !condition || !req.files) {
-      return next(
-        new ErrorModel("Todos los campos son obligatorios", 422)
-      );
+
+    if (
+      !title ||
+      !content ||
+      !specie ||
+      !location ||
+      !condition ||
+      !req.files
+    ) {
+      return next(new ErrorModel("Todos los campos son obligatorios", 422));
     }
     const { image } = req.files;
     /* Check the file size */
@@ -49,15 +53,15 @@ const createPost = async (req, res, next) => {
             title,
             content,
             specie,
-            location,  
-            condition,        
+            location,
+            condition,
             image: newFilename,
             author: req.user.id,
           });
           if (!newPost) {
             return next(new ErrorModel("Error al crear la publicación", 422));
           }
-          res.status(201).json(newPost);
+          return res.status(201).json(newPost);
         }
       }
     );
@@ -75,7 +79,7 @@ const createPost = async (req, res, next) => {
 const getAllPosts = async (req, res, next) => {
   try {
     const posts = await Post.find().sort({ updatedAt: -1 });
-    res.status(200).json(posts);
+    return res.status(200).json(posts);
   } catch (err) {
     next(new ErrorModel(err));
   }
@@ -92,7 +96,7 @@ const getPost = async (req, res, next) => {
     const postId = req.params.id;
     const post = await Post.findById(postId);
     if (!post) return next(new ErrorModel("Post no encontrado", 404));
-    res.status(200).json(post);
+    return res.status(200).json(post);
   } catch (err) {
     next(new ErrorModel(err));
   }
@@ -112,7 +116,7 @@ const getPostsByLocation = async (req, res, next) => {
       return next(
         new ErrorModel("No se han encontrado posts en esta localización", 404)
       );
-    res.status(200).json(locationPosts);
+    return res.status(200).json(locationPosts);
   } catch (err) {
     next(new ErrorModel(err));
   }
@@ -127,7 +131,7 @@ const getPostsByLocation = async (req, res, next) => {
 const getPostsBySpecie = async (req, res, next) => {
   try {
     const { specie } = req.params;
-   
+
     const petPosts = await Post.find({ specie }).sort({ updatedAt: -1 });
     if (!petPosts)
       return next(
@@ -136,7 +140,7 @@ const getPostsBySpecie = async (req, res, next) => {
           404
         )
       );
-    res.status(200).json(petPosts);
+    return res.status(200).json(petPosts);
   } catch (err) {
     next(new ErrorModel(err));
   }
@@ -150,14 +154,15 @@ const getPostsBySpecie = async (req, res, next) => {
 
 const getPostsbyCondition = async (req, res, next) => {
   try {
-    const { condition } = req.params
-    const conditionPosts = await Post.find({ condition }).sort({updated: -1})
-    if(!conditionPosts) return next(ErrorModel("No se han encontrado posts ", 404))
-    res.status(200).json(conditionPosts)
-  } catch(err) {
-    next(new ErrorModel(err))
+    const { condition } = req.params;
+    const conditionPosts = await Post.find({ condition }).sort({ updated: -1 });
+    if (!conditionPosts)
+      return next(ErrorModel("No se han encontrado posts ", 404));
+    return res.status(200).json(conditionPosts);
+  } catch (err) {
+    next(new ErrorModel(err));
   }
-}
+};
 
 /* 
     Get posts by author
@@ -173,7 +178,7 @@ const getAuthorPosts = async (req, res, next) => {
       return next(
         new ErrorModel("No se han encontrado posts de este autor", 404)
       );
-    res.status(200).json(author);
+    return res.status(200).json(author);
   } catch (err) {
     next(new ErrorModel(err));
   }
@@ -186,24 +191,28 @@ const getAuthorPosts = async (req, res, next) => {
 */
 
 const updatePost = async (req, res, next) => {
+  
   try {
     let imageName;
     let newImageName;
     let updatedPost;
-
     const postId = req.params.id;
     let { title, content, specie, condition, location } = req.body;
     if (!title || !content || !specie || !condition || !location)
       return next(new ErrorModel("Todos los campos son obligatorios", 422));
-    if (!req.files) {
+    if (req.files == null) {
+     
       updatedPost = await Post.findByIdAndUpdate(
         postId,
         { title, content, specie, location, condition },
         { new: true }
       );
+      if (!updatedPost)
+        return next(new ErrorModel("Error al actualizar el post", 422));
+      return res.status(200).json(updatedPost);
     } else {
       const post = await Post.findById(postId);
-      if (req.user.id == post.author) {
+      if (req.files && req.user.id == post.author) {
         fs.unlink(
           path.join(__dirname, "..", "uploads", post.image),
           async (err) => {
@@ -227,13 +236,20 @@ const updatePost = async (req, res, next) => {
             if (err) return next(new ErrorModel(err));
             updatedPost = await Post.findByIdAndUpdate(
               postId,
-              { title, content, specie, location, condition, image: newImageName },
+              {
+                title,
+                content,
+                specie,
+                location,
+                condition,
+                image: newImageName,
+              },
               { new: true }
             );
 
             if (!updatedPost)
               return next(new ErrorModel("Error al actualizar el post", 422));
-            res.status(200).json(updatedPost);
+            return res.status(200).json(updatedPost);
           }
         );
       }
@@ -251,32 +267,34 @@ const updatePost = async (req, res, next) => {
 
 const deletePost = async (req, res, next) => {
   try {
-   
     const postId = req.params.id;
     if (!postId) return next(new ErrorModel("Post no encontrado", 404));
     const post = await Post.findById(postId);
     const imageName = post?.image;
-    const user = await User.findById(req.user.id)
-   
-    if (req.user.id != post.author && user.role != 'admin') return next(new ErrorModel("No tienes permisos para eliminar este post", 403));
+    const user = await User.findById(req.user.id);
+
+    if (req.user.id != post.author && user.role != "admin")
+      return next(
+        new ErrorModel("No tienes permisos para eliminar este post", 403)
+      );
+    if (imageName) {
       fs.unlink(
         path.join(__dirname, "..", "uploads", imageName),
         async (err) => {
           if (err) {
             return next(new ErrorModel(err));
-          } else {
-            await Post.findByIdAndDelete(postId);
-            console.log('postEliminado')
           }
         }
       );
-    
-    res.status(200).json({ msg: "Post eliminado" });
+    }
+
+    await Post.findByIdAndDelete(postId);
+
+    return res.status(200).json({ msg: "Post eliminado" });
   } catch (err) {
     next(new ErrorModel(err));
   }
 };
-
 
 export {
   createPost,
@@ -288,4 +306,4 @@ export {
   getAuthorPosts,
   updatePost,
   deletePost,
-}
+};

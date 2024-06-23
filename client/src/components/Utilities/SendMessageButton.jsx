@@ -3,19 +3,19 @@ import { Button } from "@chakra-ui/react";
 import { MessageOutlined } from "@ant-design/icons";
 import useTheme from "@context/ThemeContext";
 
-const SendMessageButton = ({ size }) => {
+const SendMessageButton = () => {
   const {themeMode} = useTheme()
   const handleSendMessage = () => {
-    // Dirección de correo electrónico del destinatario
+   
     const recipientEmail = "destinatario@example.com";
 
-    // Asunto del mensaje
+   
     const subject = "Asunto del mensaje";
 
-    // Cuerpo del mensaje
+    
     const body = "Contenido del mensaje";
 
-    // Generar el URI para el enlace de correo electrónico
+   
     const mailtoLink = `mailto:${recipientEmail}?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;

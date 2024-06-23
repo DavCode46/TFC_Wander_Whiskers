@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import {  useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "@context/UserContext";
 import axios from "axios";
 import useTheme from "@context/ThemeContext";
@@ -39,7 +39,7 @@ const DeleteUser = ({ userID: id, text, float }) => {
     } catch (err) {
       errorMessage();
 
-      console.log(err);
+      // console.log(err);
     }
   };
 

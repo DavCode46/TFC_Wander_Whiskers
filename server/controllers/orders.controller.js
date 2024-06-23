@@ -10,7 +10,7 @@ const getOrders = async (req, res, next) => {
     }
 
     const orders = await Order.find({ user: userId }).sort({ createdAt: -1 });
-    res.status(200).json(orders);
+    return res.status(200).json(orders);
   } catch (err) {
     next(new ErrorModel(err.message)); 
   }
@@ -22,17 +22,14 @@ const getOrder = async (req, res, next) => {
     if (!userId) {
       return res.status(400).json({ message: "Usuario no encontrado" });
     }
-
     const order = await Order.findOne({ user: userId }).sort({ createdAt: -1 });
     if (!order) {
       return res.status(404).json({ message: "Pedido no encontrado" });
     }
-
     // Obtener detalles de los productos
     const productDetailsPromises = order.products.map(productId => Product.findById(productId));
-    const productDetails = await Promise.all(productDetailsPromises);
-    
-    res.status(200).json({
+    const productDetails = await Promise.all(productDetailsPromises);  
+    return res.status(200).json({
       ...order.toObject(),
       products: productDetails
     });

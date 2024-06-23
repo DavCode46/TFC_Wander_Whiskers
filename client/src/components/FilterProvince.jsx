@@ -20,8 +20,8 @@ const FilterProvince = ({ onChange }) => {
         color: themeMode === "dark" ? "white" : "",
       }}
      
-      expandIcon={<ArrowRightOutlined className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>} // Aplica el estilo al icono de flecha
-      suffixIcon={<ArrowDownOutlined className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>} // Aplica el estilo al icono de flecha
+      expandIcon={<ArrowRightOutlined className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>} 
+      suffixIcon={<ArrowDownOutlined className={`${themeMode === 'dark' ? 'text-white' : ''}`}/>} 
     />
   );
 };

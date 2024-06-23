@@ -18,11 +18,12 @@ const Creator = () => {
   const [loading, setLoading] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('')
   const [pageSize, setPageSize] = useState(10);
   const { themeMode } = useTheme();
   const { id } = useParams();
 
-  const { currentUser, isSubscribed } = useContext(UserContext);
+  const { isSubscribed } = useContext(UserContext);
 
   useEffect(() => {
     const fetchingPosts = async () => {
@@ -33,12 +34,12 @@ const Creator = () => {
         );
         setPosts(res?.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
       setLoading(false);
     };
     fetchingPosts();
-  }, []);
+  }, [id]);
   if (loading)
     return (
       <CircularProgress
@@ -55,37 +56,64 @@ const Creator = () => {
       />
     );
 
-  const handleFilterChange = (selectedOptions) => {
-    setSelectedOptions(selectedOptions);
-    setCurrentPage(1); // Restablecer a la primera página cuando cambian las opciones
-  };
+    const handleFilterChange = (selectedOptions) => {
+      const labels = selectedOptions.map((option) => {
+        if (option[1]) {
+          // Si la opción seleccionada tiene una etiqueta, la devolvemos
+          return option[1].label;
+        } else {
+          // Si la opción seleccionada es la categoría (padre), buscamos las etiquetas de las opciones hijas
+          const childrenLabels = selectData
+            .find((category) => category.value === option[0].value)
+            .children.map((child) => child.label);
+          return childrenLabels;
+        }
+      });
+  
+      setSelectedOptions(labels.flat()); // flat() para aplanar el array de arrays
+      setCurrentPage(1);
+    };
+  
+    const filteredPosts = selectedOptions.length
+      ? posts.filter((post) =>
+          selectedOptions.some((label) => Object.values(post).includes(label))
+        )
+      : posts;
+  
+    const handleSearch = (searchTerm) => {
+      setSearchTerm(searchTerm);
+      setCurrentPage(1); // Restablecer a la primera página cuando se realiza una nueva búsqueda
+    };
+  
+    const searchedPosts = searchTerm
+      ? filteredPosts.filter((post) =>
+          post.title.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : filteredPosts;
 
-  const filteredPosts = selectedOptions.length
-    ? posts.filter((post) =>
-        selectedOptions.some((option) => post.location === option[1].label)
-      )
-    : posts;
 
-  const onPageChange = (page) => {
-    setCurrentPage(page);
-  };
-
-  const onShowSizeChange = (current, size) => {
-    setPageSize(size);
-    setCurrentPage(1); // Cambiar a la primera página cuando cambie el tamaño de la página
-  };
-
-  // Calcula el índice de inicio y fin de las publicaciones para la página actual
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = startIndex + pageSize;
-
-  // Limita el número de publicaciones a mostrar por página
-  const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
+    const onPageChange = (page) => {
+      setCurrentPage(page);
+    };
+  
+    const onShowSizeChange = (current, size) => {
+      setPageSize(size);
+      setCurrentPage(1); // Cambiar a la primera página cuando cambie el tamaño de la página
+    };
+  
+    // Calcula el índice de inicio y fin de las publicaciones para la página actual
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+  
+    // Limita el número de publicaciones a mostrar por página
+    const paginatedPosts = searchedPosts.slice(startIndex, endIndex);
+    // const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
+  
 
   return (
     <section className="p-[5rem] lg:ml-[7rem]">
       <Xanimation duration={0.8}>
-        <div className="flex flex-col md:flex-row gap-2 items-center justify-between">
+        <div className="flex flex-col md:flex-row gap-2 items-center justify-between md:ml-3">
           <div className="md:order-1">
             <CustomSearch onSearch={handleSearch} />
           </div>
@@ -104,7 +132,7 @@ const Creator = () => {
             <h2
               className={`${
                 themeMode === "dark" ? "text-dark-primary" : "text-color-btn"
-              } text-md`}
+              } text-md text-center`}
             >
               Subscríbete para publicar anuncios
             </h2>
@@ -145,7 +173,7 @@ const Creator = () => {
           )}
         </div>
       ) : (
-        <div className="flex items-center justify-center h-[50vh]">
+        <div className="flex items-center justify-center min-h-[50vh] lg:h-[70vh]">
           <Yanimation>
             <Empty
               image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
@@ -185,7 +213,7 @@ const Creator = () => {
                           themeMode === "dark"
                             ? "text-dark-primary"
                             : "text-color-btn"
-                        } text-md`}
+                        } text-md text-center`}
                       >
                         Subscríbete para publicar anuncios
                       </h2>
@@ -198,7 +226,7 @@ const Creator = () => {
         </div>
       )}
       <Pagination
-        className={`${themeMode === "dark" ? "dark" : ""}`}
+        className={`${themeMode === "dark" ? "dark" : ""} mb-5`}
         current={currentPage}
         onChange={onPageChange}
         onShowSizeChange={onShowSizeChange}

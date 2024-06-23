@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import {
-  Box,
   Card,
   CardBody,
   CardFooter,
@@ -11,8 +10,7 @@ import {
   Text,
   Button,
 } from "@chakra-ui/react";
-import PostCreator from "./PostCreator";
-import ReactTimeAgo from "react-time-ago";
+
 import TimeAgo from "javascript-time-ago";
 
 import es from "javascript-time-ago/locale/es.json";
@@ -28,8 +26,6 @@ const Post = ({
   title,
   image,
   location,
-  createdAt,
-  creatorId,
   content,
   specie,
   condition,
@@ -59,9 +55,7 @@ const Post = ({
           src={`${import.meta.env.VITE_REACT_APP_ASSETS_URL}/uploads/${image}`}
           alt={title}
         />
-        {/* <div className="flex flex-row-reverse mr-5 mt-2 ml-5">
-         <small className='whitespace-nowrap'><ReactTimeAgo date={new Date(createdAt)} locale='es' /></small>
-        </div> */}
+       
         <Stack ml={{ base: 0, md: 4 }} mt={{ base: 4, md: 0 }} flex="1">
           <CardBody>
             <Flex justifyContent="space-between" alignItems="center">

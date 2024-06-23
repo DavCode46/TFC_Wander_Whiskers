@@ -1,15 +1,16 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserContext } from '@context/UserContext';
 
 const Logout = () => {
-  const { setCurrentUser } = useContext(UserContext);
+  const { setCurrentUser, setIsSubscribed } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     setCurrentUser(null);
+    setIsSubscribed(false);
     navigate('/');
-  }, [setCurrentUser, navigate]);
+  }, [setCurrentUser,setIsSubscribed, navigate]);
 
   return null; 
 }

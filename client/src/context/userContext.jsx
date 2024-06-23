@@ -20,14 +20,14 @@ const UserProvider = ({ children }) => {
                     { withCredentials: true, headers: { Authorization: `Bearer ${currentUser.token}` } }
                   );
                   const { isSubscribed } = res.data;
+                  setIsSubscribed(isSubscribed); 
                   localStorage.setItem('isSubscribed', JSON.stringify(isSubscribed))
-                  console.log('isSubscribed', isSubscribed)
                 }
             }
 
             fetchUser()
         } catch(err) {
-            console.log(err);
+            // console.log(err);
         }
     }, [isSubscribed, currentUser])
 
@@ -37,7 +37,7 @@ const UserProvider = ({ children }) => {
     };
 
     return (
-        <UserContext.Provider value={{ currentUser, setCurrentUser, isSubscribed, updateSubscriptionStatus }}>
+        <UserContext.Provider value={{ currentUser, setCurrentUser, isSubscribed, setIsSubscribed, updateSubscriptionStatus }}>
             {children}
         </UserContext.Provider>
     );

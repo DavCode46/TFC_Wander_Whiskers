@@ -253,7 +253,8 @@
     color: #ccc;
   }
 
-  div .ant-table-filter-dropdown .ant-table-filter-dropdown-tree {
-    background: red !important;
+  .message-animation {
+    transition: opacity 0.5s ease-in-out;
   }
+  
 }

@@ -35,7 +35,7 @@ RUN echo "VITE_REACT_APP_URL=${VITE_REACT_APP_URL}" \
 WORKDIR /app
 
 # Copiar el archivo nginx.conf al contenedor
-# COPY /nginx.conf /etc/nginx/nginx.conf
+COPY /nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./

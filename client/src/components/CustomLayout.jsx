@@ -1,13 +1,5 @@
 import { useState, useEffect, useContext } from "react";
-import {
-  Affix,
-  Avatar,
-  Button,
-  Divider,
-  FloatButton,
-  Layout,
-  Menu,
-} from "antd";
+import { Avatar, Button, FloatButton, Layout, Menu } from "antd";
 import { Link, Outlet } from "react-router-dom";
 
 import Footer from "./Footer";
@@ -15,7 +7,6 @@ import darkLogo from "@images/logo/3.svg";
 import logo from "@images/logo/5.svg";
 import {
   HomeOutlined,
-  LoginOutlined,
   LogoutOutlined,
   ProfileOutlined,
   MenuOutlined,
@@ -25,22 +16,17 @@ import {
   SunOutlined,
 } from "@ant-design/icons";
 
-import { GiArchiveRegister } from "react-icons/gi";
 import {
-  MdOutlinePublish,
-  MdContactMail,
   MdOutlineImportContacts,
-  MdOutlinePostAdd,
   MdContactSupport,
   MdDashboard,
 } from "react-icons/md";
 import { BsSignpostSplit } from "react-icons/bs";
 import { SiGradleplaypublisher } from "react-icons/si";
-import UserDrawer from "./UserDrawer";
 import { ImProfile } from "react-icons/im";
 
 const { Sider, Content } = Layout;
-const { SubMenu } = Menu;
+
 import ContactDrawer from "./ContactDrawer";
 import { UserContext } from "@context/UserContext";
 import axios from "axios";
@@ -53,10 +39,10 @@ const CustomLayout = () => {
   const [collapsed, setCollapsed] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [profileImage, setProfileImage] = useState(null);
-  const { themeMode, lightTheme, darkTheme, toggleTheme } = useTheme();
+  const { themeMode, toggleTheme } = useTheme();
 
   const { currentUser } = useContext(UserContext);
-  const [cart, setCart] = useContext(CartContext);
+  const [cart] = useContext(CartContext);
 
   const totalQuantity = cart.reduce(
     (total, product) => total + product.quantity,
@@ -78,8 +64,6 @@ const CustomLayout = () => {
           );
           const { profileImage } = res.data;
           setProfileImage(profileImage);
-        } else {
-          // console.log("currentUser is null");
         }
       } catch (error) {
         console.error("Error fetching user:", error);
@@ -96,16 +80,9 @@ const CustomLayout = () => {
       children: [
         {
           key: "login",
-          // icon: <LoginOutlined />,
-          label: <LoginDrawer text={'Login'} isMobile/> ,
+          label: <LoginDrawer text={"Login"} isMobile />,
           hidden: currentUser || !isMobile,
         },
-        // {
-        //   key: "register",
-        //   icon: <GiArchiveRegister />,
-        //   label: <Link to="/register">Registrarse</Link>,
-        //   hidden: currentUser || !isMobile,
-        // },
         {
           key: "logout",
           icon: <LogoutOutlined />,
@@ -136,12 +113,6 @@ const CustomLayout = () => {
           label: "Posts",
           icon: <SiGradleplaypublisher />,
           children: [
-            // {
-            //   key: "create-post",
-            //   label: <Link to="/create-post">Publicar anuncio</Link>,
-            //   icon: <MdOutlinePublish />,
-            //   // hidden: !currentUser || !currentUser.isSubscribed || currentUser.role !== 'admin',
-            // },
             {
               key: "allposts",
               label: <Link to="/posts">Anuncios</Link>,
@@ -154,11 +125,6 @@ const CustomLayout = () => {
           label: "Ayuda",
           icon: <MdOutlineImportContacts />,
           children: [
-            // {
-            //   key: "contactUs",
-            //   label: <Link to="/contact">Contactar</Link>,
-            //   icon: <MdContactMail />,
-            // },
             {
               key: "help",
               label: <Link to="/help">Preguntas frecuentes</Link>,
@@ -196,10 +162,6 @@ const CustomLayout = () => {
     setCollapsed(!collapsed);
   };
 
-  // const toggleTheme = () => {
-  //   themeMode === "light" ? darkTheme() : lightTheme();
-  // };
-
   return (
     <Layout theme={`${themeMode === "dark" ? "dark" : "light"}`}>
       {isMobile ? (
@@ -221,13 +183,7 @@ const CustomLayout = () => {
               onBreakpoint={(broken) => setCollapsed(broken)}
               className="transition-all duration-300"
               style={{
-                // overflow: "auto",
                 height: "100vh",
-                // position: "fixed",
-                // left: 0,
-                // top: 0,
-                // bottom: 0,
-                // zIndex: 1000,
               }}
               width={150}
             >

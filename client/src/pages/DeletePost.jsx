@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import {  useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "@context/UserContext";
 import axios from "axios";
 import { Button, message, Popconfirm } from "antd";
@@ -34,7 +34,7 @@ const DeletePost = ({ postID: id }) => {
           location.pathname === `/profile/${currentUser?.id}` ||
           location.pathname === "/dashboard"
         ) {
-          // navigate(`/profile/${currentUser?.id}`);
+         
           success();
           window.location.reload();
         } else {
@@ -46,7 +46,7 @@ const DeletePost = ({ postID: id }) => {
     } catch (err) {
       setError(err.response.data.message);
       errorMessage();
-      console.log(err);
+      // console.log(err);
     }
   };
 

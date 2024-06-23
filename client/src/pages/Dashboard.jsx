@@ -1,21 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Space, Table } from "antd";
-import { EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DeletePost from "./DeletePost";
-import Yanimation from "@/components/Animations/Yanimation/Yanimation";
-import Xanimation from "@/components/Animations/Xanimation/Xanimation";
+
 import FadeAnimation from "@/components/Animations/FadeAnimation/FadeAnimation";
 import useTheme from "@context/ThemeContext";
+import { UserContext } from "@/context/UserContext";
 const Dashboard = () => {
   const [postData, setPostData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
   const {themeMode} = useTheme()
+
+  const { currentUser } = useContext(UserContext);
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    if(currentUser.role !== 'admin') {
+      navigate('/')
+    }
+  })
+  
   useEffect(() => {
     const fetchPosts = async () => {
+     
       try {
         setLoading(true);
         const res = await axios.get(
@@ -23,7 +35,7 @@ const Dashboard = () => {
         );
         setPostData(res?.data);
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       } finally {
         setLoading(false);
       }
@@ -113,11 +125,7 @@ const Dashboard = () => {
               Ver
             </Button>
           </Link>
-          {/* <Link to={`/posts/${record._id}/edit`}>
-            <Button icon={<EditOutlined />} className="">
-              Editar
-            </Button>
-          </Link> */}
+          
           <DeletePost postID={record._id} />
         </Space>
       ),
@@ -126,15 +134,15 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="grid place-content-center w-[80%] m-auto mb-[15rem] z-[-1000]">
-     <FadeAnimation className={'overflow-x-auto'}>
+    <div className="grid place-content-center w-[80%] m-auto mb-[15rem] z-[-1000] md:ml-[6rem] lg:min-h-screen">
+     <FadeAnimation className={'overflow-x-auto lg:overflow-hidden'}>
         <Space
           style={{
             marginBottom: 16,
             marginTop: 90,
           }}
         >
-          {/* <Button onClick={() => clearFilters()}>Eliminar filtros</Button> */}
+        
           <Link to="/dashboard/users">
             <Button type={`${themeMode === 'dark' ? 'primary' : 'default'}`}>Administrar usuarios</Button>
           </Link>
@@ -145,7 +153,7 @@ const Dashboard = () => {
           dataSource={postData}
           loading={loading}
           onChange={handleChange}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 7 }}
           className={`${themeMode === 'dark' ? 'dark' : ''} table`}
           filterDropdownStyle={{
             backgroundColor: themeMode === 'dark' ? '#333' : '#fff',

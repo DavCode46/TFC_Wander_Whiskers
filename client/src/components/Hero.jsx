@@ -1,25 +1,25 @@
 import { RiCheckboxBlankCircleFill } from "react-icons/ri";
-import dog from "@images/dog.jpg";
-import cat from "@images/cat.jpg";
+import dog from "@images/dog.webp";
+import cat from "@images/cat.webp";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@chakra-ui/react";
 import Yanimation from "@components/Animations/Yanimation/Yanimation";
 
-import FadeAnimation from "@components/Animations/FadeAnimation/FadeAnimation";
+
 import ScrollYanimation from "./Animations/Yanimation/ScrollYAnimation";
 import ScrollFadeAnimation from "./Animations/FadeAnimation/ScrollFadeAnimation";
 import ScrollXAnimation from "./Animations/Xanimation/ScrollXAnimation";
 import PostDrawer from "./PostDrawer";
-import { useContext, useEffect, useState } from "react";
-import axios from "axios";
+import { useContext,  useState } from "react";
+
 import { UserContext } from "@/context/UserContext";
 import useTheme  from '@context/ThemeContext'
 const Hero = () => {
   
   const [loading, setLoading] = useState(false);
-  const { themeMode, lightTheme, darkTheme } = useTheme();
+  const { themeMode } = useTheme();
 
-  const { currentUser, isSubscribed } = useContext(UserContext);
+  const { isSubscribed } = useContext(UserContext);
   
   if (loading)
     return (
@@ -110,16 +110,18 @@ const Hero = () => {
         </div>
         <div className="mt-8 font-grotesk flex justify-center items-center">
           <ScrollXAnimation>
-            <div className="flex gap-2 items-center justify-center">
+            <div className="flex flex-col md:flex-row gap-2 items-center justify-center">
               <p className={`${themeMode === 'dark' ? 'text-dark-lightGrey' : 'text-gray-700'}`}>¿Has perdido a tu mascota?</p>
               {isSubscribed ? (
                 <PostDrawer homeButton />
               ) : (
                 <h2 className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-md`}>Subscríbete para publicar anuncios</h2>
               )} 
-              <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
-              <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
-              <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
+              <div className="flex">
+                <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
+                <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
+                <RiCheckboxBlankCircleFill className={`${themeMode === 'dark' ? 'text-dark-primary' : 'text-color-btn'} text-2xl`} />
+              </div>
             </div>
           </ScrollXAnimation>
         </div>

@@ -1,49 +1,49 @@
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   useLocation,
 } from "react-router-dom";
 
-import { ChakraProvider } from "@chakra-ui/react";
+import { Box, ChakraProvider, CircularProgress } from "@chakra-ui/react";
 import { AnimatePresence } from "framer-motion";
 import theme from "./theme/theme";
 import { ConfigProvider } from "antd";
-import CustomLayout from "./components/CustomLayout";
-import Home from "./pages/Home";
-
-import PostsPage from "./pages/PostsPage";
-
-import DeletePost from "./pages/DeletePost";
-import PostDetail from "./pages/PostDetail";
-import LocationPosts from "./pages/LocationPosts";
-import Profile from "./pages/Profile";
-import Login from "./pages/Login";
-import Creator from "./pages/Creator";
-
-import Logout from "./pages/Logout";
-import Error404 from "./pages/Error404";
-import Contact from "./pages/Contact";
-import Help from "./pages/Help";
-import PostsBySpecie from "./pages/PostsBySpecie";
-import OrdersPage from "./pages/OrdersPage";
 import UserProvider from "@context/UserContext";
-import Dashboard from "./pages/Dashboard";
-import UsersManagement from "./pages/UsersManagement";
 import { CartProvider } from "@context/CartContext";
-import CartPage from "./pages/CartPage";
-import CheckoutSuccess from "./pages/CheckoutSuccess";
-import CheckoutCancel from "./pages/CheckoutCancel";
-import { useEffect, useLayoutEffect, useState } from "react";
-import LegalPage from "./pages/LegalPage";
-import CookiesPage from "./pages/CookiesPage";
-import PrivacityPage from "./pages/PrivacityPage";
-import ForgetPassword from './pages/ForgetPassword'
 import { ThemeProvider } from "@context/ThemeContext";
-import ResetPassword from "./pages/ResetPassword";
+
+// Otros componentes y páginas
+import CustomLayout from "./components/CustomLayout";
+import Error404 from "./pages/Error404";
+import Home from './pages/Home'
+// Lazy load pages
+// const Home = lazy(() => import("./pages/Home"));
+const PostsPage = lazy(() => import("./pages/PostsPage"));
+const DeletePost = lazy(() => import("./pages/DeletePost"));
+const PostDetail = lazy(() => import("./pages/PostDetail"));
+const LocationPosts = lazy(() => import("./pages/LocationPosts"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Creator = lazy(() => import("./pages/Creator"));
+const Logout = lazy(() => import("./pages/Logout"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Help = lazy(() => import("./pages/Help"));
+const PostsBySpecie = lazy(() => import("./pages/PostsBySpecie"));
+const OrdersPage = lazy(() => import("./pages/OrdersPage"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const UsersManagement = lazy(() => import("./pages/UsersManagement"));
+const CartPage = lazy(() => import("./pages/CartPage"));
+const CheckoutSuccess = lazy(() => import("./pages/CheckoutSuccess"));
+const CheckoutCancel = lazy(() => import("./pages/CheckoutCancel"));
+const LegalPage = lazy(() => import("./pages/LegalPage"));
+const CookiesPage = lazy(() => import("./pages/CookiesPage"));
+const PrivacityPage = lazy(() => import("./pages/PrivacityPage"));
+const ForgetPassword = lazy(() => import("./pages/ForgetPassword"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 const Wrapper = ({ children }) => {
   const location = useLocation();
-  useLayoutEffect(() => {
+  useEffect(() => {
     document.documentElement.scrollTo(0, 0);
   }, [location.pathname]);
   return children;
@@ -53,160 +53,108 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-       
-          <ChakraProvider theme={theme}>
-            <AnimatePresence mode="wait">
-              <Wrapper>
-                <UserProvider>
-                  <CartProvider>
-                    <CustomLayout />
-                  </CartProvider>
-                </UserProvider>
-              </Wrapper>
-            </AnimatePresence>
-          </ChakraProvider>
-        
+      <ChakraProvider theme={theme}>
+        <AnimatePresence mode="wait">
+          <Wrapper>
+            <UserProvider>
+              <CartProvider>
+                <CustomLayout />
+              </CartProvider>
+            </UserProvider>
+          </Wrapper>
+        </AnimatePresence>
+      </ChakraProvider>
     ),
     errorElement: <Error404 />,
     children: [
       {
         path: "/",
         element: <Home />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/posts",
         element: <PostsPage />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/posts/:id/delete",
         element: <DeletePost />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/post/:id/detail",
         element: <PostDetail />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/profile/:id",
         element: <Profile />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/posts/location/:location",
         element: <LocationPosts />,
-        location: location,
-        key: location.pathname,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/logout",
         element: <Logout />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/contact",
         element: <Contact />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/help",
         element: <Help />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "posts/species/:specie",
         element: <PostsBySpecie />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "posts/users/:id",
         element: <Creator />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/dashboard",
         element: <Dashboard />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/dashboard/users",
         element: <UsersManagement />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/cart",
         element: <CartPage />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/checkout/success",
         element: <CheckoutSuccess />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/checkout/cancel",
         element: <CheckoutCancel />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/orders/user/:id",
         element: <OrdersPage />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/legal",
         element: <LegalPage />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/privacity",
         element: <PrivacityPage />,
-        location: location,
-        key: location.pathname,
       },
       {
         path: "/cookies",
         element: <CookiesPage />,
-        location: location,
-        key: location.pathname,
       },
       {
-        path: '/forgot-password',
+        path: "/forgot-password",
         element: <ForgetPassword />,
-        location: location,
-        key: location.pathname,
       },
       {
-        path: '/users/reset-password/:id/:token',
+        path: "/users/reset-password/:id/:token",
         element: <ResetPassword />,
-        location: location,
-        key: location.pathname,
-      }
+      },
     ],
   },
 ]);
@@ -273,27 +221,9 @@ function App() {
             },
             Cascader: {
               optionSelectedBg: themeMode === "dark" ? "#1890ff" : "",
-              // colorPrimary: themeMode === "dark" ? "#1890ff" : "",
-              // colorPrimaryBgHover: themeMode === "dark" ? "#3c9ae8" : "",
-              // colorSplit: themeMode === "dark" ? "#3c9ae8" : "",
-              // colorHighlight: themeMode === "dark" ? "#3c9ae8" : "",
-              // controlItemBgHover: themeMode === "dark" ? "#00213f" : "",
             },
             Card: {
               colorPrimary: themeMode === "dark" ? "#1F2E35" : "",
-            },
-            Table: {
-              // filterDropdownBg: themeMode === "dark" ? "#1F2E35" : "",
-              // filterDropdownMenuBg: themeMode === "dark" ? "#00213f" : "",
-              // colorText: themeMode === "dark" ? "#ccc" : "",
-              // expandIconBg: themeMode === "dark" ? "#ccc" : "",
-              // colorBgContainer: themeMode === "dark" ? "#1F2E35" : "white",
-              // rowHoverBg: themeMode === "dark" ? "#00213f" : "#fafafa",
-              // headerSplitColor: themeMode === "dark" ? "#ccc" : "#fafafa",
-              // headerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
-              // headerColor: themeMode === "dark" ? "#ccc" : "#212529",
-              // footerBg: themeMode === "dark" ? "#00213f" : "#fafafa",
-              // bodySortBg: themeMode === "dark" ? "#00213f" : "#fafafa",
             },
             Empty: {
               colorText: themeMode === "dark" ? "#ccc" : "",
@@ -309,12 +239,29 @@ function App() {
               darkItemSelectedBg: themeMode === "dark" ? "blue" : "",
               itemActiveBg: themeMode === "dark" ? "blue" : "",
             },
-           
           },
         }}
       >
         <ThemeProvider value={{ themeMode, darkTheme, lightTheme }}>
-          <RouterProvider router={router} />
+          <Suspense
+            fallback={
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                height="100vh"
+              >
+                <CircularProgress
+                  isIndeterminate
+                  size="100px"
+                  thickness="7px"
+                  aria-label="cargando"
+                />
+              </Box>
+            }
+          >
+            <RouterProvider router={router} />
+          </Suspense>
         </ThemeProvider>
       </ConfigProvider>
     </>

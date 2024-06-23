@@ -1,12 +1,11 @@
 import React from "react";
-import { motion, useScroll, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 
 const ScrollFadeAnimation = ({ children, delay, className }) => {
   const { ref } = useInView({
-    triggerOnce: true, // Esta opción asegura que la animación solo se active una vez
-    threshold: 0.5, // Define cuánto del elemento debe estar en la vista para activar la animación
+    triggerOnce: true, 
+    threshold: 0.5, 
   });
-  const { scrollYProgress } = useScroll();
 
   return (
     <motion.div
